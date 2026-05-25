@@ -101,11 +101,11 @@ Server owns the result
 |---|---|---|
 | RUM | v2 | client struct to build easy, poll to fetch the results without cancel|
 | Dog | v2 | now able to target cpu, gpu usage , client struct build easy   |
----
 
 <br>
 
 ---
+
 
 ## 🤝 Let's Connect
 
