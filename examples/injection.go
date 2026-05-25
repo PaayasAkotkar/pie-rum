@@ -32,19 +32,19 @@ type WorkerService struct {
 	WorkerID int
 }
 
-// PlayInjection demonstrates how to use the dependency-injection package cleanly
-func PlayInjection() {
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
+//// PlayInjection demonstrates how to use the dependency-injection package cleanly
+//func PlayInjection() {
+//	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+//	defer cancel()
+//
+//	// exampleSingletonAndTransient(ctx)
+//
+//	examplePooled(ctx)
+//
+//	// exampleRebuild(ctx)
+//}
 
-	// exampleSingletonAndTransient(ctx)
-
-	examplePooled(ctx)
-
-	// exampleRebuild(ctx)
-}
-
-func exampleSingletonAndTransient(ctx context.Context) {
+func PlayDIexampleSingletonAndTransient(ctx context.Context) {
 	client := injection.NewClient(ctx, "node-singleton")
 
 	dbServiceType := reflect.TypeOf((*DatabaseService)(nil))
@@ -95,7 +95,7 @@ func exampleSingletonAndTransient(ctx context.Context) {
 	client.Stop()
 }
 
-func examplePooled(ctx context.Context) {
+func PlayDIexamplePooled(ctx context.Context) {
 	client := injection.NewClient(ctx, "node-pooled")
 	workerServiceType := reflect.TypeOf((*WorkerService)(nil))
 
@@ -136,7 +136,7 @@ func examplePooled(ctx context.Context) {
 	client.Stop()
 }
 
-func exampleRebuild(ctx context.Context) {
+func PlayDIexampleRebuild(ctx context.Context) {
 	client := injection.NewClient(ctx, "node-rebuild")
 	dbServiceType := reflect.TypeOf((*DatabaseService)(nil))
 

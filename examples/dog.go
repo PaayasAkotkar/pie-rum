@@ -7,12 +7,8 @@ import (
 	"time"
 )
 
-func PlayDog() {
-	ExampleClientBasic()
-}
-
-// ExampleClientBasic demonstrates the simplified client API
-func ExampleClientBasic() {
+// PlayDogExampleClientBasic demonstrates the simplified client API
+func PlayDogExampleClientBasic() {
 	client := dog.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
@@ -38,8 +34,8 @@ func ExampleClientBasic() {
 	log.Println("✅ Done!")
 }
 
-// ExampleClientMultiple demonstrates multiple policies
-func ExampleClientMultiple() {
+// PlayDogExampleClientMultiple demonstrates multiple policies
+func PlayDogExampleClientMultiple() {
 	client := dog.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
@@ -84,8 +80,8 @@ func ExampleClientMultiple() {
 	log.Println("✅ All done!")
 }
 
-// ExampleClientWithData demonstrates functions that return data
-func ExampleClientWithData() {
+// PlayDogExampleClientWithData demonstrates functions that return data
+func PlayDogExampleClientWithData() {
 	type Result struct {
 		Value string
 	}
@@ -113,8 +109,8 @@ func ExampleClientWithData() {
 	log.Printf("Output: %s\n", string(report.Output))
 }
 
-// ExampleClientRepeated demonstrates repeated execution with reset
-func ExampleClientRepeated() {
+// PlayDogExampleClientRepeated demonstrates repeated execution with reset
+func PlayDogExampleClientRepeated() {
 	client := dog.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
@@ -144,8 +140,8 @@ func ExampleClientRepeated() {
 	}
 }
 
-// ExampleClientWithMetrics demonstrates accessing metrics
-func ExampleClientWithMetrics() {
+// PlayDogExampleClientWithMetrics demonstrates accessing metrics
+func PlayDogExampleClientWithMetrics() {
 	client := dog.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
@@ -180,8 +176,8 @@ func ExampleClientWithMetrics() {
 	}
 }
 
-// ExampleClientListAndInfo demonstrates listing policies and getting info
-func ExampleClientListAndInfo() {
+// PlayDogExampleClientListAndInfo demonstrates listing policies and getting info
+func PlayDogExampleClientListAndInfo() {
 	client := dog.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
