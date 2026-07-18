@@ -37,6 +37,7 @@ Supports all the fields in the list of computing or programming.
 > Please do test the thing and do comment down so that i can know whats missing
 > More work is still coming by my side regarding monitoring funcs to work more roboustly than using the wait-group stuffs
 > 4) most exampels are written by AI do make sure to report if you find bugs
+> 5) Most of the things are kinda imroved by calude so yeah shotout to claude
 ---
 
 ## Quick-Start
