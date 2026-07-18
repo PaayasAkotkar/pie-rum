@@ -3,13 +3,18 @@ package example
 import (
 	"fmt"
 	"log"
-	"rum/app/dog"
+	dog "pie-rum-sdk/dog/core"
+	sdk "pie-rum-sdk/dog/sdk"
 	"time"
 )
 
-// PlayDogExampleClientBasic demonstrates the simplified client API
-func PlayDogExampleClientBasic() {
-	client := dog.NewClient[struct{}](10 * time.Second)
+func PlayDog() {
+	ExampleClientBasic()
+}
+
+// ExampleClientBasic demonstrates the simplified client API
+func ExampleClientBasic() {
+	client := sdk.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
 	_, err := client.DefinePolicy("quickOp", 1*time.Second).
@@ -34,9 +39,9 @@ func PlayDogExampleClientBasic() {
 	log.Println("✅ Done!")
 }
 
-// PlayDogExampleClientMultiple demonstrates multiple policies
-func PlayDogExampleClientMultiple() {
-	client := dog.NewClient[struct{}](10 * time.Second)
+// ExampleClientMultiple demonstrates multiple policies
+func ExampleClientMultiple() {
+	client := sdk.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
 	_, err := client.DefinePolicy("fastOps", 500*time.Millisecond).
@@ -80,13 +85,13 @@ func PlayDogExampleClientMultiple() {
 	log.Println("✅ All done!")
 }
 
-// PlayDogExampleClientWithData demonstrates functions that return data
-func PlayDogExampleClientWithData() {
+// ExampleClientWithData demonstrates functions that return data
+func ExampleClientWithData() {
 	type Result struct {
 		Value string
 	}
 
-	client := dog.NewClient[Result](10 * time.Second)
+	client := sdk.NewClient[Result](10 * time.Second)
 	defer client.Close()
 
 	_, err := client.DefinePolicy("dataOp", 1*time.Second).
@@ -109,9 +114,9 @@ func PlayDogExampleClientWithData() {
 	log.Printf("Output: %s\n", string(report.Output))
 }
 
-// PlayDogExampleClientRepeated demonstrates repeated execution with reset
-func PlayDogExampleClientRepeated() {
-	client := dog.NewClient[struct{}](10 * time.Second)
+// ExampleClientRepeated demonstrates repeated execution with reset
+func ExampleClientRepeated() {
+	client := sdk.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
 	_, err := client.DefinePolicy("repeated", 1*time.Second).
@@ -140,9 +145,9 @@ func PlayDogExampleClientRepeated() {
 	}
 }
 
-// PlayDogExampleClientWithMetrics demonstrates accessing metrics
-func PlayDogExampleClientWithMetrics() {
-	client := dog.NewClient[struct{}](10 * time.Second)
+// ExampleClientWithMetrics demonstrates accessing metrics
+func ExampleClientWithMetrics() {
+	client := sdk.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
 	_, err := client.DefinePolicy("cpuIntensive", 2*time.Second).
@@ -176,9 +181,9 @@ func PlayDogExampleClientWithMetrics() {
 	}
 }
 
-// PlayDogExampleClientListAndInfo demonstrates listing policies and getting info
-func PlayDogExampleClientListAndInfo() {
-	client := dog.NewClient[struct{}](10 * time.Second)
+// ExampleClientListAndInfo demonstrates listing policies and getting info
+func ExampleClientListAndInfo() {
+	client := sdk.NewClient[struct{}](10 * time.Second)
 	defer client.Close()
 
 	for i := 1; i <= 3; i++ {

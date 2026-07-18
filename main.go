@@ -1,20 +1,9 @@
-// Package main showcase the framework
 package main
 
 import (
-	example "rum/app/examples"
-	"sync"
+	example "pie-rum-sdk/examples"
 )
 
-var wg sync.WaitGroup
-
 func main() {
-	example.PlayBasicRumExample()
-	// example.PlayAdvancedRumExample()
-	// example.PlayTrain()
-	// example.PlayRum()
-	// example.PlayRumDI()
-	// example.PlayRumV2()
-	// example.PlayDog()
-	// example.PlayInjection()
+	example.PlayPIERUMCLIBasicExample()
 }

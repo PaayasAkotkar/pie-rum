@@ -1,134 +1,44 @@
-<div align="center">
-<img src="./asset/rum.png" width=320 height=320>
-</div>
-<br>
+# PIE-RUM
+### Polyglot Integrated Environment: Run Your Models
+
+A developer-centric framework AI orchestration, and work engine. It bridges the gap between the implemented system layers and developer’s communication. Reducing the complexity of tools or communication apps and providing one complete codex for the organization.
+Supports all the fields in the list of computing or programming.
 
 ---
 
-## Theme 🎨
-Rum or run your models an architecture where a developer can push profiles that include kits that include the respective services to be run, not one, not two, but as many as they can and monitor those specific profiles by creating a tag mark. 
-Profile -> Kits -> Services ->[1…N]
+## How PIE RUM SDK works?
+
+1. **core layer server** -> focuses on the orchestration -> store [ profiles [M:N] [ kits [M:N] [ services [M:N] [ dispatchers [M:N] [ events ] ] ] ] ]
+   * each mapping field is many-to-many resulting into structured configuration wiring storage.
+2. **the developer must set the default profile** for search safety 
+3. **each request being made** to the implemented pie-rum layer is being filtered to dedicated search params namely for the store [….prof…]..]
+4. **pie-rum runs all the dedicated kit** of that service & of that dispatchers events in the monitor method if config; one-by-one and pushes the result either failure or succeed asap to the core pie-rum monitor method without needing to wait to complete all the methods
+5. **the result is stored** in the pie-rum server itself the developer decides what to do with it
 
 ---
 
-## Structure 📝
+## Why use PIE RUM SDK?
 
-The idea is kept simple — monitor the attributes and allow a robust hierarchy to manage the models or agents. To make things simple gRPC was introduced so that calls can be made from anywhere to support one single server. With this setup the headache of creating many servers to support different agents or models has been solved and you achieve a simple reusable handler for those models.
-
-
-The hierarchy is:
-Rum[In, Out]
-└── Profile
-└── Kit
-└── Service
-└── Dispatcher
-└── IRegister[In, Out]  ← your model func lives here
-
-<br>
-<div align="center"><b>Flow</b></div>
-
-<p align="center">
-1. Register the profile [In, Out]
-<br>
-Note: keep [In & Out] same for each model so that you can push many profiles.
-<br>
-2. Run the server
-<br>
-3. Call the server via gRPC client from anywhere
-<br>
-4. Paper or Poll blocks until all registered funcs complete
-<br>
-5. Result carries the full metric report — client decides what to do with it
-</p>
-
-<br>
+* 1) focus directly on building the core product layer & connect the dots together
+* 2) achieve meta-info of those mapping fields
+* 3) config the mapping fields not only a single field but many at once
+* 4) structure configuration system to pull meta-info or config the mapping fields
 
 ---
 
-## Architecture 🏗️
-<div align="center">
-Client [grpc client anywhere]
-<br>
-↓ 
-<br>
-Rum Server [grpc server]
-<br>
-↓
-<br>
-Hub() — single event loop
-<br>
-↓
-<br>
-POST() → write() — runs all registered funcs
-<br>
-↓
-<br>
-Publish() — internal pubsub (nanoseconds)
-<br>
-↓
-<br>
-Poll() or Paper() — returns IDispatchResult
-<br>
-↓
-<br>
-Server owns the result
-<br>
-</div>
-<br>
-
---- 
-
-
-## Quick Start
-
-
-- use example pacakge to run any of the example in the main.go
-- run the compile.bat
-note: examples are written by the gen-ai 
-in-case of any error do report the issue.
-
----
-
-## Key Design Decisions 💡
-
-| Decision | Reason |
-|---|---|
-| generic [In, Out] | one family, many models, no type confusion |
-| gRPC boundary | client triggers from anywhere, language agnostic |
-| client owns metrics | engine runs, client decides what to save |
-
----
-
-## Insiders 😅
-| Feature | Status | Insight |
-|---|---|---|
-| Cluster | Upcoming | One Cluster to scale the service |
-|ServerRUM|Upcoming| Reduce complexity for server->client communication |
-
----
-
-## New 😎
-| Feature | Version | Desc |
-|---|---|---|
-| RUM | v2 | client struct to build easy, poll to fetch the results without cancel|
-| Dog | v2 | now able to target cpu, gpu usage , client struct build easy   |
-
-<br>
-
----
-
-> [!TIP]
-> ### 🤝 Let's Collaborate!
-> We have big plans for expanding this ecosystem. If you want to join the core group, contribute features, or chat about backend insights, let’s connect:
+> [!NOTE]
 > 
-> * 💬 **Discord:** `Paayas10`
-> * 📧 **Email:** [paayasakotkar@gmail.com](mailto:paayasakotkar@gmail.com)
+> 1) **Testing for the meta-leaderboard is left** > Do test it and report how you guys liked it what more is needed
+> 2) The **Dog Monitor** interface might get replaced via promethus
+> If you feel like not to remove or we can create more using that let me know that too
+> 3) The dependency injection might get replaced by uber-fx 
+> If you feel like not t remove or we can create more using that let me know that too
+> 3) I am only the solo developer who improved the codes, many things are yet to be tested by my side and I am not fully sure whether it is ready or not cause I kept on focusing on writing the core than testing out things 
+> Please do test the thing and do comment down so that i can know whats missing
+> More work is still coming by my side regarding monitoring funcs to work more roboustly than using the wait-group stuffs
+> 4) most exampels are written by AI do make sure to report if you find bugs
+---
 
-<br>
-
---- 
-
-<div align="center">
-<footer>Apache License 2026; created with imagination and coded with passion</footer>
-</div>
-
+## Quick-Start
+1. Pick any example from using the example package and run it to understand how things working
+2. simply run the complie.bat for windows & compile.sh for linux & mac

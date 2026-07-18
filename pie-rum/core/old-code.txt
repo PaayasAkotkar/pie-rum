@@ -1,0 +1,2188 @@
+// // package rum
+
+// // // // Package rum...
+// // // // builder.go implements the roboust and more cleaner way to write and maintain codes
+// // // package rum
+
+// // // import (
+// // // 	"context"
+// // // 	"fmt"
+// // // 	"time"
+// // // )
+
+// // // // DispatcherConfig holds configuration for dispatcher registration
+// // // type DispatcherConfig struct {
+// // // 	Service  string
+// // // 	Settings Settings
+// // // }
+
+// // // // Builder manages Rum profile lifecycle
+// // // type Builder[In, Out any] struct {
+// // // 	store    *IStore[In, Out]
+// // // 	builders []*ProfileBuilder[In, Out]
+// // // 	server   *Rum[In, Out]
+// // // }
+
+// // // // NewBuilder creates a new Rum Builder for building profiles
+// // // func NewBuilder[In, Out any](rum *Rum[In, Out]) *Builder[In, Out] {
+// // // 	if rum == nil {
+// // // 		panic("server cannot be nil")
+// // // 	}
+// // // 	return &Builder[In, Out]{
+// // // 		store:    rum.store,
+// // // 		server:   rum,
+// // // 		builders: make([]*ProfileBuilder[In, Out], 0),
+// // // 	}
+// // // }
+
+// // // func (c *Builder[In, Out]) Server() *Rum[In, Out] {
+// // // 	return c.server
+// // // }
+
+// // // // CreateProfile initializes a new profile builder
+// // // func (c *Builder[In, Out]) CreateProfile(seq ISequence[In], timeout time.Duration) *ProfileBuilder[In, Out] {
+// // // 	if timeout <= 0 {
+// // // 		panic("timeout must be positive")
+// // // 	}
+
+// // // 	pb := &ProfileBuilder[In, Out]{
+// // // 		store:       c.store,
+// // // 		sequence:    seq,
+// // // 		timeout:     timeout,
+// // // 		kit:         NewKit[In, Out](),
+// // // 		initialized: true,
+// // // 	}
+// // // 	c.builders = append(c.builders, pb)
+// // // 	return pb
+// // // }
+
+// // // // Run run the rum server
+// // // func (pb *Builder[In, Out]) Run(ctx context.Context, config RumServer) {
+// // // 	pb.server.Serve(ctx, config)
+// // // }
+
+// // // // BuildAll finalizes all profiles in the Builder
+// // // func (c *Builder[In, Out]) BuildAll() error {
+// // // 	if len(c.builders) == 0 {
+// // // 		return fmt.Errorf("no profiles to build")
+// // // 	}
+
+// // // 	for i, pb := range c.builders {
+// // // 		if pb == nil {
+// // // 			return fmt.Errorf("builder at index %d is nil", i)
+// // // 		}
+// // // 		pb.Build()
+// // // 	}
+
+// // // 	return nil
+// // // }
+
+// // // func (r *Rum[In, Out]) onActivateProfile(token IConfigRequest) error {
+// // // 	if !r.store.IsProfileActive(token.Profile) {
+// // // 		if err := r.store.handleProfileActivation(token.Profile); err != nil {
+// // // 			return err
+// // // 		}
+// // // 		return nil
+// // // 	}
+// // // 	return activationError(fmt.Errorf("%s already active", token.Profile).Error())
+// // // }
+// // // func (r *Rum[In, Out]) onActivateKit(token IConfigRequest) error {
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; !prf.IsKitActive(token.Kit) {
+// // // 			prf.handleKitActivation(token.Kit)
+// // // 			return nil
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("kit %s not active", token.Kit))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s not active", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onActivateService(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; !prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				if err := kit.handleServiceActivation(token.Service); err != nil {
+// // // 					return err
+// // // 				}
+// // // 				return nil
+// // // 			}
+// // // 			return activationError(fmt.Sprintf("service %s not active", token.Service))
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("kit %s not active", token.Kit))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s not active", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onActivateDispatcher(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; !prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				svc := kit.GetService(token.Service)
+// // // 				if svc.IsDispatcherActive(token.Dispatcher) {
+// // // 					if err := svc.handleDispatcherActivation(token.Dispatcher); err != nil {
+// // // 						return err
+// // // 					}
+// // // 					return nil
+// // // 				}
+// // // 				return activationError(fmt.Sprintf("dispatcher %s not active", token.Dispatcher))
+// // // 			}
+// // // 			return activationError(fmt.Sprintf("service %s not active", token.Service))
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("kit %s not active", token.Kit))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s not active", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onActivateEvent(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; !prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				svc := kit.GetService(token.Service)
+// // // 				if svc.IsDispatcherActive(token.Dispatcher) {
+// // // 					dt := svc.GetDispatcher(token.Dispatcher)
+// // // 					if dt.IsEventActive(token.Event) {
+// // // 						if err := dt.handleEventActivation(token.Event); err != nil {
+// // // 							return err
+// // // 						}
+// // // 						return nil
+// // // 					}
+// // // 					return activationError(fmt.Sprintf("event %s not active", token.Event))
+// // // 				}
+// // // 				return activationError(fmt.Sprintf("dispatcher %s not active", token.Dispatcher))
+// // // 			}
+// // // 			return activationError(fmt.Sprintf("service %s not active", token.Service))
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("kit %s not active", token.Kit))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s not active", token.Profile))
+// // // }
+
+// // // // end
+
+// // // func (r *Rum[In, Out]) onDeactivateProfile(token IConfigRequest) error {
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if err := r.store.handleProfileDeactivation(token.Profile); err != nil {
+// // // 			return err
+// // // 		}
+// // // 		return nil
+// // // 	}
+// // // 	return deactivationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onDeactivateKit(token IConfigRequest) error {
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			if err := prf.handleKitDeactivation(token.Kit); err != nil {
+// // // 				return err
+// // // 			}
+// // // 			return nil
+// // // 		}
+// // // 		return deactivationError(fmt.Sprintf("kit %s already deactive", token.Kit))
+// // // 	}
+// // // 	return deactivationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onDeactivateService(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				if err := kit.handleServiceDeactivation(token.Service); err != nil {
+// // // 					return deactivationError(fmt.Sprintf("service %s already deactive", token.Service))
+// // // 				}
+// // // 				return nil
+// // // 			}
+// // // 			return deactivationError(fmt.Sprintf("service %s already deactive", token.Service))
+// // // 		}
+// // // 		return deactivationError(fmt.Sprintf("kit %s already deactive", token.Kit))
+// // // 	}
+// // // 	return deactivationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onDeactivateDispatcher(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				svc := kit.GetService(token.Service)
+// // // 				if svc.IsDispatcherActive(token.Dispatcher) {
+// // // 					if err := svc.handleDispatcherDeactivation(token.Dispatcher); err != nil {
+// // // 						return deactivationError(fmt.Sprintf("dispatcher %s already deactive", token.Dispatcher))
+// // // 					}
+// // // 					return nil
+// // // 				}
+// // // 				return deactivationError(fmt.Sprintf("dispatcher %s already deactive", token.Dispatcher))
+// // // 			}
+// // // 			return deactivationError(fmt.Sprintf("service %s already deactive", token.Service))
+// // // 		}
+// // // 		return deactivationError(fmt.Sprintf("kit %s already deactive", token.Kit))
+// // // 	}
+// // // 	return deactivationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onDeactivateEvent(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				svc := kit.GetService(token.Service)
+// // // 				if svc.IsDispatcherActive(token.Dispatcher) {
+// // // 					dt := svc.GetDispatcher(token.Dispatcher)
+// // // 					if dt.IsEventActive(token.Event) {
+// // // 						if err := dt.handleEventDeactivation(token.Event); err != nil {
+// // // 							return deactivationError(fmt.Sprintf("event %s already deactive", token.Event))
+// // // 						}
+// // // 						return nil
+// // // 					}
+// // // 					return deactivationError(fmt.Sprintf("event %s already deactive", token.Event))
+// // // 				}
+// // // 				return deactivationError(fmt.Sprintf("dispatcher %s already deactive", token.Dispatcher))
+// // // 			}
+// // // 			return deactivationError(fmt.Sprintf("service %s already deactive", token.Service))
+// // // 		}
+// // // 		return deactivationError(fmt.Sprintf("kit %s already deactive", token.Kit))
+// // // 	}
+// // // 	return deactivationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+
+// // // // end
+
+// // // func (r *Rum[In, Out]) onSwapProfile(token IConfigRequest) error {
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if err := r.store.handleProfileSwap(token.Profile, token.Swap); err == nil {
+// // // 			return err
+// // // 		}
+// // // 	}
+// // // 	return deactivationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+// // // func (r *Rum[In, Out]) onSwapKit(token IConfigRequest) error {
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			if err := prf.handleKitSwap(token.Kit, token.Swap); err != nil {
+// // // 				return activationError(fmt.Sprintf("kit %s is not active", token.Kit))
+// // // 			}
+// // // 			return nil
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("profile %s is not active", token.Profile))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s is not active", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onSwapService(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				if err := kit.handleServiceSwap(token.Service, token.Swap); err != nil {
+// // // 					return activationError(fmt.Sprintf("service %s is not active", token.Service))
+// // // 				}
+// // // 				return nil
+// // // 			}
+// // // 			return activationError(fmt.Sprintf("service %s is not active", token.Service))
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("kit %s already deactive", token.Kit))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s already deactive", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onSwapDispatcher(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				svc := kit.GetService(token.Service)
+// // // 				if svc.IsDispatcherActive(token.Dispatcher) {
+// // // 					if err := svc.handleDispatcherSwap(token.Dispatcher, token.Swap); err != nil {
+// // // 						return deactivationError(fmt.Sprintf("dispatcher %s is not active", token.Dispatcher))
+// // // 					}
+// // // 					return nil
+// // // 				}
+// // // 				return deactivationError(fmt.Sprintf("service %s is not active", token.Service))
+// // // 			}
+// // // 			return activationError(fmt.Sprintf("kit %s is not active", token.Kit))
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("profile %s is not active", token.Profile))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s is not active", token.Profile))
+// // // }
+
+// // // func (r *Rum[In, Out]) onSwapEvent(token IConfigRequest) error {
+
+// // // 	if r.store.IsProfileActive(token.Profile) {
+// // // 		if prf := r.store.registry[token.Profile]; prf.IsKitActive(token.Kit) {
+// // // 			kit := prf.GetKit(token.Kit)
+// // // 			if kit.IsServiceActive(token.Service) {
+// // // 				svc := kit.GetService(token.Service)
+// // // 				if svc.IsDispatcherActive(token.Dispatcher) {
+// // // 					dt := svc.GetDispatcher(token.Dispatcher)
+// // // 					if dt.IsEventActive(token.Event) {
+// // // 						if err := dt.handleEventSwap(token.Event, token.Swap); err != nil {
+// // // 							return activationError(fmt.Sprintf("event %s is not active", token.Event))
+// // // 						}
+// // // 						return nil
+// // // 					}
+// // // 					return activationError(fmt.Sprintf("event %s is not active", token.Event))
+// // // 				}
+// // // 				return deactivationError(fmt.Sprintf("dispatcher %s is not active", token.Dispatcher))
+// // // 			}
+// // // 			return activationError(fmt.Sprintf("service %s is not active", token.Service))
+// // // 		}
+// // // 		return activationError(fmt.Sprintf("kit %s is not active", token.Kit))
+// // // 	}
+// // // 	return activationError(fmt.Sprintf("profile %s is not active", token.Profile))
+// // // }
+
+// // // // GoMonitor- starts server fns + streams results to handler
+// // // // will only monitor the profiles that you set tag
+// // // func (r *Rum[In, Out]) GoMonitor(ctx context.Context, handler Handler, fns ...func()) {
+// // // 	out := make(chan *IResults, len(r.store.registry))
+
+// // // 	// fan-in all registered profiles into one channel
+// // // 	for _, profile := range r.store.GetTags() {
+// // // 		profile := profile
+// // // 		// var once sync.Once
+
+// // // 		go func() {
+// // // 			ch := r.Poll(profile)
+
+// // // 			for result := range ch {
+// // // 				select {
+// // // 				case <-r.ctx.Done():
+// // // 					return
+// // // 				case out <- result:
+// // // 					// default:
+// // // 					// 	once.Do(func() {
+// // // 					// 		select {
+// // // 					// 		case <-r.ctx.Done():
+// // // 					// 		case out <- result:
+// // // 					// 		}
+// // // 					// 	})
+// // // 				}
+// // // 			}
+// // // 		}()
+// // // 	}
+
+// // // 	// launch fns
+// // // 	for _, fn := range fns {
+// // // 		fn := fn
+// // // 		go fn()
+// // // 	}
+
+// // // 	// handle results
+
+// // //		go func() {
+// // //			for result := range out {
+// // //				if result == nil {
+// // //					continue
+// // //				}
+// // //				handler(result)
+// // //			}
+// // //		}()
+// // //	}
+// // //
+
+// // // func (r *Rum[In, Out]) handleDispatch(seq ISequence[In]) {
+// // // 	r.autoWrite(seq)
+// // // y := &IResults{
+// // // 	Resuts:  x.Report,
+// // // 	IsReady: true,
+// // // }
+
+// // // r.cheetah.Publish(seq.Profile, y)
+// // // log.Println("dispatcher done....")
+// // // for _, r := range y.Resuts {
+// // // 	log.Println("resustl: ", string(r.Result))
+// // // }
+
+// // // svc := kit.read(seq)
+// // // if svc == nil {
+// // // 	log.Println("post error empty kit (deactive, swaped, or not found)")
+// // // 	finalMetric := NewProfileMetric()
+// // // 	if len(kit.GetMetrics().Fail) == 0 {
+// // // 		kit.AddFailReport(IMetricAgentFail{
+// // // 			At:     time.Now(),
+// // // 			Reason: "service is Deactivated, swapped, or empty",
+// // // 			Type:   "deactive",
+// // // 		})
+// // // 	}
+// // // 	finalMetric.Metric[seq.Name] = kit.GetMetrics()
+// // // 	r.cheetah.Publish(seq.Name, &IDispatchResult{
+// // // 		IsReady: false,
+// // // 		Metric:  finalMetric,
+// // // 	})
+// // // 	return
+// // // }
+
+// // // f := svc.GetFormat()
+// // // if f != nil && f.Call > 0 {
+// // // 	r.wg.Add(1)
+// // // 	go func() {
+// // // 		defer r.wg.Done()
+// // // 		defer func() {
+// // // 			if r := recover(); r != nil {
+// // // 				log.Printf("PANIC RECOVERED in handleDispatch goroutine: %v\n%s", r, debug.Stack())
+// // // 			}
+// // // 		}()
+// // // 		select {
+// // // 		case <-time.After(f.Call):
+// // // 			r.write(seq, svc)
+// // // 		case <-r.ctx.Done():
+// // // 		}
+// // // 	}()
+// // // 	return
+// // // }
+// // // r.write(seq, svc)
+// // // }
+
+// // // func (r *Rum[In, Out]) handleServiceFormat(profile ISequence[In], svc *Service[In, Out]) {
+// // // 	f := svc.GetFormat()
+// // // 	if f == nil {
+// // // 		return
+// // // 	}
+
+// // // 	x := ISequence[In]{Name: profile.Name, Rank: profile.Rank, Service: svc.GetName()}
+
+// // // 	if f.ShouldRemove() {
+// // // 		r.onRemoveService(x.Name, x.Service)
+// // // 	} else if f.ShouldDeactivate() {
+// // // 		r.onDeactivateService(x.Name, x.Service)
+// // // 		if sleep := f.GetActivateTime(); sleep != nil {
+// // // 			r.wg.Add(1)
+// // // 			go func() {
+// // // 				defer r.wg.Done()
+// // // 				defer func() {
+// // // 					if r := recover(); r != nil {
+// // // 						log.Printf("PANIC RECOVERED in handleServiceFormat goroutine: %v\n%s", r, debug.Stack())
+// // // 					}
+// // // 				}()
+// // // 				time.Sleep(*sleep)
+// // // 				r.onActivateProfile(x.Name)
+// // // 			}()
+// // // 		}
+// // // 	}
+// // // }
+
+// // // func (r *Rum[In, Out]) handleProfileFormat(profile ISequence[In], kit *Kit[In, Out]) {
+// // // 	f := kit.GetFormat()
+// // // 	if f == nil {
+// // // 		return
+// // // 	}
+// // // 	x := ISequence[In]{Name: profile.Name, Rank: profile.Rank}
+
+// // // 	if f.ShouldRemove() {
+// // // 		r.onRemoveProfile(x.Name)
+// // // 	} else if f.ShouldDeactivate() {
+// // // 		r.onDeactivateProfile(x.Name)
+// // // 		if sleep := f.GetActivateTime(); sleep != nil {
+// // // 			r.wg.Add(1)
+// // // 			go func() {
+// // // 				defer r.wg.Done()
+// // // 				defer func() {
+// // // 					if r := recover(); r != nil {
+// // // 						log.Printf("PANIC RECOVERED in handleProfileFormat goroutine: %v\n%s", r, debug.Stack())
+// // // 					}
+// // // 				}()
+// // // 				time.Sleep(*sleep)
+// // // 				r.activateProfile <- ILinks[In, Out]{Links: []ILink[In, Out]{{Seq: x}}, Clean: true}
+// // // 			}()
+// // // 		}
+// // // 	}
+// // // }
+
+// // // events handling
+
+// // // end
+
+// // // profile
+
+// // //
+
+// // // write performs the dispatching of the profile events as per the desc and writes the metrics
+// // // func (r *Rum[In, Out]) write(profile ISequence[In], desc *Service[In, Out]) *IWrite[In, Out] {
+
+// // // 	ctx := r.ctx
+// // // 	finalMetric := NewProfileMetric()
+// // // 	log.Println("writing..")
+
+// // // 	kits := r.store.profile.Sort(profile.Name)
+// // // 	r.wg.Add(1)
+// // // 	go func() {
+// // // 		defer r.wg.Done()
+
+// // // 		for _, ser := range kits {
+// // // 			// if b := ser.GetBudget(); b != nil && b.Exhausted() {
+// // // 			// 	log.Println("budget error")
+// // // 			// 	r.onDeactivateService(profile.Name, ser.Name)
+// // // 			// 	break
+// // // 			// }
+
+// // // 			// if b := ser.GetBudget(); b != nil {
+// // // 			// 	b.Spend()
+// // // 			// }
+
+// // // 			// Dispatch funcs
+// // // 			for n := range ser.registry.GetRegistry() {
+// // // 				// var policy *RetryPolicy
+// // // 				// if f := ser.dispatch.(); f != nil {
+// // // 				// 	policy = f.Retry
+// // // 				// }
+
+// // // 				mx := profile.Input
+
+// // // 				// if mx == nil {
+// // // 				// 	continue
+// // // 				// }
+
+// // // 				if err := ser.GetDispatch().call(ctx, n, *mx); err == nil {
+// // // 					metrics := ser.GetDispatch().GetMetrics(n)
+// // // 					if kit, err := r.store.GetKit(profile.Name); err == nil {
+// // // 						for _, rp := range metrics {
+// // // 							if rp.Fail != nil {
+// // // 								kit.AddFailReport(*rp.Fail)
+// // // 							} else if rp.Succeed != nil {
+// // // 								kit.AddSucceedReport(*rp.Succeed)
+// // // 							}
+// // // 						}
+// // // 					}
+// // // 				}
+
+// // // 			}
+
+// // // 			// r.handleServiceFormat(profile, ser)
+// // // 		}
+// // // 	}()
+
+// // // 	r.wg.Wait()
+
+// // // 	// if kit, err := r.store.GetKit(profile.Name); err == nil {
+// // // 	// 	r.handleProfileFormat(profile, kit)
+// // // 	// }
+
+// // // 	if kit, err := r.store.GetKit(profile.Name); err == nil {
+// // // 		finalMetric.Metric[profile.Name] = kit.GetMetrics()
+// // // 	}
+
+// // // 	finalResult := &IDispatchResult{
+// // // 		IsReady: true,
+// // // 		Metric:  finalMetric,
+// // // 	}
+
+// // // 	for _, ser := range kits {
+// // // 		for n := range ser.GetDispatch().GetRegistry() {
+// // // 			z := ser.GetDispatch().GetResults(n)
+// // // 			if z != nil && z.IsReady {
+// // // 				finalResult.Result = z.Result
+// // // 			}
+// // // 		}
+// // // 	}
+
+// // // 	r.cheetah.Publish(profile.Name, finalResult)
+
+// // // 	return &IWrite[In, Out]{
+// // // 		Report:  &finalMetric,
+// // // 		Service: desc,
+// // // 		Profile: profile,
+// // // 	}
+// // // }
+// // // // read returns the current active service to publish
+// // // func (k *Kit[In, Out]) read(seq ISequence[In]) {
+// // // 	k.mu.RLock()
+// // // 	defer k.mu.RUnlock()
+
+// // // 	var svc *Service[In, Out]
+// // // 	var ok bool
+
+// // // 	// 1. Try to find the service by explicit Service name or Name
+// // // 	if seq.Service != "" {
+// // // 		svc, err := k.GetService(seq.Service)
+// // // 		if err == nil {
+// // // 			ok = true
+// // // 		}
+// // // 	}
+// // // 	if !ok {
+// // // 		svc, ok = k.activeService[seq.Name]
+// // // 	}
+
+// // // 	// 2. If not found, look for service at rank 2, if not rank 3, and so on (lowest rank >= 2)
+// // // 	if !ok {
+// // // 		var bestSvc *Service[In, Out]
+// // // 		for _, s := range k.activeService {
+// // // 			if s.Rank >= 2 {
+// // // 				if bestSvc == nil || s.Rank < bestSvc.Rank {
+// // // 					bestSvc = s
+// // // 				}
+// // // 			}
+// // // 		}
+// // // 		if bestSvc != nil {
+// // // 			svc = bestSvc
+// // // 			ok = true
+// // // 		}
+// // // 	}
+
+// // // 	// 3. Fallback to the latest active service in the stack
+// // // 	if !ok {
+// // // 		latestKey := k.serviceStack.Latest()
+// // // 		if latestKey != nil {
+// // // 			svc, ok = k.activeService[*latestKey]
+// // // 		}
+// // // 	}
+
+// // // 	if !ok || svc == nil {
+// // // 		return nil
+// // // 	}
+
+// // // 	// 4. Apply IConfig checks: deactivation and swap overrides
+// // // 	visited := make(map[string]bool)
+// // // 	return k.resolveService(svc, seq.Name, visited)
+// // // }
+
+// // // func (k *Kit[In, Out]) resolveService(svc *Service[In, Out], seqName string, visited map[string]bool) *Service[In, Out] {
+// // // 	if svc == nil {
+// // // 		return nil
+// // // 	}
+// // // 	if visited[svc.Name] {
+// // // 		return nil
+// // // 	}
+// // // 	visited[svc.Name] = true
+
+// // // 	if svc.config != nil {
+// // // 		if svc.config.DeActivate {
+// // // 			return nil
+// // // 		}
+// // // 		// Check swap overview by service name first, then seqName as fallback
+// // // 		sw := svc.config.GetSwapOverview(svc.Name)
+// // // 		if sw == nil {
+// // // 			sw = svc.config.GetSwapOverview(seqName)
+// // // 		}
+// // // 		if sw != nil && sw.HSwitch && sw.Name != "" {
+// // // 			swSvc, ok := k.activeService[sw.Name]
+// // // 			if ok {
+// // // 				// Swap ranks between original service and swapped service
+// // // 				tempRank := svc.Rank
+// // // 				svc.Rank = swSvc.Rank
+// // // 				swSvc.Rank = tempRank
+// // // 				return k.resolveService(swSvc, seqName, visited)
+// // // 			}
+// // // 			return nil
+// // // 		}
+// // // 	}
+// // // 	return svc
+// // // }
+
+// // // Poll — SSE style, one event delivered then parks, lives until ctx cancel
+// // // func (r *Rum[In, Out]) Poll(profile string) <-chan *IResults {
+// // // 	out := make(chan *IResults, 1)
+// // // 	// go func() {
+// // // 	// 	defer close(out)
+// // // 	// 	for {
+
+// // // 	// 		ch := r.cheetah.Subscribe(profile)
+// // // 	// 		select {
+// // // 	// 		case <-r.ctx.Done():
+// // // 	// 			r.cheetah.Unsubscribe(profile, ch)
+// // // 	// 			return
+// // // 	// 		case result, ok := <-ch:
+// // // 	// 			r.cheetah.Unsubscribe(profile, ch)
+// // // 	// 			if !ok || result == nil {
+// // // 	// 				return
+// // // 	// 			}
+// // // 	// 			select {
+// // // 	// 			case out <- result:
+// // // 	// 			case <-r.ctx.Done():
+// // // 	// 				return
+// // // 	// 			}
+// // // 	// 		}
+// // // 	// 	}
+// // // 	// }()
+// // // 	for _, profile := range r.store.GetTags() {
+// // // 		profile := profile
+// // // 		go func() {
+// // // 			ch := r.cheetah.Subscribe(profile)
+// // // 			select {
+// // // 			case <-r.ctx.Done():
+// // // 				r.cheetah.Unsubscribe(profile, ch)
+// // // 				return
+// // // 			case result, ok := <-ch:
+// // // 				r.cheetah.Unsubscribe(profile, ch)
+// // // 				if !ok || result == nil {
+// // // 					return
+// // // 				}
+// // // 				select {
+// // // 				case out <- result:
+// // // 				case <-r.ctx.Done():
+// // // 				}
+// // // 			}
+// // // 		}()
+// // // 	}
+// // // 	return out
+// // // }
+// // // func (r *IProfile[In, Out]) DeactivateProfile(key string) error {
+// // // 	r.mu.Lock()
+// // // 	defer r.mu.Unlock()
+// // // 	k, ok := r.registry[key]
+// // // 	if !ok {
+// // // 		return fmt.Errorf("profile %v not active", key)
+// // // 	}
+// // // 	r.inregistry[key] = k
+// // // 	delete(r.registry, key)
+// // // 	r.stack.Erase(key)
+// // // 	return nil
+// // // }
+
+// // // func (r *IProfile[In, Out]) ActivateProfile(key string) error {
+// // // 	r.mu.Lock()
+// // // 	defer r.mu.Unlock()
+// // // 	k, ok := r.inregistry[key]
+// // // 	if !ok {
+// // // 		return fmt.Errorf("profile %v not in inactive pool", key)
+// // // 	}
+// // // 	r.registry[key] = k
+// // // 	delete(r.inregistry, key)
+// // // 	r.stack.Push(key)
+// // // 	return nil
+// // // }
+
+// // // func (r *IProfile[In, Out]) RegisterKit(name string, kit *IKit[In, Out]) {
+// // // 	r.mu.Lock()
+// // // 	defer r.mu.Unlock()
+// // // 	if _, ok := r.registry[name]; !ok {
+// // // 		r.registry[name] = kit
+// // // 	}
+// // // 	r.stack.Push(name)
+// // // }
+
+// // // UpdateProfileServices either adds or replaces the old one
+// // // func (r *IProfile[In, Out]) UpdateProfileServices(profile string, services map[string]*IService[In, Out]) {
+// // // 	r.mu.Lock()
+// // // 	defer r.mu.Unlock()
+// // // 	if _, ok := r.registry[profile]; ok {
+// // // 		var prf = r.registry[profile]
+// // // 		for n, s := range services {
+// // // 			prf.PushService(n, s)
+// // // 		}
+// // // 	}
+// // // }
+
+// // // func (k *IKit[In, Out]) DeactivateService(key string) error {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	svc, ok := k.registry[key]
+// // // 	if !ok {
+// // // 		return fmt.Errorf("service %q not active", key)
+// // // 	}
+// // // 	k.inregistry[key] = svc
+// // // 	delete(k.registry, key)
+// // // 	k.stack.Erase(key)
+// // // 	return nil
+// // // }
+
+// // // func (k *IKit[In, Out]) ActivateService(key string) error {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	svc, ok := k.inregistry[key]
+// // // 	if !ok {
+// // // 		return fmt.Errorf("service %q not in inactive pool", key)
+// // // 	}
+// // // 	k.registry[key] = svc
+// // // 	delete(k.inregistry, key)
+// // // 	k.stack.Push(key)
+// // // 	return nil
+// // // }
+
+// // // func (k *IKit[In, Out]) AddResult(res *IDispatchResult) {
+// // // 	k.Result = append(k.Result, res)
+// // // }
+
+// // // func (k *IKit[In, Out]) AddSucceedReport(report IMetricAgentSucceed) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddSucceedReport(report)
+// // // }
+
+// // // func (k *IKit[In, Out]) AddFailReport(report IMetricAgentFail) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddFailReport(report)
+// // // }
+
+// // // func (k *IKit[In, Out]) AddRemoveReport(t time.Time) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddRemoveReport(t)
+// // // }
+
+// // // func (k *IKit[In, Out]) AddDeactiveReport(t time.Time) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddDeactiveReport(t)
+// // // }
+
+// // // func (k *IKit[In, Out]) AddActivateReport(t time.Time) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddActivateReport(t)
+// // // }
+
+// // // // func (k *IKit[In, Out]) AddBudgetReport(b IMetricBudget) {
+// // // // 	k.mu.Lock()
+// // // // 	defer k.mu.Unlock()
+// // // // 	k.Metrics.AddBudget(b)
+// // // // }
+
+// // // func (k *IKit[In, Out]) AddProfileReport(p IMetricProfile) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddProfile(p)
+// // // }
+
+// // // func (k *IKit[In, Out]) AddRequestReport() {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddRequest()
+// // // }
+
+// // // Sort returns services for a profile sorted by rank (ascending)
+// // // func (k *IKit[In, Out]) Sort() []*IService[In, Out] {
+// // // 	svcs := k.GetServices()
+// // // 	out := make([]*IService[In, Out], 0, len(svcs))
+// // // 	for _, s := range svcs {
+// // // 		out = append(out, s)
+// // // 	}
+// // // 	slices.SortFunc(out, func(a, b *IService[In, Out]) int {
+// // // 		return cmp.Compare(a.Rank, b.Rank)
+// // // 	})
+// // // 	return out
+// // // }
+
+// // // end
+
+// // // set funcs
+
+// // // func (k *IKit[In, Out]) SetBucket(bucket string) { k.Bucket = bucket }
+// // // func (k *IKit[In, Out]) SetModel(model string)   { k.Model = model }
+// // // func (k *IKit[In, Out]) SetMode(isHybrid bool)   { k.isHybrid = isHybrid }
+
+// // // func (k *IKit[In, Out]) SetFormat(f *TimeFormat) { k.Format = f }
+// // // func (k *IKit[In, Out]) SetMetrics(m *IMetric) { k.Metrics = m }
+
+// // // func (k *IKit[In, Out]) GetServices() map[string]*IService[In, Out] {
+// // // 	k.mu.RLock()
+// // // 	defer k.mu.RUnlock()
+// // // 	return k.registry
+// // // }
+
+// // // func (k *IKit[In, Out]) SetSequence(seq *ISequence[In]) {
+// // // 	k.sequence = seq
+// // // }
+
+// // // func (k *IKit[In, Out]) GetSequence() *ISequence[In] {
+// // // 	return k.sequence
+// // // }
+
+// // // func (k *IKit[In, Out]) release() {
+// // // 	k.Result = nil
+// // // 	k.Metrics = nil
+// // // }
+
+// // // get funcs
+
+// // // func (k *IKit[In, Out]) GetBucket() string      { return k.Bucket }
+// // // func (k *IKit[In, Out]) GetModel() string       { return k.Model }
+// // // func (k *IKit[In, Out]) IsHybrid() bool         { return k.isHybrid }
+
+// // // func (k *IKit[In, Out]) GetFormat() *TimeFormat { return k.Format }
+// // // func (k *IKit[In, Out]) GetMetrics() *IMetric { return k.Metrics }
+// // // func (d *IService[in, out]) SetFormat(t *TimeFormat) {
+// // // 	d.Format = t
+// // // }
+
+// // //	func (d *IService[in, out]) SetBudget(b *Budget) {
+// // //		d.Budget = b
+// // //	}
+// // //	func (d *IService[in, out]) GetBudget() *Budget {
+// // //		return d.Budget
+// // //	}
+
+// // //	func (d *IService[in, out]) GetFormat() *TimeFormat {
+// // //		return d.Format
+// // //	}
+
+// // // func (s *IService[in, out]) GetActiveList() []string {
+// // // 	list := make([]string, 0, len(s.stack.Max()))
+// // // 	for _, r := range s.stack.Max() {
+// // // 		if fn, ok := s.registry[r]; ok {
+// // // 			if fn.config.getActivate() {
+// // // 				list = append(list, r)
+// // // 			}
+// // // 		}
+// // // 	}
+// // // 	return list
+// // // }
+
+// // // // call invokes the named registered function and records its metric
+// // // func (d *IDispatcher[in, out]) call(ctx context.Context, name string, input in) error {
+// // // 	fn, ok := d.registry[name]
+// // // 	if !ok {
+// // // 		err := fmt.Errorf("service %s not found", name)
+// // // 		d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{At: time.Now(), Reason: err.Error()}})
+// // // 		return err
+// // // 	}
+
+// // // 	cfg := fn.GetConfig()
+// // // 	if cfg != nil {
+// // // 		if !cfg.getActivate() {
+// // // 			err := fmt.Errorf("service %s is deactivated", name)
+// // // 			d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
+// // // 				At:     time.Now(),
+// // // 				Reason: err.Error(),
+// // // 				Type:   "deactive",
+// // // 			}})
+// // // 			return nil
+// // // 		}
+
+// // // 		if sw := cfg.GetSwapOverview(); sw != nil && sw.HSwitch && sw.Name != "" {
+// // // 			swFn, swOk := d.registry[sw.Name]
+// // // 			if !swOk {
+// // // 				err := fmt.Errorf("swapped service %s (from %s) not found in registry", sw.Name, name)
+// // // 				d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
+// // // 					At:     time.Now(),
+// // // 					Reason: err.Error(),
+// // // 					Type:   "swap",
+// // // 				}})
+// // // 				return err
+// // // 			}
+// // // 			swCfg := swFn.GetConfig()
+// // // 			if swCfg != nil && !swCfg.getActivate() {
+// // // 				err := fmt.Errorf("swapped service %s (from %s) is deactivated", sw.Name, name)
+// // // 				d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
+// // // 					At:     time.Now(),
+// // // 					Reason: err.Error(),
+// // // 					Type:   "deactive",
+// // // 				}})
+// // // 				return err
+// // // 			}
+// // // 			fn = swFn
+// // // 			name = sw.Name
+// // // 		}
+// // // 	}
+
+// // // 	max := 1
+// // // 	interval := time.Duration(0)
+// // // 	policy := fn.Retry
+
+// // // 	if policy != nil {
+// // // 		max = policy.Max + 1 // +1 so Max=3 means 1 original + 3 retries
+// // // 		interval = policy.Interval
+// // // 	}
+
+// // // 	log.Println("max: ", max)
+// // // 	t := d.Settings.Base
+// // // 	if t == 0 {
+// // // 		t = 10 * time.Second
+// // // 	}
+// // // 	ts := d.Settings.SleepTime
+// // // 	if ts == 0 {
+// // // 		ts = 100 * time.Millisecond
+// // // 	}
+
+// // // 	// dog := rumdog.New[out](t)
+// // // 	// dog.Watch()
+// // // 	// defer dog.Shutdown()
+
+// // // 	p := rumdog.NewPolicy[out](t)
+// // // 	p.Name = name
+// // // 	a := func() (*out, error) {
+// // // 		time.Sleep(ts)
+// // // 		resp, err := fn.Fn(ctx, input)
+// // // 		return &resp, err
+// // // 	}
+// // // 	p.AddFunc(rumdog.Funcs[out]{
+// // // 		Name: name,
+// // // 		Fn:   &a,
+// // // 	})
+
+// // // 	attempt := 0
+// // // 	ret := retry.New(retry.Attempts(uint(max)), retry.Delay(interval))
+
+// // // 	err := ret.Do(func() error {
+// // // 		attempt++
+
+// // // 		if ctx.Err() != nil {
+// // // 			return retry.Unrecoverable(ctx.Err())
+// // // 		}
+
+// // // 		cli := rumdog.NewClient[out](t)
+// // // 		defer cli.Close()
+
+// // // 		cli.DefinePolicy(name, ts).AddFuncWithReturn(name, a).Build()
+
+// // // 		rep, err := cli.ExecuteAndReport(p.Name)
+
+// // // 		if err == nil {
+// // // 			inData, err := json.Marshal(input)
+// // // 			if err != nil {
+// // // 				return retry.Unrecoverable(err)
+// // // 			}
+// // // 			d.writeMetric(name, IAgentResp{
+// // // 				Succeed: &IMetricAgentSucceed{
+// // // 					TimeTaken:     rep.TotalDuration,
+// // // 					AgentReply:    string(rep.Output),
+// // // 					ClientRequest: string(inData),
+// // // 				},
+// // // 			})
+// // // 			r := NewDispatchResult()
+// // // 			r.IsReady = true
+// // // 			r.Result = rep.Output
+// // // 			d.handleOutput(name, r)
+// // // 			d.handleComplete(name, true)
+// // // 			d.handleInput(name, input)
+// // // 			cli.Unregister(p.Name)
+// // // 			return nil
+// // // 		} else {
+// // // 			cli.Unregister(p.Name)
+
+// // // 			d.writeMetric(name, IAgentResp{
+// // // 				Fail: &IMetricAgentFail{
+// // // 					Reason: fmt.Sprintf("attempt %d: %s", attempt, err.Error()),
+// // // 					At:     time.Now(),
+// // // 				},
+// // // 			})
+// // // 			return err
+// // // 		}
+// // // 	})
+
+// // // 	return err
+// // // }
+// // // func (d *IService[in, out]) SetName(name string) {
+// // // 	d.Name = name
+// // // }
+
+// // // func (d *IService[in, out]) SetRank(Rank int64) {
+// // // 	d.Rank = Rank
+// // // }
+
+// // //	func (d *IDispatcher[in, out]) handleInput(name string, input in) {
+// // //		d.rinput[name] = input
+// // //	}
+
+// // // GetLatestRegistry returns the latest key of the IDispatcher
+// // // func (d *IDispatcher[in, out]) GetLatestRegistry() *string {
+// // // 	return d.events.Latest()
+// // // }
+// // // package rum
+
+// // // import "context"
+
+// // // // import "log"
+
+// // // // // Poll monitors the profile and returns a channel of results
+// // // // // never closes
+// // // // func (r *Rum[In, Out]) Poll(profile string) <-chan *IResults {
+// // // // 	log.Println("in tick fetch")
+// // // // 	return r.tickFetchPoll(profile)
+// // // // }
+
+// // // // // AutoMonitor the automatially triggers the results
+// // // // // on set Monitors
+// // // // func (r *Rum[In, Out]) AutoMonitor() <-chan *IResults {
+// // // // 	for _, name := range r.store.monitorTags {
+// // // // 		return r.Poll(name)
+// // // // 	}
+// // // // 	return nil
+// // // // }
+
+// // // // // Paper fetches single request
+// // // // func (r *Rum[In, Out]) Paper(profile string) *IResults {
+// // // // 	return r.fetch(profile)
+// // // // }
+// // // // Paper — one-shot, closes after first value, never fetches again
+// // // func (r *Rum[In, Out]) Paper(profile string) <-chan *IResults {
+// // // 	out := make(chan *IResults, 1)
+// // // 	go func() {
+// // // 		defer close(out)
+// // // 		result := r.fetch(profile) // blocks once, done
+// // // 		out <- result
+// // // 	}()
+// // // 	return out
+// // // }
+
+// // // // Poll — continuous, keeps fetching after every result, stops on ctx cancel
+// // // // Fix 1 — Poll: send result THEN check IsReady
+// // // // Poll — lives until ctx cancel (system signal), never closes early
+// // // // func (r *Rum[In, Out]) Poll(profile string) <-chan *IResults {
+// // // // 	out := make(chan *IResults, 1)
+// // // // 	go func() {
+// // // // 		defer close(out)
+// // // // 		for {
+// // // // 			result := r.fetch(profile)
+// // // // 			if result == nil {
+// // // // 				return
+// // // // 			}
+// // // // 			select {
+// // // // 			case <-r.ctx.Done():
+// // // // 				return
+// // // // 			case out <- result:
+// // // // 			}
+// // // // 		}
+// // // // 	}()
+// // // // 	return out
+// // // // }
+// // // // Poll — SSE style, stays open, delivers each publish as it arrives
+// // // // one publish = one delivery, then waits for next, lives until ctx cancel
+// // // func (r *Rum[In, Out]) Poll(profile string) <-chan *IResults {
+// // // 	out := make(chan *IResults, 1)
+// // // 	go func() {
+// // // 		defer close(out)
+// // // 		for {
+// // // 			// re-subscribe each time — waits for NEXT publish, never spins
+// // // 			ch := r.cheetah.Subscribe(profile)
+
+// // // 			select {
+// // // 			case <-r.ctx.Done():
+// // // 				r.cheetah.Unsubscribe(profile, ch)
+// // // 				return
+
+// // // 			case result, ok := <-ch:
+// // // 				r.cheetah.Unsubscribe(profile, ch)
+// // // 				if !ok || result == nil {
+// // // 					return
+// // // 				}
+// // // 				// deliver to caller, then loop back and wait for next event
+// // // 				select {
+// // // 				case out <- result:
+// // // 				case <-r.ctx.Done():
+// // // 					return
+// // // 				}
+// // // 			}
+// // // 		}
+// // // 	}()
+// // // 	return out
+// // // }
+
+// // // func (r *Rum[In, Out]) GoPoll(ctx context.Context, profile string, fns ...func()) <-chan *IResults {
+// // // 	pollCh := r.Poll(profile)
+
+// // // 	for _, fn := range fns {
+// // // 		fn := fn
+// // // 		go fn()
+// // // 	}
+
+// // // 	return pollCh
+// // // }
+
+// // // func (r *Rum[In, Out]) GoAuto(ctx context.Context, fns ...func()) <-chan *IResults {
+// // // 	for _,p:=range r.store.registry{
+
+// // // 	pollCh := r.tickFetchPoll()
+// // // 	for _, fn := range fns {
+// // // 		fn := fn
+// // // 		go fn()
+// // // 	}
+// // // 	}
+// // // 	return pollCh
+// // // }
+
+// // // // Monitor — watches all known profiles automatically, self-healing
+// // // func (r *Rum[In, Out]) Monitor() <-chan *IResults {
+// // // 	out := make(chan *IResults, 10)
+// // // 	go func() {
+// // // 		defer close(out)
+// // // 		for {
+// // // 			select {
+// // // 			case <-r.ctx.Done():
+// // // 				return
+// // // 			default:
+// // // 			}
+
+// // // 			profiles := r.store.getLists() // fetch current profile list dynamically
+// // // 			if len(profiles) == 0 {
+// // // 				continue
+// // // 			}
+
+// // // 			for result := range r.tikTok(profiles) {
+// // // 				if result == nil {
+// // // 					continue
+// // // 				}
+// // // 				select {
+// // // 				case <-r.ctx.Done():
+// // // 					return
+// // // 				case out <- result:
+// // // 				}
+// // // 			}
+// // // 		}
+// // // 	}()
+// // // 	return out
+// // // }
+
+// // // func (r *Rum[In, Out]) Serve(ctx context.Context, server RumServer) {
+// // // 	printHeader()
+
+// // // 	network := server.Network
+// // // 	address := server.Address
+// // // 	opts := server.ServerOptions
+
+// // // 	lis, err := net.Listen(network, address)
+// // // 	if err != nil {
+// // // 		log.Fatalf("failed to listen: %v", err)
+// // // 	}
+
+// // // 	grpcServer := grpc.NewServer(opts...)
+// // // 	rumrpc.RegisterOnRumServiceServer(grpcServer, r)
+
+// // // 	hubReady := make(chan struct{})
+
+// // // 	go func() {
+// // // 		defer func() {
+// // // 			if rec := recover(); rec != nil {
+// // // 				log.Printf("PANIC in Hub: %v\n%s", rec, debug.Stack())
+// // // 			}
+// // // 		}()
+// // // 		close(hubReady)
+// // // 		r.Hub()
+// // // 	}()
+
+// // // 	<-hubReady
+
+// // // 	go func() {
+// // // 		<-ctx.Done()
+// // // 		log.Println("shutting down gRPC server...")
+// // // 		if r.DI != nil {
+// // // 			r.DI.Stop()
+// // // 		}
+// // // 		grpcServer.GracefulStop()
+// // // 	}()
+
+// // // 	log.Println("rum ready :)")
+// // // 	if err := grpcServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
+// // // 		log.Fatalf("failed to serve: %v", err)
+// // // 	}
+// // // }
+
+// // // // Monitor — watches all profiles, self-healing, returns channel
+// // // func (r *Rum[In, Out]) Monitor() <-chan *IResults {
+// // // 	out := make(chan *IResults, 10)
+// // // 	go func() {
+// // // 		defer close(out)
+// // // 		for {
+// // // 			select {
+// // // 			case <-r.ctx.Done():
+// // // 				return
+// // // 			default:
+// // // 			}
+// // // 			profiles := r.store.getLists()
+// // // 			if len(profiles) == 0 {
+// // // 				continue
+// // // 			}
+// // // 			for result := range r.tikTok(profiles) {
+// // // 				if result == nil {
+// // // 					continue
+// // // 				}
+// // // 				select {
+// // // 				case <-r.ctx.Done():
+// // // 					return
+// // // 				case out <- result:
+// // // 				}
+// // // 			}
+// // // 		}
+// // // 	}()
+// // // 	return out
+// // // }
+// // // func (r *IStore[In, Out]) Getregistry() map[string]*IProfile[In, Out] {
+// // // 	return r.registry
+// // // }
+
+// // // func (r *IStore[In, Out]) SetSearch(search *searchmanager.SearchManager) {
+// // // 	r.search = search
+// // // }
+
+// // // func (r *Rum[In, Out]) tickFetchPoll(profile string) <-chan *IResults {
+// // // 	log.Println("in tick fetch....")
+// // // 	// Use only Name+Rank for pub/sub and profile lookup
+// // // 	ch := r.cheetah.Subscribe(profile)
+
+// // // 	// Unsubscribe when the server context is cancelled
+// // // 	go func() {
+// // // 		<-r.ctx.Done()
+// // // 		r.cheetah.Unsubscribe(profile, ch)
+// // // 		// r.clean()
+// // // 	}()
+// // // 	// r.clean()
+
+// // // 	return ch
+// // // }
+
+// // // func (r *Rum[In, Out]) tikTok(names []string) <-chan *IResults {
+// // // 	out := make(chan *IResults, len(names)*2)
+// // // 	// var wg sync.WaitGroup
+
+// // // 	for _, n := range names {
+// // // 		ch := r.cheetah.Subscribe(n)
+// // // 		r.wg.Add(1)
+// // // 		go func(name string, subscription chan *IResults) {
+// // // 			defer r.wg.Done()
+
+// // // 			go func() {
+// // // 				<-r.ctx.Done()
+// // // 				r.cheetah.Unsubscribe(name, subscription)
+// // // 			}()
+
+// // // 			for {
+// // // 				select {
+// // // 				case <-r.ctx.Done():
+// // // 					return
+// // // 				case val, ok := <-subscription:
+// // // 					if !ok {
+// // // 						// r.clean()
+// // // 						return
+// // // 					}
+// // // 					select {
+// // // 					case <-r.ctx.Done():
+// // // 						// r.clean()
+// // // 						return
+// // // 					case out <- val:
+// // // 						// r.clean()
+// // // 					}
+// // // 				}
+// // // 			}
+// // // 		}(n, ch)
+// // // 	}
+
+// // // 	go func() {
+// // // 		// wg.Wait()
+// // // 		close(out)
+// // // 	}()
+
+// // // 	return out
+// // // }
+
+// // // func (r *Rum[In, Out]) fetch(profile string) *IResults {
+
+// // // 	// ch := r.light.Subscribe(key)
+// // // 	// defer r.light.Unsub(key, ch)
+// // // 	ch := r.cheetah.Subscribe(profile)
+// // // 	defer r.cheetah.Unsubscribe(profile, ch)
+// // // 	for {
+// // // 		select {
+// // // 		case <-r.ctx.Done():
+// // // 			// r.clean()
+// // // 			return nil
+
+// // // 		case result := <-ch:
+// // // 			log.Println("triggered fetchd")
+// // // 			if result.IsReady {
+// // // 				// r.clean()
+// // // 				return result
+// // // 			}
+// // // 		}
+// // // 	}
+// // // }
+
+// // // // Search embeds the text then searches milvus using the kit's config
+// // // func (r *IStore[In, Out]) Search(profilename string, embed []float32, text, doctype string) (*searchmanager.SearchResp, error) {
+// // // 	kit, err := r.profile.GetKit(profilename)
+// // // 	if err != nil {
+// // // 		return nil, err
+// // // 	}
+
+// // // 	a, err := r.search.Pull(kit.Bucket, doctype)
+// // // 	if err != nil {
+// // // 		return nil, err
+// // // 	}
+// // // 	branches := make([]string, 0, len(a))
+// // // 	for _, r := range a {
+// // // 		if r.Obj != nil {
+// // // 			branches = append(branches, r.Obj.Branch)
+// // // 		}
+// // // 	}
+// // // 	if kit.isHybrid {
+// // // 		return r.search.SearchHybrid(kit.Bucket, embed, text, branches, 4)
+// // // 	}
+// // // 	return r.search.Search(kit.Bucket, embed, branches, 4)
+// // // }
+
+// // // func (r *IStore[In, Out]) GetKit(key string) (*Kit[In, Out], error) {
+// // // 	return r.profile.GetKit(key)
+// // // }
+
+// // // func (r *IStore[In, Out]) GetSearch() *searchmanager.SearchManager {
+// // // 	return r.search
+// // // }
+
+// // // end
+
+// // // set funcs
+
+// // // IStore embeds and pushes an object into milvus + you handle minIO separately
+// // // func (r *IStore[In, Out]) IStore(key string, embed []float32, id, text, response, branch, docType string) (*searchmanager.IPushReport, error) {
+// // // 	kit, err := r.profile.GetKit(key)
+// // // 	if err != nil {
+// // // 		return nil, err
+// // // 	}
+
+// // // 	obj := searchmanager.Object{
+// // // 		ID:        id,
+// // // 		Text:      text,
+// // // 		Response:  response,
+// // // 		Branch:    branch,
+// // // 		DocType:   docType,
+// // // 		Embedding: embed,
+// // // 	}
+
+// // // 	rep := r.search.Push(kit.Bucket, []searchmanager.Object{obj})
+// // // 	return rep, rep.Err
+// // // }
+
+// // // func (k *IKit[In, Out]) AddBudgetReport(b IMetricBudget) {
+// // // 	k.mu.Lock()
+// // // 	defer k.mu.Unlock()
+// // // 	k.Metrics.AddBudget(b)
+// // // }
+
+// // // GoErrors — mirrors GoMonitor but listens on cheetahDetector instead of cheetah.
+// // // Streams all dispatcher-level errors to handler as they are published by autoWrite.
+// // // Key pattern: "profile.kit.service.dispatcher.event"
+// // // func (r *Rum[In, Out]) GoErrors(ctx context.Context, handler func(key string, err error), fns ...func()) {
+// // // 	// Build the full set of error keys from the registered tree
+// // // 	keys := r.collectErrorKeys()
+// // // 	out := make(chan errorEnvelope, len(keys))
+
+// // // 	// fan-in: one subscriber per error key
+// // // 	for _, key := range keys {
+// // // 		key := key
+// // // 		go func() {
+// // // 			ch := r.cheetahDetector.Subscribe(key)
+// // // 			defer r.cheetahDetector.Unsubscribe(key, ch)
+// // // 			for {
+// // // 				select {
+// // // 				case <-r.ctx.Done():
+// // // 					return
+// // // 				case e, ok := <-ch:
+// // // 					if !ok || e == nil {
+// // // 						return
+// // // 					}
+// // // 					select {
+// // // 					case out <- errorEnvelope{key: key, err: *e}:
+// // // 					case <-r.ctx.Done():
+// // // 						return
+// // // 					}
+// // // 				}
+// // // 			}
+// // // 		}()
+// // // 	}
+
+// // // 	for _, fn := range fns {
+// // // 		fn := fn
+// // // 		go fn()
+// // // 	}
+
+// // // 	go func() {
+// // // 		for env := range out {
+// // // 			handler(env.key, env.err)
+// // // 		}
+// // // 	}()
+// // // }
+
+// // // // errorEnvelope pairs a cheetah key with its error value.
+// // // type errorEnvelope struct {
+// // // 	key string
+// // // 	err error
+// // // }
+
+// // // // collectErrorKeys walks the entire registered tree and builds every possible
+// // // // "profile.kit.service.dispatcher.event" key that autoWrite may publish to.
+// // // func (r *Rum[In, Out]) collectErrorKeys() []string {
+// // // 	var keys []string
+// // // 	for profileName, profile := range r.store.registry {
+// // // 		for _, kit := range profile.GetKits() {
+// // // 			for _, svc := range kit.GetServices() {
+// // // 				for n, dispatcher := range svc.registry {
+// // // 					// for _, event := range dispatcher.GetEvents() {
+// // // 					key := fmt.Sprintf("%s.%s.%s.%s.%s",
+// // // 						profileName,
+// // // 						kit.GetName(),
+// // // 						svc.GetName(),
+// // // 						dispatcher.GetName(),
+// // // 						n,
+// // // 					)
+// // // 					keys = append(keys, key)
+// // // 					// }
+// // // 				}
+// // // 			}
+// // // 		}
+// // // 	}
+// // // 	return keys
+// // // }
+
+// // // autoWrite performs the dispatching of the profile events as per the desc and writes the metrics
+// // // func (r *Rum[In, Out]) autoWrite(profile ISequence[In]) *IWrite[In, Out] {
+// // // 	// r.mu.Lock()
+// // // 	// defer r.mu.Unlock()
+
+// // // 	ctx := r.ctx
+
+// // // 	// finalMetric := NewProfileMetric()
+// // // 	log.Println("writing...")
+
+// // // 	r.wg.Add(1)
+// // // 	go func() {
+// // // 		defer r.wg.Done()
+// // // 		prf := r.store.registry[profile.Profile]
+// // // 		for _, k := range prf.GetKits() {
+
+// // // 			for _, ser := range k.GetServices() {
+// // // 				// if b := ser.GetBudget(); b != nil && b.Exhausted() {
+// // // 				// 	log.Println("budget error")
+// // // 				// 	r.onDeactivateService(profile.Name, ser.Name)
+// // // 				// 	break
+// // // 				// }
+
+// // // 				// if b := ser.GetBudget(); b != nil {
+// // // 				// 	b.Spend()
+// // // 				// }
+
+// // // 				// Dispatch funcs
+// // // 				for _, n := range ser.registry {
+// // // 					// var policy *RetryPolicy
+// // // 					// if f := ser.dispatch.(); f != nil {
+// // // 					// 	policy = f.Retry
+// // // 					// }
+
+// // // 					mx := profile.Input
+
+// // // 					// if mx == nil {
+// // // 					// 	continue
+// // // 					// }
+
+// // // 					if err := n.autoCall(ctx, *mx); err == nil {
+
+// // // 						for na, metrics := range n.metric {
+// // // 							for _, rp := range metrics {
+// // // 								if rp.Fail != nil {
+// // // 									r.store.AddFailReport(*rp.Fail)
+// // // 								} else if rp.Succeed != nil {
+// // // 									r.store.AddSucceedReport(*rp.Succeed)
+// // // 								}
+// // // 								inp := n.GetResults(na)
+// // // 								r.store.AddResult(inp)
+// // // 							}
+// // // 						}
+
+// // // 						// Record usage at all layers for successful dispatch
+// // // 						r.store.UpdateProfileSlateUsage(profile.Profile)
+// // // 						prf.UpdateKitSlateUsage(k.GetName())
+// // // 						k.UpdateServiceSlateUsage(ser.GetName())
+// // // 						ser.UpdateDispatcherSlateUsage(n.GetName())
+// // // 						// Note: n is a dispatcher, we'd need to loop over events to record usage, but autoCall on dispatcher runs all events.
+// // // 						// Inside autoCall, the events should be updated. I will check dispatcher autoCall.
+// // // 					}
+// // // 				}
+
+// // // 				// r.handleServiceFormat(profile, ser)
+// // // 			}
+// // // 		}
+// // // 	}()
+
+// // // 	r.wg.Wait()
+
+// // // 	// if kit, err := r.store.GetKit(profile.Name); err == nil {
+// // // 	// 	r.handleProfileFormat(profile, kit)
+// // // 	// }
+
+// // // 	finalResult := r.store
+
+// // // 	// for _, ser := range kits {
+// // // 	// 	for n := range ser.GetDispatch().GetRegistry() {
+// // // 	// 		z := ser.GetDispatch().GetResults(n)
+// // // 	// 		if z != nil && z.IsReady {
+// // // 	// 			finalResult.Result = z.Result
+// // // 	// 		}
+// // // 	// 	}
+// // // 	// }
+
+// // // 	res := finalResult.result
+// // // 	x := &IResults{
+// // // 		Resuts:  res,
+// // // 		IsReady: true,
+// // // 	}
+
+// // // 	r.cheetah.Publish(profile.Profile, x)
+
+// // // 	log.Println("done writing...")
+// // // 	return &IWrite[In, Out]{
+// // // 		Report: finalResult.result,
+
+// // //			// Service: service,
+// // //			Profile: profile,
+// // //		}
+// // //	}
+// // package rum
+
+// // // import (
+// // // 	"fmt"
+// // // 	"sync"
+// // // )
+
+// // // // Budget tracks spend against a limit for a model service
+// // // type Budget struct {
+// // // 	mu    sync.Mutex
+// // // 	Limit float64
+// // // 	Spent float64
+// // // 	Cost  float64
+// // // 	perc  map[int]float64 // call count -> percent
+// // // }
+
+// // // // NewBudget creates a new budget with a limit and cost per call
+// // // func NewBudget(limit, cost float64) *Budget {
+// // // 	return &Budget{
+// // // 		Limit: limit,
+// // // 		Cost:  cost,
+// // // 		perc:  make(map[int]float64),
+// // // 	}
+// // // }
+
+// // // // get funcs
+
+// // // func (b *Budget) GetCost() float64 {
+// // // 	return b.Cost
+// // // }
+// // // func (b *Budget) GetSpend() float64 {
+// // // 	return b.Spent
+// // // }
+// // // func (b *Budget) GetLimit() float64 {
+// // // 	return b.Limit
+// // // }
+
+// // // // percent progress of the budget
+// // // func (b *Budget) percent() float64 {
+// // // 	if b.Limit <= 0 {
+// // // 		return 0
+// // // 	}
+// // // 	return (b.Spent / b.Limit) * 100
+// // // }
+
+// // // // Exhausted returns true when spend >= limit
+// // // func (b *Budget) Exhausted() bool {
+// // // 	b.mu.Lock()
+// // // 	defer b.mu.Unlock()
+// // // 	return b.percent() >= 100.0
+// // // }
+
+// // // // Left returns the remaining budget
+// // // // do use the percent func cause i am still figuring this func out
+// // // func (b *Budget) Left() float64 {
+// // // 	b.mu.Lock()
+// // // 	defer b.mu.Unlock()
+// // // 	return b.Limit - b.Spent
+// // // }
+
+// // // // Report returns report of the budget
+// // // func (b *Budget) Report() string {
+// // // 	b.mu.Lock()
+// // // 	defer b.mu.Unlock()
+// // // 	return fmt.Sprintf("$%.4f / $%.4f (%.1f%%)", b.Spent, b.Limit, b.percent())
+// // // }
+
+// // // // end
+
+// // // // set funcs
+
+// // // // Spend adds one cost to the spend
+// // // func (b *Budget) Spend() {
+// // // 	b.mu.Lock()
+// // // 	defer b.mu.Unlock()
+// // // 	b.Spent += b.Cost
+
+// // // }
+
+// // // // Percent calcs the percent of the budget and stores it
+// // // func (b *Budget) Percent() float64 {
+// // // 	b.mu.Lock()
+// // // 	defer b.mu.Unlock()
+// // // 	calc := b.percent()
+// // // 	count := len(b.perc) + 1
+// // // 	if _, ok := b.perc[count]; !ok {
+// // // 		b.perc[count] = calc
+// // // 	}
+// // // 	return calc
+// // // }
+
+// // // // end
+// // // // Package rum...
+// // // // builder.go implements the roboust and more cleaner way to write and maintain codes
+// // package rum
+
+// // // import (
+// // // 	"context"
+// // // 	"fmt"
+// // // 	"time"
+// // // )
+
+// // // // DispatcherConfig holds configuration for dispatcher registration
+// // // type DispatcherConfig struct {
+// // // 	Service  string
+// // // 	Settings Settings
+// // // }
+
+// // // // Builder manages Rum profile lifecycle
+// // // type Builder[In, Out any] struct {
+// // // 	store    *IStore[In, Out]
+// // // 	builders []*ProfileBuilder[In, Out]
+// // // 	server   *Rum[In, Out]
+// // // }
+
+// // // // NewBuilder creates a new Rum Builder for building profiles
+// // // func NewBuilder[In, Out any](rum *Rum[In, Out]) *Builder[In, Out] {
+// // // 	if rum == nil {
+// // // 		panic("server cannot be nil")
+// // // 	}
+// // // 	return &Builder[In, Out]{
+// // // 		store:    rum.store,
+// // // 		server:   rum,
+// // // 		builders: make([]*ProfileBuilder[In, Out], 0),
+// // // 	}
+// // // }
+
+// // // func (c *Builder[In, Out]) Server() *Rum[In, Out] {
+// // // 	return c.server
+// // // }
+
+// // // // CreateProfile initializes a new profile builder
+// // // func (c *Builder[In, Out]) CreateProfile(seq ISequence[In], timeout time.Duration) *ProfileBuilder[In, Out] {
+// // // 	if timeout <= 0 {
+// // // 		panic("timeout must be positive")
+// // // 	}
+
+// // // 	pb := &ProfileBuilder[In, Out]{
+// // // 		store:       c.store,
+// // // 		sequence:    seq,
+// // // 		timeout:     timeout,
+// // // 		kit:         NewKit[In, Out](),
+// // // 		initialized: true,
+// // // 	}
+// // // 	c.builders = append(c.builders, pb)
+// // // 	return pb
+// // // }
+
+// // // // Run run the rum server
+// // // func (pb *Builder[In, Out]) Run(ctx context.Context, config RumServer) {
+// // // 	pb.server.Serve(ctx, config)
+// // // }
+
+// // // // BuildAll finalizes all profiles in the Builder
+// // // func (c *Builder[In, Out]) BuildAll() error {
+// // // 	if len(c.builders) == 0 {
+// // // 		return fmt.Errorf("no profiles to build")
+// // // 	}
+
+// // // 	for i, pb := range c.builders {
+// // // 		if pb == nil {
+// // // 			return fmt.Errorf("builder at index %d is nil", i)
+// // // 		}
+// // // 		pb.Build()
+// // // 	}
+
+// // // 	return nil
+// // // }
+// // package rum
+
+// // // import (
+// // // 	"context"
+// // // 	"time"
+// // // )
+
+// // // // ProfileBuilder constructs a profile using the builder pattern
+// // // type ProfileBuilder[In, Out any] struct {
+// // // 	store       *IStore[In, Out]
+// // // 	sequence    ISequence[In]
+// // // 	timeout     time.Duration
+// // // 	kit         *IKit[In, Out]
+// // // 	initialized bool
+// // // }
+
+// // // // RegisterDispatch registers an event handler in a service's dispatcher
+// // // func (pb *ProfileBuilder[In, Out]) RegisterDispatch(
+// // // 	ctx context.Context,
+// // // 	serviceName,
+// // // 	dispatcherName,
+// // // 	eventName string,
+// // // 	settings Settings,
+// // // 	fn func(context.Context, In) (Out, error),
+// // // ) *ProfileBuilder[In, Out] {
+// // // 	pb.ensureInitialized()
+
+// // // 	if serviceName == "" || eventName == "" {
+// // // 		panic("serviceName and eventName cannot be empty")
+// // // 	}
+// // // 	if fn == nil {
+// // // 		panic("handler function cannot be nil")
+// // // 	}
+
+// // // 	service := pb.getOrCreateService(ctx, serviceName, settings)
+// // // 	dispatcher := pb.getOrCreateDispatcher(serviceName, service, settings)
+// // // 	dispatcher.PushEvent(eventName, &IEvent[In, Out]{Fn: fn})
+
+// // // 	return pb
+// // // }
+
+// // // // PushService adds a pre-configured service to the profile
+// // // func (pb *ProfileBuilder[In, Out]) PushService(name string, service *IService[In, Out]) *ProfileBuilder[In, Out] {
+// // // 	pb.ensureInitialized()
+
+// // // 	if name == "" {
+// // // 		panic("service name cannot be empty")
+// // // 	}
+// // // 	if service == nil {
+// // // 		panic("service cannot be nil")
+// // // 	}
+
+// // // 	pb.kit.PushService(name, service)
+// // // 	return pb
+// // // }
+
+// // // // PushKit replaces the entire kit with a custom one
+// // // func (pb *ProfileBuilder[In, Out]) PushKit(kit *IKit[In, Out]) *ProfileBuilder[In, Out] {
+// // // 	if kit == nil {
+// // // 		panic("kit cannot be nil")
+// // // 	}
+// // // 	pb.kit = kit
+// // // 	return pb
+// // // }
+
+// // // // Build finalizes the profile and stores it
+// // // func (pb *ProfileBuilder[In, Out]) Build() *IProfile[In, Out] {
+// // // 	pb.ensureInitialized()
+
+// // // 	profile := NewProfile[In, Out]()
+// // // 	profile.PushKit(pb.sequence.Profile, pb.kit)
+// // // 	pb.store.AddProfile(pb.sequence.Profile, profile)
+
+// // // 	return profile
+// // // }
+
+// // // // ensureInitialized validates that the builder was properly initialized
+// // // func (pb *ProfileBuilder[In, Out]) ensureInitialized() {
+// // // 	if !pb.initialized {
+// // // 		panic("ProfileBuilder was not properly initialized")
+// // // 	}
+// // // 	if pb.kit == nil {
+// // // 		pb.kit = NewKit[In, Out]()
+// // // 	}
+// // // }
+
+// // // // getOrCreateService retrieves an existing service or creates a new one
+// // // func (pb *ProfileBuilder[In, Out]) getOrCreateService(
+// // // 	ctx context.Context,
+// // // 	serviceName string,
+// // // 	settings Settings,
+// // // ) *IService[In, Out] {
+// // // 	service := pb.kit.GetService(serviceName)
+// // // 	if service != nil {
+// // // 		return service
+// // // 	}
+
+// // // 	service = NewService[In, Out](ctx, settings, serviceName)
+// // // 	pb.kit.PushService(serviceName, service)
+// // // 	return service
+// // // }
+
+// // // // getOrCreateDispatcher retrieves an existing dispatcher or creates a new one
+// // // func (pb *ProfileBuilder[In, Out]) getOrCreateDispatcher(
+// // // 	dispatcherName string,
+// // // 	service *IService[In, Out],
+// // // 	settings Settings,
+// // // ) *IDispatcher[In, Out] {
+// // // 	dispatcher := service.GetDispatcher(dispatcherName)
+// // // 	if dispatcher != nil {
+// // // 		return dispatcher
+// // // 	}
+
+// // // 	dispatcher = NewDispatcher[In, Out](settings)
+// // // 	service.PushDispatcher(dispatcherName, dispatcher)
+// // // 	return dispatcher
+// // // }
+// package rum
+
+// // import "context"
+
+// // // DispatcherBuilder provides a fluent interface for building dispatchers
+// // type DispatcherBuilder[In, Out any] struct {
+// // 	dispatcher *IDispatcher[In, Out]
+// // 	settings   Settings
+// // }
+
+// // // NewDispatcherBuilder creates a new dispatcher builder
+// // func NewDispatcherBuilder[In, Out any](settings Settings) *DispatcherBuilder[In, Out] {
+// // 	return &DispatcherBuilder[In, Out]{
+// // 		dispatcher: NewDispatcher[In, Out](settings),
+// // 		settings:   settings,
+// // 	}
+// // }
+
+// // // Register registers an event handler in the dispatcher
+// // func (db *DispatcherBuilder[In, Out]) Register(
+// // 	event string,
+// // 	fn func(context.Context, In) (Out, error),
+// // ) *DispatcherBuilder[In, Out] {
+// // 	if event == "" {
+// // 		panic("event name cannot be empty")
+// // 	}
+// // 	if fn == nil {
+// // 		panic("handler function cannot be nil")
+// // 	}
+
+// // 	db.dispatcher.PushEvent(event, &IEvent[In, Out]{Fn: fn})
+// // 	return db
+// // }
+
+// // // Build returns the constructed dispatcher
+// // func (db *DispatcherBuilder[In, Out]) Build() *IDispatcher[In, Out] {
+// // 	return db.dispatcher
+// // }
+// package rum
+
+// TimeFormat controls the lifecycle of a service after its dispatches complete.
+// Priority: Remove > Deactivate
+// ActivateAfter: if Deactivate is true and ActivateAfter is set,
+// the service will be re-activated after the duration (acts as sleep/wake)
+// type TimeFormat struct {
+// 	Call time.Duration
+// 	// ActivateAfter *time.Duration
+// 	// Deactivate    bool
+// 	// Remove        bool
+// 	Retry *RetryPolicy // nil = no retry
+// }
+
+// func NewTimeFormat() *TimeFormat {
+// 	return &TimeFormat{}
+// }
+
+// // set funcs
+
+// // func (t *TimeFormat) SetCallTime(d time.Duration) {
+// // 	t.Call = d
+// // }
+// // func (t *TimeFormat) SetActivateTime(d time.Duration) {
+// // 	t.ActivateAfter = &d
+// // }
+// // func (t *TimeFormat) SetDeactivate(b bool) {
+// // 	t.Deactivate = b
+// // }
+// // func (t *TimeFormat) SetRemove(b bool) {
+// // 	t.Remove = b
+// // }
+
+// func (t *TimeFormat) SetRetry(r *RetryPolicy) {
+// 	t.Retry = r
+// }
+
+// end
+
+// get funcs
+
+// func (t *TimeFormat) GetCallTime() time.Duration {
+// 	return t.Call
+// }
+// func (t *TimeFormat) GetActivateTime() *time.Duration {
+// 	return t.ActivateAfter
+// }
+// func (t *TimeFormat) ShouldDeactivate() bool {
+// 	return t.Deactivate
+// }
+// func (t *TimeFormat) ShouldRemove() bool {
+// 	return t.Remove
+// }
+
+// end
+
+// func (k *IStore[In, Out]) AddSucceedReport(name string, report IMetricAgentSucceed) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddSucceedReport(report)
+
+// }
+
+// func (k *IStore[In, Out]) AddFailReport(name string, report IMetricAgentFail) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddFailReport(report)
+// }
+
+// func (k *IStore[In, Out]) AddRemoveReport(name string, t time.Time) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddRemoveReport(t)
+// }
+
+// func (k *IStore[In, Out]) AddDeactiveReport(name string, t time.Time) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddDeactiveReport(t)
+// }
+
+// func (k *IStore[In, Out]) AddActivateReport(name string, t time.Time) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddActivateReport(t)
+// }
+
+// func (k *IStore[In, Out]) AddProfileReport(name string, p IMetricProfile) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddProfile(p)
+// }
+
+// func (k *IStore[In, Out]) AddRequestReport(name string) {
+// 	k.mu.Lock()
+// 	defer k.mu.Unlock()
+// 	k.metrics[name].AddRequest()
+// }
+
+
+// func (d *IDispatcher[in, out]) autoCall(ctx context.Context, input in) error {
+// 	for name, fn := range d.registry {
+
+// 		cfg := fn.getConfig()
+// 		if cfg != nil {
+// 			if !cfg.getActivate() {
+// 				err := fmt.Errorf("service %s is deactivated", name)
+// 				d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
+// 					At:     time.Now(),
+// 					Reason: err.Error(),
+// 					Type:   "deactive",
+// 				}})
+// 				return nil
+// 			}
+
+// 			if sw := cfg.GetSwapOverview(); sw != nil && sw.HSwitch && sw.Name != "" {
+// 				swFn, swOk := d.registry[sw.Name]
+// 				if !swOk {
+// 					err := fmt.Errorf("swapped service %s (from %s) not found in registry", sw.Name, name)
+// 					d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
+// 						At:     time.Now(),
+// 						Reason: err.Error(),
+// 						Type:   "swap",
+// 					}})
+// 					return err
+// 				}
+// 				swCfg := swFn.getConfig()
+// 				if swCfg != nil && !swCfg.getActivate() {
+// 					err := fmt.Errorf("swapped service %s (from %s) is deactivated", sw.Name, name)
+// 					d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
+// 						At:     time.Now(),
+// 						Reason: err.Error(),
+// 						Type:   "deactive",
+// 					}})
+// 					return err
+// 				}
+// 				fn = swFn
+// 				name = sw.Name
+// 			}
+// 		}
+
+// 		max := 1
+// 		interval := time.Duration(0)
+// 		policy := fn.Retry
+
+// 		if policy != nil {
+// 			max = policy.Max + 1 // +1 so Max=3 means 1 original + 3 retries
+// 			interval = policy.Interval
+// 		}
+
+// 		log.Println("max: ", max)
+// 		t := d.Settings.Base
+// 		if t == 0 {
+// 			t = 10 * time.Second
+// 		}
+// 		ts := d.Settings.SleepTime
+// 		if ts == 0 {
+// 			ts = 100 * time.Millisecond
+// 		}
+
+// 		// dog := rumdog.New[out](t)
+// 		// dog.Watch()
+// 		// defer dog.Shutdown()
+
+// 		p := rumdog.NewPolicy[out](t)
+// 		p.Name = name
+// 		a := func() (*out, error) {
+// 			time.Sleep(ts)
+// 			resp, err := fn.Fn(ctx, input)
+// 			return &resp, err
+// 		}
+// 		p.AddFunc(rumdog.Funcs[out]{
+// 			Name: name,
+// 			Fn:   &a,
+// 		})
+
+// 		attempt := 0
+// 		ret := retry.New(retry.Attempts(uint(max)), retry.Delay(interval))
+
+// 		err := ret.Do(func() error {
+// 			attempt++
+
+// 			if ctx.Err() != nil {
+// 				return retry.Unrecoverable(ctx.Err())
+// 			}
+
+// 			cli := dog.NewClient[out](t)
+// 			defer cli.Close()
+
+// 			cli.DefinePolicy(name, ts).AddFuncWithReturn(name, a).Build()
+
+// 			rep, err := cli.ExecuteAndReport(p.Name)
+
+// 			if err == nil {
+// 				inData, err := json.Marshal(input)
+// 				if err != nil {
+// 					return retry.Unrecoverable(err)
+// 				}
+// 				d.writeMetric(name, IAgentResp{
+// 					Succeed: &IMetricAgentSucceed{
+// 						TimeTaken:     rep.TotalDuration,
+// 						AgentReply:    string(rep.Output),
+// 						ClientRequest: string(inData),
+// 					},
+// 				})
+// 				r := NewDispatchResult()
+// 				r.IsReady = true
+// 				r.Output = rep.Output
+// 				inp, err := json.Marshal(input)
+// 				if err != nil {
+// 					log.Println(err)
+// 				}
+// 				r.Input = inp
+// 				d.handleOutput(name, r)
+// 				d.handleComplete(name, true)
+// 				// Record usage for this event
+// 				d.UpdateEventSlateUsage(name)
+// 				// d.handleInput(name, input)
+// 				cli.Unregister(p.Name)
+// 				return nil
+// 			} else {
+// 				cli.Unregister(p.Name)
+
+// 				d.writeMetric(name, IAgentResp{
+// 					Fail: &IMetricAgentFail{
+// 						Reason: fmt.Sprintf("attempt %d: %s", attempt, err.Error()),
+// 						At:     time.Now(),
+// 					},
+// 				})
+// 				return err
+// 			}
+// 		})
+
+// 		return err
+// 	}
+// 	return fmt.Errorf("nilxxx")
+// }

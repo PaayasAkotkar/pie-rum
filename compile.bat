@@ -1,34 +1,9 @@
 @echo off
-echo [Updating] just a sec or a nano....
+chcp 65001 >nul
+echo hold on right installing the pie-rum sdk 😃
 go mod tidy
-if %ERRORLEVEL% neq 0 (
-    echo [Error] go mod tidy failed!
-    exit /b %ERRORLEVEL%
-)
-
-echo [Building] app.exe soon or in a nano...
-go build
-if %ERRORLEVEL% neq 0 (
-    echo [Error] Build failed!
-    exit /b %ERRORLEVEL%
-)
-
-echo [Launching] app.exe running ....
+echo just a sec running the server 🤗
+go build -o app.exe
+echo now running the file 🌟
 app.exe
-@echo off
-echo [Updating] just a sec or a nano....
-go mod tidy
-if %ERRORLEVEL% neq 0 (
-    echo [Error] go mod tidy failed!
-    exit /b %ERRORLEVEL%
-)
-
-echo [Building] app.exe soon or in a nano...
-go build
-if %ERRORLEVEL% neq 0 (
-    echo [Error] Build failed!
-    exit /b %ERRORLEVEL%
-)
-
-echo [Launching] app.exe running ....
-app.exe
+echo the pie-rum server started 🤩

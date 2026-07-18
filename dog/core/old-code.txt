@@ -1,0 +1,1000 @@
+package dog
+
+// // Dog provides a robust and clean timeout management system
+// type Dog[T any] struct {
+// 	mu sync.RWMutex
+
+// 	// Core configuration
+// 	base time.Duration // Base fallback timeout
+
+// 	cheetah  *rumcheetah .cheetah [WatchdogReport]
+
+// 	// Policy management
+// 	policy map[string]*Policy[T] // name -> ...
+
+// 	// Duration tracking per policy
+// 	durations map[string]time.Duration // policy -> latest duration
+
+// 	// Progress per policy
+// 	progress map[string]*ExeProgress // policy -> ...
+
+// 	// Health per policy
+// 	health map[string]*Health // policy -> ...
+
+// 	// Report storage
+// 	reports map[string]*WatchdogReport // policy -> ...
+
+// 	register   chan *Policy[T] // Register new policy
+// 	unregister chan string     // Unregister policy
+// 	parkDog    chan string     // Start watching policy
+// 	done       chan IDone      // Signal function done
+// 	bark       chan IBark      // Error occurred
+// 	reset      chan string     // Reset policy stats
+// 	resetAll   chan bool       // Reset all policies
+// 	stopCh     chan struct{}   // Stop watchdog
+// 	doneCh     chan struct{}
+// 	summonCh   chan string
+// 	// Dedicated fast tickers per active policy
+// 	// tickers map[string]chan struct{}
+// 	monitors map[string]*MonitorPolicy
+
+// 	// Settings
+// 	Settings *Settings
+
+// 	// Control & Context
+// 	wg     sync.WaitGroup
+// 	ctx    context.Context
+// 	cancel context.CancelFunc
+// 	once   sync.Once
+// }
+
+// IDone represents a completed function execution with unique tracking
+// type IDone struct {
+// 	PolicyName   string        // Policy identifier
+// 	FuncName     string        // Function name
+// 	Rank         int           // Function rank
+// 	ExecutionID  string        // OPTIONAL: Unique execution ID
+// 	FuncDuration time.Duration // Client-measured duration for this func
+// 	Output       []byte
+// }
+
+// // IBark represents an error/event
+// type IBark struct {
+// 	Reason   string
+// 	Policy   string
+// 	Time     time.Time
+// 	Duration time.Duration
+// }
+
+// // New creates a new Dog instance with base timeout
+// func New[T any](base time.Duration) *Dog[T] {
+// 	return NewWithContext[T](context.Background(), base)
+// }
+
+// // NewWithContext creates a new Dog with context support
+// func NewWithContext[T any](ctx context.Context, base time.Duration) *Dog[T] {
+// 	if base == 0 {
+// 		panic("base timeout cannot be 0")
+// 	}
+
+// 	ctx, cancel := context.WithCancel(ctx)
+
+// 	rd := &Dog[T]{
+// 		base:      base,
+// 		policy:    make(map[string]*Policy[T]),
+// 		summonCh:  make(chan string, 100),
+// 		durations: make(map[string]time.Duration),
+// 		progress:  make(map[string]*ExeProgress),
+// 		health:    make(map[string]*Health),
+// 		reports:   make(map[string]*WatchdogReport),
+// 		// tickers:    make(map[string]chan struct{}{}),
+// 		monitors:   make(map[string]*MonitorPolicy),
+// 		register:   make(chan *Policy[T], 100),
+// 		unregister: make(chan string, 100),
+// 		parkDog:    make(chan string, 100),
+// 		done:       make(chan IDone, 1000),
+// 		bark:       make(chan IBark, 1000),
+// 		reset:      make(chan string, 100),
+// 		resetAll:   make(chan bool, 10),
+// 		stopCh:     make(chan struct{}),
+// 		doneCh:     make(chan struct{}),
+// 		cheetah :     rumcheetah .New[WatchdogReport](),
+// 		Settings:   DefaultSettings(),
+// 		ctx:        ctx,
+// 		cancel:     cancel,
+// 	}
+// 	t := rumpaint.Header(`
+
+// ██████╗░░█████╗░░██████╗░
+// ██╔══██╗██╔══██╗██╔════╝░
+// ██║░░██║██║░░██║██║░░██╗░
+// ██║░░██║██║░░██║██║░░╚██╗
+// ██████╔╝╚█████╔╝╚██████╔╝
+// ╚═════╝░░╚════╝░░╚═════╝░
+// 			`)
+// 	log.Println(t)
+
+// 	return rd
+// }
+
+// // GenerateReport generates a formatted report for a policy
+// func (rd *Dog[T]) generateReport(name string) {
+
+// 	report, exists := rd.reports[name]
+// 	_, policyExists := rd.policy[name]
+
+// 	t := rumpaint.Title("RUM WATCH DOG REPORT")
+// 	log.Println(t)
+// 	if !exists || !policyExists {
+// 		log.Printf("No report found for policy '%s'", name)
+// 		t := rumpaint.Title("REPORT DONE 😃")
+// 		log.Println(t)
+// 		return
+// 	}
+
+// 	if rd.Settings == nil {
+// 		rd.Settings = DefaultSettings()
+// 	}
+
+// 	headers := []string{"ID", "Policy Name", "Time Limit", "Status", "Report Period"}
+// 	data := [][]string{
+// 		{
+// 			"1",
+// 			report.PolicyName,
+// 			fmt.Sprintf("%v %s", strconv.FormatFloat(rd.getTimeFloat(report.TimeLimit).Conv, 'f', 2, 64), rd.getTimeFloat(report.TimeLimit).Unit),
+// 			strings.ToUpper(report.Status),
+// 			report.EndTime.String(),
+// 		},
+// 	}
+// 	tx := rumpaint.Table("report", headers, data)
+// 	lipgloss.Println(tx)
+// 	headers = []string{"ID", "Total Executions", "Passed (< limit)", "Exceeded (≥ limit)", "Success Rate", "Failure Rate"}
+// 	data = [][]string{
+// 		{
+// 			"1",
+// 			strconv.FormatInt(report.ExecutionCount.Load(), 10),
+// 			strconv.FormatFloat(report.getPassedProgress(), 'f', 2, 64) + "%",
+// 			strconv.FormatFloat(report.getExceedProgress(), 'f', 2, 64) + "%",
+// 			strconv.FormatFloat(report.SuccessRate*100, 'f', 2, 64) + "%",
+// 			strconv.FormatFloat((1-report.SuccessRate)*100, 'f', 2, 64) + "%",
+// 		},
+// 	}
+// 	tx = rumpaint.Table("Execution Statistics", headers, data)
+// 	lipgloss.Println(tx)
+
+// 	headers = []string{"ID", "Limit", "Min Duration", "Max Duration", "Avg Duration", "Total Duration"}
+// 	data = [][]string{
+// 		{
+// 			"1",
+// 			fmt.Sprintf("%v %s", strconv.FormatFloat(rd.getTimeFloat(report.TimeLimit).Conv, 'f', 2, 64), rd.getTimeFloat(report.TimeLimit).Unit),
+// 			fmt.Sprintf("%v %s", strconv.FormatFloat(rd.getTimeFloat(report.MinDuration).Conv, 'f', 2, 64), rd.getTimeFloat(report.MinDuration).Unit),
+// 			fmt.Sprintf("%v %s", strconv.FormatFloat(rd.getTimeFloat(report.MaxDuration).Conv, 'f', 2, 64), rd.getTimeFloat(report.MaxDuration).Unit),
+// 			fmt.Sprintf("%v %s", strconv.FormatFloat(rd.getTimeFloat(report.AvgDuration).Conv, 'f', 2, 64), rd.getTimeFloat(report.AvgDuration).Unit),
+// 			fmt.Sprintf("%v %s", strconv.FormatFloat(rd.getTimeFloat(report.TotalDuration).Conv, 'f', 2, 64), rd.getTimeFloat(report.TotalDuration).Unit),
+// 		},
+// 	}
+// 	tx = rumpaint.Table("Time Analysis", headers, data)
+// 	lipgloss.Println(tx)
+
+// 	if len(report.FailureReasons) > 0 {
+// 		title := "Failure Reasons"
+// 		reasons := strings.Join(report.FailureReasons, ", ")
+// 		t := rumpaint.Card(title, reasons)
+// 		log.Println(t)
+// 	}
+
+// 	t = rumpaint.Title("REPORT DONE 😃")
+// 	log.Println(t)
+// }
+
+// // Package dog ...
+// // The things with the apis is that
+// // it is created based on respecting the time
+// // each api has to executed under some circumstances
+// // new: returns the error if any
+// package dog
+
+// import (
+// 	"fmt"
+// 	"log"
+// 	"time"
+// )
+
+// func (rd *Dog[T]) Watch() {
+// 	rd.wg.Add(1)
+
+// 	go rd.watchDog()
+// }
+
+// // Register pushes the profile in heap
+// func (rd *Dog[T]) Register(policy *Policy[T]) error {
+// 	t := rd.Settings.RegisterationTimeout
+// 	if t == 0 {
+// 		t = 2 * time.Second
+// 	}
+// 	select {
+// 	case rd.register <- policy:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout registering policy %s", policy.Name)
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// // ParkDog signals to monitor the policyName for all the funcs
+// func (rd *Dog[T]) ParkDog(policyName string) error {
+// 	t := rd.Settings.ParkdogTimeout
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	select {
+// 	case rd.parkDog <- policyName:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout parking dog on policy %s", policyName)
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// // Done successfully performed the func
+// func (rd *Dog[T]) Done(done IDone) error {
+// 	t := rd.Settings.ProcessDoneTimeout
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	select {
+// 	case rd.done <- done:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout signaling done for policy %s", done.PolicyName)
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// // Bark signals an error during func
+// func (rd *Dog[T]) Bark(bark IBark) error {
+// 	t := rd.Settings.BarkTimeout
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	bark.Time = time.Now()
+// 	select {
+// 	case rd.bark <- bark:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout barking for policy %s", bark.Policy)
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// // Reset reset the policy call
+// func (rd *Dog[T]) Reset(policyName string) error {
+// 	t := rd.Settings.ResetCallsTimeout
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	select {
+// 	case rd.reset <- policyName:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout resetting policy %s", policyName)
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// // ResetAll resets all the pollicies calls to zero
+// func (rd *Dog[T]) ResetAll() error {
+// 	t := rd.Settings.ResetAllCallsTimeout
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	select {
+// 	case rd.resetAll <- true:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout resetting all policies")
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// // Shutdown graceful shutdown
+// func (rd *Dog[T]) Shutdown() error {
+// 	if rd.cancel != nil {
+// 		rd.cancel()
+// 	}
+
+// 	rd.once.Do(func() {
+// 		close(rd.stopCh)
+// 	})
+
+// 	t := rd.Settings.ShutdownTimeout
+// 	if t == 0 {
+// 		t = 5 * time.Second
+// 	}
+
+// 	go func() {
+// 		rd.wg.Wait()
+// 		close(rd.done)
+// 	}()
+
+// 	select {
+// 	case <-rd.done:
+// 		log.Println("Shutdown complete")
+// 		for r := range rd.monitors {
+// 			delete(rd.monitors, r)
+// 		}
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("graceful shutdown timed out after %v", t)
+// 	}
+// }
+
+// SetSettings custom setting
+// func (rd *Dog[T]) SetSettings(settings *Settings) {
+// 	rd.mu.Lock()
+// 	defer rd.mu.Unlock()
+// 	rd.Settings = settings
+// }
+
+// // Pakkun returns the full report for a policy
+// // inspiration of the name from Naruto -> Kakashi's summing dog
+// func (rd *Dog[T]) Pakkun(name string) *WatchdogReport {
+
+// 	ch := rd.chakra.Subscribe(name)
+// 	defer rd.chakra.Kai(name, ch)
+
+// 	for {
+// 		select {
+// 		case <-rd.ctx.Done():
+// 			return nil
+// 		case result := <-ch:
+// 			if rd.Settings.ShowReport {
+// 				rd.generateReport(name)
+// 			}
+// 			return result
+// 		}
+// 	}
+// }
+
+// func (rd *Dog[T]) Summon(policyName string) error {
+// 	t := rd.Settings.ResetCallsTimeout
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	select {
+// 	case rd.summonCh <- policyName:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("timeout resetting policy %s", policyName)
+// 	case <-rd.ctx.Done():
+// 		return fmt.Errorf("rumdog context cancelled")
+// 	}
+// }
+
+// import (
+// 	"context"
+// 	"fmt"
+// 	"log"
+// 	"sync"
+// 	"sync/atomic"
+// 	"time"
+// )
+
+// // Policy represents a timeout policy with its tracked functions
+// type Policy[T any] struct {
+// 	Name      string        // Policy identifier
+// 	Base      time.Duration // Base timeout limit
+// 	Fn        []Funcs[T]    // Functions to track
+// 	callsMade atomic.Int64  // Total calls
+// 	Succeed   IPolicy       // Success tracking
+// 	Fail      IPolicy       // Failure tracking
+// }
+
+// // NewPolicy creates a new policy
+// func NewPolicy[T any](base time.Duration) *Policy[T] {
+// 	return &Policy[T]{
+// 		Base:    base,
+// 		Fn:      make([]Funcs[T], 0),
+// 		Succeed: IPolicy{},
+// 		Fail:    IPolicy{},
+// 	}
+// }
+
+// func (p *Policy[T]) Continue() bool {
+
+// 	return len(p.Fn) > 0
+// }
+
+// func (p *Policy[T]) SetName(name string) {
+// 	p.Name = name
+// }
+
+// func (p *Policy[T]) GetName() string {
+// 	return p.Name
+// }
+
+// func (p *Policy[T]) SetBase(base time.Duration) {
+// 	p.Base = base
+// }
+
+// func (p *Policy[T]) GetBase() time.Duration {
+// 	return p.Base
+// }
+
+// func (p *Policy[T]) AddFunc(fn Funcs[T]) {
+// 	log.Printf("[Policy] func with name %s added to the monitor", fn.Name)
+// 	p.Fn = append(p.Fn, fn)
+// }
+
+// func (p *Policy[T]) SetFunc(fns []Funcs[T]) {
+// 	p.Fn = fns
+// }
+
+// func (p *Policy[T]) GetFunc() []Funcs[T] {
+// 	return p.Fn
+// }
+
+// func (p *Policy[T]) Call() {
+// 	p.callsMade.Add(1)
+// }
+
+// func (p *Policy[T]) TotalCalls() int64 {
+// 	return p.callsMade.Load()
+// }
+
+// func (p *Policy[T]) Release() {
+// 	p.callsMade.Store(0)
+// }
+
+// // Funcs represents a tracked function
+// type Funcs[T any] struct {
+// 	Name string
+// 	Rank int // Distinguisher for multiple calls
+// 	Fn   *func() (*T, error)
+// 	Void *func() error
+// }
+
+// // IPolicy tracks success or failure metrics
+// type IPolicy struct {
+// 	callsMade atomic.Int64
+// 	Reason    string
+// 	TimeTaken time.Duration
+// }
+
+// func (i *IPolicy) Call() {
+// 	i.callsMade.Add(1)
+// }
+
+// func (i *IPolicy) WriteReason(reason string) {
+// 	i.Reason = reason
+// }
+
+// func (i *IPolicy) SetTimeTaken(t time.Duration) {
+// 	i.TimeTaken = t
+// }
+
+// func (i *IPolicy) TotalCalls() int64 {
+// 	return i.callsMade.Load()
+// }
+
+// func (i *IPolicy) Release() {
+// 	i.callsMade.Store(0)
+// }
+
+// // Health represents health status
+// type Health struct {
+// 	IsHealthy bool // true if healthy
+// 	Silent    bool // true if all good (progress >= 75%)
+// 	Mid       bool // true if in middle zone (30-75%)
+// 	Danger    bool // true if in danger zone (< 30%)
+// }
+
+// // ExeProgress tracks real-time progress with FIXED timestamp field
+// type ExeProgress struct {
+// 	StartedAtNano int64
+// 	ToComplete    time.Duration // Percentage (0-100)
+// 	Health        Health        // Current health status
+// 	IsRunning     bool          // True if currently tracking
+// }
+
+// // NewProgress creates new progress tracker
+// func NewProgress() *ExeProgress {
+// 	return &ExeProgress{
+// 		StartedAtNano: 0,
+// 		ToComplete:    0,
+// 		Health:        Health{},
+// 		IsRunning:     false,
+// 	}
+// }
+
+// func (e *ExeProgress) SetCompletion(percent time.Duration) {
+// 	if percent > 100 {
+// 		percent = 100
+// 	}
+// 	e.ToComplete = percent
+// }
+
+// func (e *ExeProgress) GetCompletion() time.Duration {
+// 	return e.ToComplete
+// }
+
+// func (e *ExeProgress) SetHealth(h Health) {
+// 	e.Health = h
+// }
+
+// func (e *ExeProgress) GetHealth() Health {
+// 	return e.Health
+// }
+
+// type MonitorPolicy struct {
+// 	policy    string
+// 	interval  time.Duration
+// 	fn        func()
+// 	stopChan  chan struct{}
+// 	done      chan struct{}
+// 	isRunning bool
+// 	StopTime  time.Duration
+// 	ctx       context.Context
+// 	mu        sync.Mutex
+// 	wg        sync.WaitGroup
+// }
+
+// func NewMonitorPolicy(ctx context.Context) *MonitorPolicy {
+// 	return &MonitorPolicy{
+// 		ctx:      ctx,
+// 		stopChan: make(chan struct{}),
+// 		done:     make(chan struct{}),
+// 	}
+// }
+
+// func (m *MonitorPolicy) PushPolicy(name string) {
+// 	m.policy = name
+// }
+
+// func (m *MonitorPolicy) Monitor(name string, fn func(), ti time.Duration) error {
+
+// 	if m.IsRunning() {
+// 		err := fmt.Errorf("policy %s already running", name)
+// 		return err
+// 	}
+
+// 	if ti == 0 {
+// 		return fmt.Errorf("interval cannot be %v", ti)
+// 	}
+// 	if fn == nil {
+// 		return fmt.Errorf("no func to record")
+// 	}
+
+// 	m.interval = ti
+// 	m.policy = name
+// 	m.fn = fn
+
+// 	m.wg.Add(1)
+// 	go func() {
+// 		defer m.wg.Done()
+// 		m.hub()
+// 	}()
+
+// 	return nil
+// }
+
+// func (m *MonitorPolicy) hub() error {
+// 	ticker := time.NewTicker(m.interval)
+// 	defer ticker.Stop()
+// 	for {
+// 		select {
+// 		case <-ticker.C:
+// 			m.fn()
+// 		case <-m.stopChan:
+// 			err := m.stop()
+// 			return err
+// 		case <-m.ctx.Done():
+// 			m.isRunning = false
+// 			return nil
+// 		}
+// 	}
+// }
+// func (m *MonitorPolicy) Stop() {
+// 	var x struct{}
+// 	m.stopChan <- x
+// }
+
+// func (m *MonitorPolicy) stop() error {
+// 	m.mu.Lock()
+// 	defer m.mu.Unlock()
+// 	if !m.isRunning {
+// 		return nil
+// 	}
+
+// 	go func() {
+// 		m.wg.Wait()
+// 		close(m.done)
+// 	}()
+// 	t := m.StopTime
+// 	if t == 0 {
+// 		t = 1 * time.Second
+// 	}
+// 	select {
+// 	case <-m.done:
+// 		return nil
+// 	case <-time.After(t):
+// 		return fmt.Errorf("stop time exceeded for policy %s", m.policy)
+// 	}
+// }
+
+// func (m *MonitorPolicy) SetStopTimeDuration(t time.Duration) {
+// 	m.StopTime = t
+// }
+
+// func (m *MonitorPolicy) IsRunning() bool {
+// 	m.mu.Lock()
+// 	defer m.mu.Unlock()
+// 	return m.isRunning
+// }
+// func (m *MonitorPolicy) GetPolicyName() string {
+// 	return m.policy
+// }
+// func (m *MonitorPolicy) GetInterval() time.Duration {
+// 	return m.interval
+// }
+
+// // Settings holds configuration
+// type Settings struct {
+// 	EnableAvg bool // incase of base duration you can set avg of that
+
+// 	// timeouts -> custom way to handle api timeout stragtey
+// 	RegisterationTimeout   time.Duration
+// 	UnregisterationTimeout time.Duration
+// 	ParkdogTimeout         time.Duration
+// 	ProcessDoneTimeout     time.Duration
+// 	BarkTimeout            time.Duration
+// 	ResetCallsTimeout      time.Duration
+// 	ResetAllCallsTimeout   time.Duration
+// 	ShutdownTimeout        time.Duration
+
+// 	TickInterval    time.Duration
+// 	ReportRetention time.Duration
+// 	MaxHistorySize  int
+
+// 	ShowReport             bool // showcases the report
+// 	ConvDurationInHours    bool
+// 	ConvDurationInMins     bool
+// 	ConvDurationInSecs     bool
+// 	ConvDurationInMiliSecs bool
+// }
+
+// // DefaultSettings returns default settings
+// func DefaultSettings() *Settings {
+// 	return &Settings{
+// 		EnableAvg:              true,
+// 		ConvDurationInMiliSecs: true,
+// 		ShowReport:             true,
+// 		TickInterval:           100 * time.Millisecond,
+// 		MaxHistorySize:         100,
+// 		ReportRetention:        24 * time.Hour,
+// 		RegisterationTimeout:   0,
+// 		UnregisterationTimeout: 0,
+// 		ParkdogTimeout:         0,
+// 		ProcessDoneTimeout:     0,
+// 		BarkTimeout:            0,
+// 		ResetCallsTimeout:      0,
+// 		ResetAllCallsTimeout:   0,
+// 		ShutdownTimeout:        0,
+// 	}
+// }
+
+// // ILog represents a log entry
+// type ILog struct {
+// 	Policy  string
+// 	Fail    *IPolicy
+// 	Succeed *IPolicy
+// }
+
+// type IConv struct {
+// 	Conv float64
+// 	Unit string
+// }
+
+// func durationToHour(t time.Duration) IConv {
+// 	return IConv{Conv: t.Hours(), Unit: "hr"}
+// }
+
+// func durationToMin(t time.Duration) IConv {
+// 	return IConv{Conv: t.Minutes(), Unit: "min"}
+// }
+
+// func durationToSec(t time.Duration) IConv {
+// 	return IConv{Conv: t.Seconds(), Unit: "sec"}
+// }
+
+// func durationToMS(t time.Duration) IConv {
+// 	return IConv{Conv: float64(t / time.Millisecond), Unit: "ms"}
+// }
+
+// // UniqueRank returns atomic id for the func rank
+// // func UniqueRank(i int) int {
+// // 	var rank int32 = 0
+// // 	return int(atomic.AddInt32(&rank, int32(i)))
+// // }
+
+// // GetPolicy returns a policy by name
+// func (rd *Dog[T]) GetPolicy(name string) *Policy[T] {
+// 	rd.mu.RLock()
+// 	defer rd.mu.RUnlock()
+// 	return rd.policy[name]
+// }
+
+// // GetAllPolicies returns all registered policy names
+// func (rd *Dog[T]) GetAllPolicies() []string {
+// 	rd.mu.RLock()
+// 	defer rd.mu.RUnlock()
+
+// 	names := make([]string, 0, len(rd.policy))
+// 	for name := range rd.policy {
+// 		names = append(names, name)
+// 	}
+// 	return names
+// }
+
+// // GetProgress returns progress for a policy
+// func (rd *Dog[T]) GetProgress(name string) *ExeProgress {
+// 	rd.mu.RLock()
+// 	defer rd.mu.RUnlock()
+
+// 	if progress, exists := rd.progress[name]; exists {
+// 		return progress
+// 	}
+// 	return nil
+// }
+
+// // GetHealth returns health status for a policy
+// func (rd *Dog[T]) GetHealth(name string) *Health {
+// 	rd.mu.RLock()
+// 	defer rd.mu.RUnlock()
+
+// 	if health, exists := rd.health[name]; exists {
+// 		return health
+// 	}
+// 	return nil
+// }
+
+// // updateProgress updates real-time progress
+// func (rd *Dog[T]) updateProgress(policyName string, percent uint64) {
+// 	if percent > 100 {
+// 		percent = 100
+// 	}
+
+// 	rd.mu.Lock()
+// 	defer rd.mu.Unlock()
+
+// 	if progress, exists := rd.progress[policyName]; exists {
+// 		progress.SetCompletion(time.Duration(percent))
+// 		health := rd.genHealth(percent)
+// 		progress.SetHealth(health)
+// 		rd.health[policyName] = &health
+// 	}
+// }
+
+// // genHealth returns health based on current progress
+// // 100-50 : healhty
+// // 0-30: danger
+// // 0: not healthy
+// func (rd *Dog[T]) genHealth(progress uint64) Health {
+// 	h := Health{}
+
+// 	switch {
+// 	case progress >= 75:
+// 		h.IsHealthy = true
+// 		h.Silent = true
+// 	case progress >= 50 && progress < 75:
+// 		h.IsHealthy = true
+// 		h.Mid = false
+// 	case progress >= 30 && progress < 50:
+// 		h.IsHealthy = true
+// 		h.Mid = true
+// 	case progress > 0 && progress < 30:
+// 		h.Danger = true
+// 		h.IsHealthy = false
+// 	case progress == 0:
+// 		h.IsHealthy = false
+// 	}
+
+// 	return h
+// }
+
+// // calculateStatus returns the current report status baseed on executions
+// func (rd *Dog[T]) calculateStatus(report *WatchdogReport) string {
+// 	if report.ExecutionCount.Load() == 0 {
+// 		return "pending"
+// 	}
+// 	if report.SuccessRate >= 0.95 {
+// 		return "healthy"
+// 	} else if report.SuccessRate >= 0.80 {
+// 		return "warning"
+// 	} else {
+// 		return "critical"
+// 	}
+// }
+// package dog
+
+// import (
+// 	"fmt"
+// 	"log"
+// 	rumpaint "rum/app/paint"
+// )
+
+// func (rd *Dog[T]) watchDog() {
+// 	log.Println("watch dog  ....")
+// 	for {
+// 		fmt.Println("[watchDog] Waiting for message...")
+
+// 		select {
+// 		case policy := <-rd.register:
+// 			rd.registerPolicy(policy)
+
+// 		case name := <-rd.unregister:
+// 			rd.unregisterPolicy(name)
+
+// 		case policyName := <-rd.parkDog:
+// 			rd.monitorPolicy(policyName)
+
+// 		case done := <-rd.done:
+// 			rd.processDone(done)
+
+// 		case bark := <-rd.bark:
+// 			rd.processBark(bark)
+
+// 		case policyName := <-rd.reset:
+// 			rd.resetPolicy(policyName)
+
+// 		case <-rd.resetAll:
+// 			rd.resetAllPolicies()
+
+// 		case <-rd.stopCh:
+// 			x := rumpaint.Title("Shutting down... ")
+// 			log.Println(x)
+// 			t := rumpaint.Header(`
+
+// ██████╗░░█████╗░░██████╗░
+// ██╔══██╗██╔══██╗██╔════╝░
+// ██║░░██║██║░░██║██║░░██╗░
+// ██║░░██║██║░░██║██║░░╚██╗
+// ██████╔╝╚█████╔╝╚██████╔╝
+// ╚═════╝░░╚════╝░░╚═════╝░
+// 			`)
+// 			log.Println(t)
+// 			return
+
+// 		case <-rd.ctx.Done():
+// 			x := rumpaint.Title("context done... ")
+// 			log.Println(x)
+// 			t := rumpaint.Header(`
+
+// ██████╗░░█████╗░░██████╗░
+// ██╔══██╗██╔══██╗██╔════╝░
+// ██║░░██║██║░░██║██║░░██╗░
+// ██║░░██║██║░░██║██║░░╚██╗
+// ██████╔╝╚█████╔╝╚██████╔╝
+// ╚═════╝░░╚════╝░░╚═════╝░
+// 			`)
+// 			log.Println(t)
+// 			return
+// 		}
+// 	}
+// }
+
+// // tickSinglePolicy checks timeout for a specific policy
+// func (rd *Dog[T]) tickSinglePolicy(policyName string) {
+// 	// rd.mu.Lock()
+// 	// defer rd.mu.Unlock()
+
+// 	progress, pExists := rd.progress[policyName]
+// 	policy, policyExists := rd.policy[policyName]
+
+// 	if !pExists || !policyExists || !progress.IsRunning || progress.StartedAtNano == 0 {
+// 		return
+// 	}
+
+// 	start := time.Unix(0, progress.StartedAtNano)
+// 	duration := time.Since(start)
+// 	timeout := policy.GetBase()
+
+// 	var percent uint64
+// 	if timeout > 0 {
+
+// 		percent = uint64((float64(duration) / float64(timeout)) * 100)
+// 	}
+
+// 	if duration >= timeout {
+// 		rd.processBark(IBark{
+// 			Reason:   "Timeout Exceeded",
+// 			Policy:   policyName,
+// 			Time:     time.Now(),
+// 			Duration: duration,
+// 		})
+// 	} else {
+// 		rd.updateProgress(policyName, percent)
+// 	}
+// }
+
+// ensureReport inits the report
+// func (rd *Dog[T]) ensureReport(policyName string, policy *Policy[T]) {
+
+// 	if _, exists := rd.reports[policyName]; !exists {
+// 		x := &WatchdogReport{
+// 			PolicyName:     policyName,
+// 			StartTime:      time.Now(),
+// 			TimeLimit:      policy.GetBase(),
+// 			FailureReasons: make([]string, 0),
+// 			MinDuration:    time.Duration(int64(^uint64(0) >> 1)), // Max int64
+// 		}
+// 		rd.reports[policyName] = x
+// 	}
+
+// }
+// var sb strings.Builder
+
+// Header
+// sb.WriteString("\n")
+// sb.WriteString("╔════════════════════════════════════════════════════════════════╗\n")
+// sb.WriteString(fmt.Sprintf("║  🐕 WATCHDOG REPORT: %s\n", padRight(r.PolicyName, 45)))
+// sb.WriteString("╠════════════════════════════════════════════════════════════════╣\n")
+
+// Basic Info
+// sb.WriteString("║ EXECUTION INFO:\n")
+// sb.WriteString(fmt.Sprintf("║   • Policy Name:      %s\n", r.PolicyName))
+// sb.WriteString(fmt.Sprintf("║   • Status:           %s\n", getStatusEmoji(r.Status)+r.Status))
+// sb.WriteString(fmt.Sprintf("║   • Start Time:       %s\n", r.StartTime.Format("2006-01-02 15:04:05")))
+// sb.WriteString(fmt.Sprintf("║   • End Time:         %s\n", r.EndTime.Format("2006-01-02 15:04:05")))
+// sb.WriteString(fmt.Sprintf("║   • Duration:         %v\n", r.EndTime.Sub(r.StartTime)))
+// sb.WriteString("║\n")
+// sb.WriteString(fmt.Sprintf("║   • Total Executions:%s %d\n", padLeft("", 10), totalExec))
+// sb.WriteString(fmt.Sprintf("║   • Passed (< limit): %s %d (%.1f%%)\n",
+// 	padLeft("", 10), passedExec, r.getPassedProgress()))
+// sb.WriteString(fmt.Sprintf("║   • Exceeded (≥ limit):%s %d (%.1f%%)\n",
+// 	padLeft("", 9), exceededExec, r.getExceedProgress()))
+// sb.WriteString(fmt.Sprintf("║   • Failed:           %s %d (%.1f%%)\n",
+// 	padLeft("", 10), failureExec, (1-r.SuccessRate)*100))
+// sb.WriteString(fmt.Sprintf("║   • Success Rate:     %s %.2f%%\n",
+// 	padLeft("", 10), r.SuccessRate*100))
+// sb.WriteString("║\n")
+// Time Analysis
+// sb.WriteString("║ TIME ANALYSIS:\n")
+// sb.WriteString(fmt.Sprintf("║   • Time Limit:       %s %v\n", padLeft("", 10), r.TimeLimit))
+// sb.WriteString(fmt.Sprintf("║   • Min Duration:     %s %v\n", padLeft("", 10), r.MinDuration))
+// sb.WriteString(fmt.Sprintf("║   • Max Duration:     %s %v\n", padLeft("", 10), r.MaxDuration))
+// sb.WriteString(fmt.Sprintf("║   • Avg Duration:     %s %v\n", padLeft("", 10), r.AvgDuration))
+// sb.WriteString(fmt.Sprintf("║   • Total Duration:   %s %v\n", padLeft("", 10), r.TotalDuration))
+// sb.WriteString("║\n")
+// sb.WriteString("║ SYSTEM METRICS:\n")
+// sb.WriteString("║   CPU:\n")
+// sb.WriteString("║   CPU Name:    " + snapshot.CPUName + "\n")
+// sb.WriteString(fmt.Sprintf("║     • Usage:         %.1f%%\n", snapshot.CPUUsage))
+// sb.WriteString(fmt.Sprintf("║     • Temperature:   %.1f°C\n", snapshot.CPUTemp))
+// sb.WriteString(fmt.Sprintf("║     • Health:        %s\n", snapshot.GetCPUHealth()))
+// sb.WriteString("║   Memory:\n")
+// sb.WriteString(fmt.Sprintf("║     • Alloc:         %.2f MB\n", snapshot.AllocMB))
+// sb.WriteString(fmt.Sprintf("║     • Max Seen:      %.2f MB\n", snapshot.MaxMemorySeenMB))
+// sb.WriteString(fmt.Sprintf("║     • Percent:       %.1f%%\n", snapshot.MemoryPercent))
+// sb.WriteString(fmt.Sprintf("║     • Health:        %s\n", snapshot.GetMemoryHealth()))
+// sb.WriteString("║   GPU:\n")
+// sb.WriteString(fmt.Sprintf("║     • Name:          %s\n", snapshot.GPUName))
+// sb.WriteString(fmt.Sprintf("║     • Usage:         %.1f%%\n", snapshot.GPUUsage))
+// sb.WriteString(fmt.Sprintf("║     • Temperature:   %.1f°C\n", snapshot.GPUTemp))
+// sb.WriteString(fmt.Sprintf("║     • Health:        %s\n", snapshot.GetGPUHealth()))
+// sb.WriteString("║   Thermal:\n")
+// sb.WriteString(fmt.Sprintf("║     • Level:         %s\n", snapshot.ThermalLevel))
+// sb.WriteString(fmt.Sprintf("║     • Throttled:     %v\n", snapshot.CPUThrottled))
+// sb.WriteString(fmt.Sprintf("║   Goroutines:       %d\n", snapshot.GoroutineCount))
+// sb.WriteString("║\n")
+
+// Footer
+// sb.WriteString("╚════════════════════════════════════════════════════════════════╝\n")
+
+// return sb.String()

@@ -2,6 +2,7 @@
 package stack
 
 import (
+	"slices"
 	"sync"
 )
 
@@ -138,6 +139,10 @@ func (s *Stack[T]) Replace(index int, value T) {
 		return
 	}
 	s.data[index] = value
+}
+
+func (s *Stack[T]) Contains(data T) bool {
+	return slices.Contains(s.data, data)
 }
 
 // end

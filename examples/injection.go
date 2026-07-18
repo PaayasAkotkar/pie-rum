@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	injection "pie-rum-sdk/di/core"
+	sdk "pie-rum-sdk/di/sdk"
 	"reflect"
-	injection "rum/app/di"
 	"time"
 )
 
@@ -32,43 +33,48 @@ type WorkerService struct {
 	WorkerID int
 }
 
-//// PlayInjection demonstrates how to use the dependency-injection package cleanly
-//func PlayInjection() {
-//	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-//	defer cancel()
-//
-//	// exampleSingletonAndTransient(ctx)
-//
-//	examplePooled(ctx)
-//
-//	// exampleRebuild(ctx)
-//}
+// Playsdk demonstrates how to use the dependency-sdk package cleanly
+func Playsdk() {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 
-func PlayDIexampleSingletonAndTransient(ctx context.Context) {
-	client := injection.NewClient(ctx, "node-singleton")
+	// exampleSingletonAndTransient(ctx)
+
+	examplePooled(ctx)
+
+	// exampleRebuild(ctx)
+}
+
+func exampleSingletonAndTransient(ctx context.Context) {
+	client := sdk.NewClient(ctx, "node-singleton")
 
 	dbServiceType := reflect.TypeOf((*DatabaseService)(nil))
 	userServiceType := reflect.TypeOf((*UserService)(nil))
 
 	// Register Singleton
-	client.AddSingleton(dbServiceType, injection.Factory{
-		Fn: func(ctx context.Context, c *injection.Container) (any, error) {
-			log.Println("Initializing Singleton DatabaseService...")
-			return &DatabaseService{ConnectionID: "DB-CONN-001"}, nil
+	client.AddSingleton(&sdk.ServiceRequest{
+		Type: dbServiceType,
+		Factory: injection.Factory{
+			Fn: func(ctx context.Context, c *injection.Container) (any, error) {
+				log.Println("Initializing Singleton DatabaseService...")
+				return &DatabaseService{ConnectionID: "DB-CONN-001"}, nil
+			},
 		},
 	})
 
 	// Register Transient
-	client.AddTransient(userServiceType, injection.Factory{
-		Fn: func(ctx context.Context, c *injection.Container) (any, error) {
-			log.Println("Initializing Transient UserService...")
-			dbAny, err := c.GetService(dbServiceType)
-			if err != nil {
-				return nil, fmt.Errorf("failed to get DatabaseService: %w", err)
-			}
-			return &UserService{DB: dbAny.(*DatabaseService)}, nil
-		},
-	})
+	client.AddTransient(&sdk.ServiceRequest{
+		Type: userServiceType,
+		Factory: injection.Factory{
+			Fn: func(ctx context.Context, c *injection.Container) (any, error) {
+				log.Println("Initializing Transient UserService...")
+				dbAny, err := c.GetService(dbServiceType)
+				if err != nil {
+					return nil, fmt.Errorf("failed to get DatabaseService: %w", err)
+				}
+				return &UserService{DB: dbAny.(*DatabaseService)}, nil
+			},
+		}})
 
 	// Subscribe to the build status event via Chakra
 	buildStatusCh := client.BuildStatus()
@@ -95,17 +101,18 @@ func PlayDIexampleSingletonAndTransient(ctx context.Context) {
 	client.Stop()
 }
 
-func PlayDIexamplePooled(ctx context.Context) {
-	client := injection.NewClient(ctx, "node-pooled")
+func examplePooled(ctx context.Context) {
+	client := sdk.NewClient(ctx, "node-pooled")
 	workerServiceType := reflect.TypeOf((*WorkerService)(nil))
 
 	workerCounter := 0
-	client.AddPooled(workerServiceType, injection.Factory{
-		Fn: func(ctx context.Context, c *injection.Container) (any, error) {
+	client.AddPooled(&sdk.ServiceRequest{
+		Type: workerServiceType,
+		Factory: injection.Factory{Fn: func(ctx context.Context, c *injection.Container) (any, error) {
 			workerCounter++
 			log.Printf("Initializing Pooled WorkerService %d...\n", workerCounter)
 			return &WorkerService{WorkerID: workerCounter}, nil
-		},
+		}},
 	}, &injection.PoolConfig{
 		MinConnections:    2,
 		MaxConnections:    5,
@@ -136,15 +143,17 @@ func PlayDIexamplePooled(ctx context.Context) {
 	client.Stop()
 }
 
-func PlayDIexampleRebuild(ctx context.Context) {
-	client := injection.NewClient(ctx, "node-rebuild")
+func exampleRebuild(ctx context.Context) {
+	client := sdk.NewClient(ctx, "node-rebuild")
 	dbServiceType := reflect.TypeOf((*DatabaseService)(nil))
 
-	client.AddSingleton(dbServiceType, injection.Factory{
-		Fn: func(ctx context.Context, c *injection.Container) (any, error) {
-			log.Println("Initializing DB for Scale Event...")
-			return &DatabaseService{ConnectionID: "DB-SCALE"}, nil
-		},
+	client.AddSingleton(&sdk.ServiceRequest{
+		Type: dbServiceType,
+		Factory: injection.Factory{
+			Fn: func(ctx context.Context, c *injection.Container) (any, error) {
+				log.Println("Initializing DB for Scale Event...")
+				return &DatabaseService{ConnectionID: "DB-SCALE"}, nil
+			}},
 	})
 
 	go func() {
