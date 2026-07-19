@@ -41,5 +41,6 @@ Supports all the fields in the list of computing or programming.
 ---
 
 ## Quick-Start
-1. Pick any example from using the example package and run it to understand how things working
-2. simply run the complie.bat for windows & compile.sh for linux & mac
+1. Run the ``` go mod tidy ```  to init the sum
+2. Pick any example from using the example package and run it to understand how things working
+3. simply run the complie.bat for windows & compile.sh for linux & mac
