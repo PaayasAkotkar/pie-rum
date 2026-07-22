@@ -40,11 +40,6 @@ Supports all the fields in the list of computing or programming.
 > 5) Most of the things are kinda imroved by calude so yeah shotout to claude
 ---
 
-## Todo:
-1. gracefull shutdown [ _____ ]
-2. add promethus
-3. add uber-fx
-
 ## Quick-Start
 1. Pick any example from using the example package and run it to understand how things working
 2. simply run the complie.bat for windows & compile.sh for linux & mac
