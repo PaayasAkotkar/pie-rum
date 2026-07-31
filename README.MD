@@ -83,7 +83,7 @@ store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 			})
 			kit.SetConfig(&pierum.IConfig{
 				Activate: true,
-			}) // keep it disable
+			}) 
 		})
 	}).
 		Build()
