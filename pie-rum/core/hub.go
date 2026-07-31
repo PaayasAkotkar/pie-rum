@@ -6,7 +6,7 @@ import (
 )
 
 // Hub listens the channels request
-func (r*PieRum[In, Out]) Hub() {
+func (r *PieRum[In, Out]) Hub() {
 	log.Println("listening 🐴")
 
 	for {
@@ -160,7 +160,7 @@ func (r*PieRum[In, Out]) Hub() {
 
 			case <-r.ctx.Done():
 				// r.wg.Wait().
-				printHeader()
+				printEndHeader()
 				return
 			}
 		}()

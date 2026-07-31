@@ -1,3 +1,5 @@
+<br>
+<br>
 <div align="center">
 + ██████╗░██╗███████╗  ██████╗░██╗░░░██╗███╗░░░███╗
 + ██╔══██╗██║██╔════╝  ██╔══██╗██║░░░██║████╗░████║
@@ -6,10 +8,21 @@
 + ██║░░░░░██║███████╗  ██║░░██║╚██████╔╝██║░╚═╝░██║
 + ╚═╝░░░░░╚═╝╚══════╝  ╚═╝░░╚═╝░╚═════╝░╚═╝░░░░░╚═╝
 </div>
+<br>
+<br>
+
+--- 
+
+<div align="center">
 <img src="/assets/logo/logo.png" alt="pie-rum-logo"/>
+</div>
+<div align="center">
+<b>Polyglot Integrated Environment: Run Your Models</b>
+</div>
+<br>
+<br>
 
-### Polyglot Integrated Environment: Run Your Models
-
+## Overview
 A developer-centric framework AI orchestration, and work engine. It bridges the gap between the implemented system layers and developer’s communication. Reducing the complexity of tools or communication apps and providing one complete codex for the organization.
 Supports all the fields in the list of computing or programming.
 
@@ -143,6 +156,8 @@ store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 		})
 ```
 
+---
+
 > [!NOTE]
 > 
 > 1) **Testing for the meta-leaderboard is left** > Do test it and report how you guys liked it what more is needed
@@ -161,16 +176,33 @@ store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 1. Pick any example from using the example package and run it to understand how things working
 2. simply run the complie.bat for windows & compile.sh for linux & mac
 
+---
+
 ## New 🔥 🌟
 1. playground: you can now use the chat-app to work around frontend and backend
 2. plugin: allows you to get the reports in your own [finally 🤗] 🔥
 3. refresh: keeps at least one field in the [m:n] config active
 4. only supports direct config part
 
+---
+
 ## Changes 🪛
 1. removed the meta-data stuffs
 2. removed the grpc active|deative|inactive|swap services
 
+---
+
 ## Upcoming 🔥 🚋
 1. promethus addition
 2. uber-fx
+
+---
+
+<div align="center">
++ ███████╗███╗   ██╗██████╗ 
++ ██╔════╝████╗  ██║██╔══██╗
++ █████╗  ██╔██╗ ██║██║  ██║
++ ██╔══╝  ██║╚██╗██║██║  ██║
++ ███████╗██║ ╚████║██████╔╝
++ ╚══════╝╚═╝  ╚═══╝╚═════╝
+</div>
