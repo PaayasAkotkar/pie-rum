@@ -2,7 +2,9 @@ package pierum
 
 import (
 	"log"
+	"pie-rum-sdk/common"
 	"sync"
+	"time"
 )
 
 type IWrite[In, Out any] struct {
@@ -21,17 +23,38 @@ func (r *PieRum[In, Out]) autoWrite(profile ISequence[In]) *IWrite[In, Out] {
 	go func() {
 		defer wg.Done()
 
-		prf := r.store.registry[profile.Profile]
+		prf := r.Store.Registry[profile.Profile]
+		var profiles, kits, services, dispatchers, events []string
+		profiles = append(profiles, profile.Profile)
 
 		for _, k := range prf.GetKits() {
+			log.Printf("workin on kit %s", k.Name)
+			if !k.Config.getActivate() {
+				continue
+			}
+
 			for _, ser := range k.GetServices() {
-				for _, dispatcher := range ser.registry {
+				log.Printf("workin on service %s", ser.Name)
+				if !ser.Config.getActivate() {
+					continue
+				}
+				for _, dispatcher := range ser.Registry {
+					log.Printf("workin on dispatcher %s", dispatcher.Name)
+
+					if !ser.Config.getActivate() {
+						continue
+					}
+
 					mx := profile.Input
+
+					kits = append(kits, k.Name)
+					services = append(services, ser.Name)
+					dispatchers = append(kits, dispatcher.Name)
 
 					if !r.settings.EnableMetricReport {
 						dispatcher.normalCall(ctx, *mx)
 						for _, res := range dispatcher.result {
-							r.store.AddResult(res)
+							r.Store.AddResult(res)
 						}
 					} else {
 						var errs = dispatcher.metricCall(ctx, *mx)
@@ -43,15 +66,29 @@ func (r *PieRum[In, Out]) autoWrite(profile ISequence[In]) *IWrite[In, Out] {
 						}
 
 						for eventName := range dispatcher.metric {
+							log.Printf("workin on event %s", eventName)
 							inp := dispatcher.GetResults(eventName)
-							r.store.AddResult(inp)
+							if inp == nil {
+								continue
+							}
+							events = append(kits, eventName)
+							inp.MetaInfo = IDispatchResultMetaData{
+								Profile:     profiles,
+								Kits:        kits,
+								Services:    services,
+								Dispatchers: dispatchers,
+								Events:      events,
+							}
+							inp.CreatedAt = common.FormatDateForClient(time.Now())
+							r.Store.AddResult(inp)
 						}
 					}
 
-					r.store.UpdateProfileSlateUsage(profile.Profile)
-					prf.UpdateKitSlateUsage(k.GetName())
-					k.UpdateServiceSlateUsage(ser.GetName())
-					ser.UpdateDispatcherSlateUsage(dispatcher.GetName())
+					//r.Store.UpdateProfileSlateUsage(profile.Profile)
+					//prf.UpdateKitSlateUsage(k.GetName())
+					//k.UpdateServiceSlateUsage(ser.GetName())
+					//ser.UpdateDispatcherSlateUsage(dispatcher.GetName())
+
 				}
 			}
 		}
@@ -59,7 +96,7 @@ func (r *PieRum[In, Out]) autoWrite(profile ISequence[In]) *IWrite[In, Out] {
 
 	wg.Wait()
 
-	finalResult := r.store
+	finalResult := r.Store
 	res := finalResult.result
 	x := &IResults{
 		Resuts:  res,

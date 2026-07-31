@@ -29,6 +29,14 @@ func (d *Dispatcher[In, Out]) ReplaceEvent(name string, event *Event[In, Out]) *
 	return d
 }
 
+func (d *Dispatcher[In, Out]) SetConfig(conf *rum.IConfig) {
+	d.core.SetConfig(conf)
+}
+
+func (d *Dispatcher[In, Out]) SetSettings(settings rum.Settings) {
+	d.core.Settings = settings
+}
+
 func (d *Dispatcher[In, Out]) SetEvent(name string, rank int, fn func(event *Event[In, Out])) *Dispatcher[In, Out] {
 	engine := NewNode(d, func() *Event[In, Out] {
 		return NewEvent[In, Out](rank)

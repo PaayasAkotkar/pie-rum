@@ -35,7 +35,7 @@ func (r*PieRum[In, Out]) Hub() {
 
 			case token := <-r.monitorTags:
 				r.addRequestCount()
-				r.store.SetMonitorTags(token)
+				r.Store.SetMonitorTags(token)
 
 			case tokens := <-r.activateProfile:
 				r.addRequestCount()

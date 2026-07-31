@@ -30,125 +30,13 @@ message IPackage {
   bytes           package = 4;
 }
 
-message IConfig{
-  string profile    = 1;
-  string kit        = 2;
-  string service    = 3;
-  string dispatcher = 4;
-  string event      = 5;
-  string swap       = 6;
-};
-
-message IDeactivate {
-  repeated IConfig config = 1;
-};
-
-message IActivate {
-  repeated IConfig config = 1;
-};
-
-message ISwap{
-  repeated IConfig config = 1;
-}
-
 message ISucceed {
   bool succeed = 1;
 }
 
 message IPostRequest { repeated IPost post = 1; };
 
-// configurations -------------------------
-
-// profiles
-message IDeactivateProfileRequest {  IDeactivate deactivate = 1; }
-
-message IActivateProfileRequest {  IActivate activate = 1; }
-
-message ISwapProfileRequest {  ISwap swap = 1; }
-// end
-
-// kit
-message IDeactivateKitRequest { IDeactivate deactivate = 1; }
-
-message IActivateKitRequest {  IActivate activate = 1; }
-
-message ISwapKitRequest {  ISwap swap = 1; }
-// end
-
-// services
-message IDeactivateServiceRequest { IDeactivate deactivate = 1; }
-
-message IActivateServiceRequest {  IActivate activate = 1; }
-
-message ISwapServiceRequest {  ISwap swap = 1; }
-// end
-
-// dispatcher
-message IDeactivateDispatcherRequest { IDeactivate deactivate = 1; }
-
-message IActivateDispatcherRequest {  IActivate activate = 1; }
-
-message ISwapDispatcherRequest {  ISwap swap = 1; }
-
-// end
-
-// events
-message IDeactivateEventRequest {  IDeactivate deactivate = 1; }
-
-message IActivateEventRequest {  IActivate activate = 1; }
-
-message ISwapEventRequest {  ISwap swap = 1; }
-// end
-
-// end
-
 message IPostResponse {  ISucceed succeed =  1; };
-
-// configurations
-
-// profiles
-message IDeactivateProfileResponse {  ISucceed succeed = 1; }
-
-message IActivateProfileResponse {  ISucceed succeed = 1; }
-
-message ISwapProfileResponse {  ISucceed succeed = 1; }
-// end
-
-// kit
-message IDeactivateKitResponse {  ISucceed succeed = 1; }
-
-message IActivateKitResponse {  ISucceed succeed = 1; }
-
-message ISwapKitResponse {  ISucceed succeed = 1; }
-// end
-
-// service
-message ISwapServiceResponse {  ISucceed succeed= 1; }
-
-message IDeactivateServiceResponse {  ISucceed succeed = 1; }
-
-message IActivateServiceResponse {  ISucceed succeed = 1; }
-// end
-
-// dispatcher
-message IDeactivateDispatcherResponse {  ISucceed succeed = 1; }
-
-message IActivateDispatcherResponse {  ISucceed succeed = 1; }
-
-message ISwapDispatcherResponse {  ISucceed succeed= 1; }
-// end
-
-// events
-message IDeactivateEventResponse {  ISucceed succeed = 1; }
-
-message IActivateEventResponse {  ISucceed succeed = 1; }
-
-message ISwapEventResponse {  ISucceed succeed = 1; }
-// end
-
-// end
-
-// end -------------------------
 
 message IMonitorTagRequest{
   repeated string tag = 1;
@@ -166,89 +54,43 @@ message ReleaseResponse{
   ISucceed succeed = 1;
 }
 
-// metadatas
-message IProfileMetadataRequest{
-  repeated IPackageRequest name = 1;
+
+message IConfig{
+  bool activate =1;
+  ISwap swap =2;
 }
 
-message IKitMetadataRequest{
-  repeated IPackageRequest name = 1;
+message ISwap{
+  string with=1;
+  string current=2;
+  bool swap=3;
 }
 
-message IServiceMetadataRequest{
-  repeated IPackageRequest name = 1;
+message IConfigResponse{
+  string error=1;
+  bool succeed=2;
 }
 
-message IDispatcherMetadataRequest{
-  repeated IPackageRequest name = 1;
-}
-
-message IEventMetadataRequest{
-  repeated IPackageRequest name = 1;
-}
-
-message IProfileMetadataResponse{
-  repeated IPackage packet = 1;
-}
-
-message IKitMetadataResponse{
-  repeated IPackage packet = 1;
-}
-
-message IServiceMetadataResponse{
-  repeated IPackage packet = 1;
-}
-
-message IDispatcherMetadataResponse{
-  repeated IPackage packet = 1;
-}
-
-message IEventMetadataResponse{
-  repeated IPackage packet = 1;
-}
-
-message IPullProfileMetadataRequest{
-  // todo add the api key and all
-}
-
-message IPullKitMetadataRequest{
-  IPackageRequest name = 1;
-}
-
-message IPullServiceMetadataRequest{
-  IPackageRequest name = 1;
-}
-
-message IPullDispatcherMetadataRequest{
-  IPackageRequest name = 1;
-}
-
-message IPullEventMetadataRequest{
-  IPackageRequest name = 1;
-}
-
-message IPullProfileMetadataResponse{
-  IPackage packet = 1;
+message IDocRequest{
 
 }
 
-message IPullKitMetadataResponse{
-  IPackage packet = 1;
+message IDocResponse{
+  string doc=1;
+  bool succeed=2;
+  string error=3;
 }
 
-message IPullServiceMetadataResponse{
-  IPackage packet = 1;
+message IConfigRequest{
+  IConfig config=1;
+  string profileName=2;
+  string kitName=3;
+  string serviceName=4;
+  string dispatcherName=5;
+  string eventName=6;
 }
 
-message IPullDispatcherMetadataResponse{
-  IPackage packet = 1;
-}
-
-message IPullEventMetadataResponse{
-  IPackage packet = 1;
-}
-// end
-
+///
 // OnRumService provides control plane services
 // activate:- only if present & is deactive
 // deactivate:- only if present & is active
@@ -266,65 +108,332 @@ service OnRumService {
 
 // configurations --------
 
-  // deactivates the profile
-  rpc DeactivateProfile(IDeactivateProfileRequest) returns (IDeactivateProfileResponse);
-// activates the profile
-  rpc ActivateProfile(IActivateProfileRequest) returns (IActivateProfileResponse);
-// swaps the profile
-  rpc SwapProfile(ISwapProfileRequest) returns (ISwapProfileResponse);
+rpc UpdateProfileConfig(IConfigRequest) returns (IConfigResponse);
+rpc UpdateKitConfig(IConfigRequest) returns (IConfigResponse);
+rpc UpdateServiceConfig(IConfigRequest) returns (IConfigResponse);
+rpc UpdateDispatcherConfig(IConfigRequest) returns (IConfigResponse);
+rpc UpdateEventConfig(IConfigRequest) returns (IConfigResponse);
 
-  // deactivates the kit
-  rpc DeactivateKit(IDeactivateKitRequest) returns (IDeactivateKitResponse);
-  // activates the kit
-  rpc ActivateKit(IActivateKitRequest) returns (IActivateKitResponse);
-  // swaps the kit
-  rpc SwapKit(ISwapKitRequest) returns (ISwapKitResponse);
+rpc GetDoc(IDocRequest) returns (IDocResponse);
 
-  // deactivates the service
-  rpc DeactivateService(IDeactivateServiceRequest) returns (IDeactivateServiceResponse);
-  // activates the service
-  rpc ActivateService(IActivateServiceRequest) returns (IActivateServiceResponse);
-  // swaps the service
-  rpc SwapService(ISwapServiceRequest) returns (ISwapServiceResponse);
-
-  // deactivates the dispatcher
-  rpc DeactivateDispatcher(IDeactivateDispatcherRequest) returns (IDeactivateDispatcherResponse);
-  // activates the dispatcher
-  rpc ActivateDispatcher(IActivateDispatcherRequest) returns (IActivateDispatcherResponse);
-  // swaps the dispatcher
-  rpc SwapDispatcher(ISwapDispatcherRequest) returns (ISwapDispatcherResponse);
-
-  // deactivates the event
-  rpc DeactivateEvent(IDeactivateEventRequest) returns (IDeactivateEventResponse);
-  // activates the event
-  rpc ActivateEvent(IActivateEventRequest) returns (IActivateEventResponse);
-  // swaps the event
-  rpc SwapEvent(ISwapEventRequest) returns (ISwapEventResponse);
-
-  // end ------------
-
-  // metadatas
-  // -------------------------
-  // get profile metadata
-  rpc GetProfileMetadata(IProfileMetadataRequest) returns (IProfileMetadataResponse);
-  // get kit metadata
-  rpc GetKitMetadata(IKitMetadataRequest) returns (IKitMetadataResponse);
-  // get service metadata
-  rpc GetServiceMetadata(IServiceMetadataRequest) returns (IServiceMetadataResponse);
-  // get dispatcher metadata
-  rpc GetDispatcherMetadata(IDispatcherMetadataRequest) returns (IDispatcherMetadataResponse);
-  // get event metadata
-  rpc GetEventMetadata(IEventMetadataRequest) returns (IEventMetadataResponse);
-
-  // pull profile metadata
-  rpc PullProfileMetadata(IPullProfileMetadataRequest) returns (IPullProfileMetadataResponse);
-  // pull kit metadta
-  rpc PullKitMetadata(IPullKitMetadataRequest) returns (IPullKitMetadataResponse);
-  // pull service metadata
-  rpc PullServiceMetadata(IPullServiceMetadataRequest) returns (IPullServiceMetadataResponse);
-  // pull dispatcher metadata
-  rpc PullDispatcherMetadata(IPullDispatcherMetadataRequest) returns (IPullDispatcherMetadataResponse);
-  // pull event metadata
-  rpc PullEventMetadata(IPullEventMetadataRequest) returns (IPullEventMetadataResponse);
-  // end ------------
+ 
 }
+
+
+
+//////////////------------Removed-codes
+
+ // metadatas
+  // -------------------------
+  
+  // get profile metadata
+  
+// metadatas
+//message IProfileMetadataRequest{
+//  repeated IPackageRequest name = 1;
+//}
+//
+//message IKitMetadataRequest{
+//  repeated IPackageRequest name = 1;
+//}
+//
+//message IServiceMetadataRequest{
+//  repeated IPackageRequest name = 1;
+//}
+//
+//message IDispatcherMetadataRequest{
+//  repeated IPackageRequest name = 1;
+//}
+//
+//message IEventMetadataRequest{
+//  repeated IPackageRequest name = 1;
+//}
+//
+//message IMetadataResponse{
+//  repeated IPackage packet=1;
+//}
+//
+//message IPullProfileMetadataRequest{
+//  // todo add the api key and all
+//}
+//
+//message IPullKitMetadataRequest{
+//  IPackageRequest name = 1;
+//}
+//
+//message IPullServiceMetadataRequest{
+//  IPackageRequest name = 1;
+//}
+//
+//message IPullDispatcherMetadataRequest{
+//  IPackageRequest name = 1;
+//}
+//
+//message IPullEventMetadataRequest{
+//  IPackageRequest name = 1;
+//}
+//
+//message IPullMetadataResponse{
+//  IPackage packet=1;
+//}
+
+///
+
+//  rpc GetProfileMetadata(IProfileMetadataRequest) returns (IMetadataResponse);
+//  // get kit metadata
+//
+//  rpc GetKitMetadata(IKitMetadataRequest) returns (IMetadataResponse);
+//  // get service metadata
+//
+//  rpc GetServiceMetadata(IServiceMetadataRequest) returns (IMetadataResponse);
+//  // get dispatcher metadata
+//
+//  rpc GetDispatcherMetadata(IDispatcherMetadataRequest) returns (IMetadataResponse);
+//  // get event metadata
+//
+//  rpc GetEventMetadata(IEventMetadataRequest) returns (IMetadataResponse);
+//
+//  // pull profile metadata
+//
+//  rpc PullProfileMetadata(IPullProfileMetadataRequest) returns (IPullMetadataResponse);
+//  // pull kit metadta
+//
+//  rpc PullKitMetadata(IPullKitMetadataRequest) returns (IPullMetadataResponse);
+//  // pull service metadata
+//
+//  rpc PullServiceMetadata(IPullServiceMetadataRequest) returns (IPullMetadataResponse);
+//  // pull dispatcher metadata
+//
+//  rpc PullDispatcherMetadata(IPullDispatcherMetadataRequest) returns (IPullMetadataResponse);
+//  // pull event metadata
+//  rpc PullEventMetadata(IPullEventMetadataRequest) returns (IPullMetadataResponse);
+//  //   end ------------
+
+//message IConfigProfileRequest{
+//  IConfig config=1;
+//  string profileName=2;
+//}
+//message IConfigKitRequest{
+//  IConfig config=1;
+//  string profileName=2;
+//  string kitName=3;
+//
+//}
+//message IConfigServiceRequest{
+//  IConfig config=1;
+//  string profileName=2;
+//  string kitName=3;
+//  string serviceName=4;
+//
+//}
+//message IConfigDispatcherRequest{
+//  IConfig config=1;
+//  string profileName=2;
+//  string kitName=3;
+//  string serviceName=4;
+//  string dispatcherName=5;
+//
+//}
+//message IConfigEventRequest{
+//  IConfig config=1;
+//  string profileName=2;
+//  string kitName=3;
+//  string serviceName=4;
+//  string dispatcherName=5;
+//  string eventName=6;
+//}
+
+//
+//// configurations
+//
+//// profiles
+//message IDeactivateProfileResponse {  ISucceed succeed = 1; }
+//
+//message IActivateProfileResponse {  ISucceed succeed = 1; }
+//
+//message ISwapProfileResponse {  ISucceed succeed = 1; }
+//// end
+//
+//// kit
+//message IDeactivateKitResponse {  ISucceed succeed = 1; }
+//
+//message IActivateKitResponse {  ISucceed succeed = 1; }
+//
+//message ISwapKitResponse {  ISucceed succeed = 1; }
+//// end
+//
+//// service
+//message ISwapServiceResponse {  ISucceed succeed= 1; }
+//
+//message IDeactivateServiceResponse {  ISucceed succeed = 1; }
+//
+//message IActivateServiceResponse {  ISucceed succeed = 1; }
+//// end
+//
+//// dispatcher
+//message IDeactivateDispatcherResponse {  ISucceed succeed = 1; }
+//
+//message IActivateDispatcherResponse {  ISucceed succeed = 1; }
+//
+//message ISwapDispatcherResponse {  ISucceed succeed= 1; }
+//// end
+//
+//// events
+//message IDeactivateEventResponse {  ISucceed succeed = 1; }
+//
+//message IActivateEventResponse {  ISucceed succeed = 1; }
+//
+//message ISwapEventResponse {  ISucceed succeed = 1; }
+// end
+
+// end
+
+// end -------------------------
+
+  // deactivates the profile
+//  rpc DeactivateProfile(IDeactivateProfileRequest) returns (IDeactivateProfileResponse);
+//// activates the profile
+//  rpc ActivateProfile(IActivateProfileRequest) returns (IActivateProfileResponse);
+//// swaps the profile
+//  rpc SwapProfile(ISwapProfileRequest) returns (ISwapProfileResponse);
+//
+//  // deactivates the kit
+//  rpc DeactivateKit(IDeactivateKitRequest) returns (IDeactivateKitResponse);
+//  // activates the kit
+//  rpc ActivateKit(IActivateKitRequest) returns (IActivateKitResponse);
+//  // swaps the kit
+//  rpc SwapKit(ISwapKitRequest) returns (ISwapKitResponse);
+//
+//  // deactivates the service
+//  rpc DeactivateService(IDeactivateServiceRequest) returns (IDeactivateServiceResponse);
+//  // activates the service
+//  rpc ActivateService(IActivateServiceRequest) returns (IActivateServiceResponse);
+//  // swaps the service
+//  rpc SwapService(ISwapServiceRequest) returns (ISwapServiceResponse);
+//
+//  // deactivates the dispatcher
+//  rpc DeactivateDispatcher(IDeactivateDispatcherRequest) returns (IDeactivateDispatcherResponse);
+//  // activates the dispatcher
+//  rpc ActivateDispatcher(IActivateDispatcherRequest) returns (IActivateDispatcherResponse);
+//  // swaps the dispatcher
+//  rpc SwapDispatcher(ISwapDispatcherRequest) returns (ISwapDispatcherResponse);
+//
+//  // deactivates the event
+//  rpc DeactivateEvent(IDeactivateEventRequest) returns (IDeactivateEventResponse);
+//  // activates the event
+//  rpc ActivateEvent(IActivateEventRequest) returns (IActivateEventResponse);
+//  // swaps the event
+//  rpc SwapEvent(ISwapEventRequest) returns (ISwapEventResponse);
+//
+//  // end ------------
+//
+
+//message IServiceMetadataResponse{
+//  repeated IPackage packet = 1;
+//}
+//
+//message IDispatcherMetadataResponse{
+//  repeated IPackage packet = 1;
+//}
+//
+//message IEventMetadataResponse{
+//  repeated IPackage packet = 1;
+//}
+
+//
+//message IProfileMetadataResponse{
+//  repeated IPackage packet = 1;
+//}
+//
+//message IKitMetadataResponse{
+//  repeated IPackage packet = 1;
+//}
+
+//message IPullProfileMetadataResponse{
+//  IPackage packet = 1;
+//
+//}
+//
+//message IPullKitMetadataResponse{
+//  IPackage packet = 1;
+//}
+//
+//message IPullServiceMetadataResponse{
+//  IPackage packet = 1;
+//}
+//
+//message IPullDispatcherMetadataResponse{
+//  IPackage packet = 1;
+//}
+//
+//message IPullEventMetadataResponse{
+//  IPackage packet = 1;
+//}
+// end
+
+// configurations -------------------------
+//
+//// profiles
+//message IDeactivateProfileRequest {  IDeactivate deactivate = 1; }
+//
+//message IActivateProfileRequest {  IActivate activate = 1; }
+//
+//message ISwapProfileRequest {  ISwap swap = 1; }
+//// end
+//
+//// kit
+//message IDeactivateKitRequest { IDeactivate deactivate = 1; }
+//
+//message IActivateKitRequest {  IActivate activate = 1; }
+//
+//message ISwapKitRequest {  ISwap swap = 1; }
+//// end
+//
+//// services
+//message IDeactivateServiceRequest { IDeactivate deactivate = 1; }
+//
+//message IActivateServiceRequest {  IActivate activate = 1; }
+//
+//message ISwapServiceRequest {  ISwap swap = 1; }
+//// end
+//
+//// dispatcher
+//message IDeactivateDispatcherRequest { IDeactivate deactivate = 1; }
+//
+//message IActivateDispatcherRequest {  IActivate activate = 1; }
+//
+//message ISwapDispatcherRequest {  ISwap swap = 1; }
+//
+//// end
+//
+//// events
+//message IDeactivateEventRequest {  IDeactivate deactivate = 1; }
+//
+//message IActivateEventRequest {  IActivate activate = 1; }
+//
+//message ISwapEventRequest {  ISwap swap = 1; }
+//// end
+//
+//// end
+//
+
+//message IConfig{
+//  string profile    = 1;
+//  string kit        = 2;
+//  string service    = 3;
+//  string dispatcher = 4;
+//  string event      = 5;
+//  string swap       = 6;
+//};
+//
+//message IDeactivate {
+//  repeated IConfig config = 1;
+//};
+//
+//message IActivate {
+//  repeated IConfig config = 1;
+//};
+//
+//message ISwap{
+//  repeated IConfig config = 1;
+//}

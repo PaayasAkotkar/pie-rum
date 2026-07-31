@@ -17,7 +17,7 @@ type Server struct {
 }
 
 // Serve starts the service
-func (r*PieRum[In, Out]) Serve(ctx context.Context, server Server) {
+func (r *PieRum[In, Out]) Serve(ctx context.Context, server Server) {
 	printHeader()
 	network := server.Network
 	address := server.Address
@@ -30,7 +30,7 @@ func (r*PieRum[In, Out]) Serve(ctx context.Context, server Server) {
 
 	grpcServer := grpc.NewServer(opts...)
 	rumrpc.RegisterOnRumServiceServer(grpcServer, r)
-
+	r.gserver = grpcServer
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
@@ -39,7 +39,6 @@ func (r*PieRum[In, Out]) Serve(ctx context.Context, server Server) {
 		}()
 		r.Hub()
 	}()
-
 	go func() {
 		<-ctx.Done()
 		log.Println("shutting down gRPC server...")

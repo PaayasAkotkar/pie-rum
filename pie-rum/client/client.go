@@ -30,11 +30,6 @@ func New(addr string, opts ...Option) (*PieRum, error) {
 		o.apply(&cfg)
 	}
 
-	// dialOpts, err := cfg.dialOptions()
-	// if err != nil {
-	// 	return nil, fmt.Errorf("xrpc: build dial options: %w", err)
-	// }
-
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
@@ -65,12 +60,26 @@ func (c *PieRum) POST(ctx context.Context, req *rumrpc.IPostRequest) (*rumrpc.IP
 	}
 	return resp, nil
 }
+
 func (r *PieRum) MonitorTag(ctx context.Context, in *rumrpc.IMonitorTagRequest) (*rumrpc.IMonitorTagResponse, error) {
-
 	client := r.inner
-
 	return client.MonitorTag(ctx, in)
 }
+
+func (r *PieRum) GetDoc(ctx context.Context, in *rumrpc.IDocRequest) (*rumrpc.IDocResponse, error) {
+	if in == nil {
+		return nil, fmt.Errorf("xrpc: req must not be nil")
+	}
+	ctx, cancel := r.cfg.callContext(ctx)
+	defer cancel()
+
+	resp, err := r.inner.GetDoc(ctx, in)
+	if err != nil {
+		return nil, fmt.Errorf("xrpc: POST: %w", err)
+	}
+	return resp, nil
+}
+
 func (r *PieRum) Release(ctx context.Context, in *rumrpc.ReleaseRequest) (*rumrpc.ReleaseResponse, error) {
 
 	if in == nil {
@@ -85,7 +94,8 @@ func (r *PieRum) Release(ctx context.Context, in *rumrpc.ReleaseRequest) (*rumrp
 	}
 	return resp, nil
 }
-func (r *PieRum) ActivateProfile(ctx context.Context, in *rumrpc.IActivateProfileRequest) (*rumrpc.IActivateProfileResponse, error) {
+
+func (r *PieRum) UpdateProfileConfig(ctx context.Context, in *rumrpc.IConfigRequest) (*rumrpc.IConfigResponse, error) {
 
 	if in == nil {
 		return nil, fmt.Errorf("xrpc: req must not be nil")
@@ -93,207 +103,62 @@ func (r *PieRum) ActivateProfile(ctx context.Context, in *rumrpc.IActivateProfil
 	ctx, cancel := r.cfg.callContext(ctx)
 	defer cancel()
 
-	resp, err := r.inner.ActivateProfile(ctx, in)
+	resp, err := r.inner.UpdateProfileConfig(ctx, in)
 	if err != nil {
 		return nil, fmt.Errorf("xrpc: POST: %w", err)
 	}
 	return resp, nil
 }
-func (r *PieRum) DeactivateProfile(ctx context.Context, in *rumrpc.IDeactivateProfileRequest) (*rumrpc.IDeactivateProfileResponse, error) {
 
+func (r *PieRum) UpdateKitConfig(ctx context.Context, in *rumrpc.IConfigRequest) (*rumrpc.IConfigResponse, error) {
 	if in == nil {
 		return nil, fmt.Errorf("xrpc: req must not be nil")
 	}
 	ctx, cancel := r.cfg.callContext(ctx)
 	defer cancel()
 
-	resp, err := r.inner.DeactivateProfile(ctx, in)
+	resp, err := r.inner.UpdateKitConfig(ctx, in)
 	if err != nil {
 		return nil, fmt.Errorf("xrpc: POST: %w", err)
 	}
 	return resp, nil
 }
-func (r *PieRum) SwapProfile(ctx context.Context, in *rumrpc.ISwapProfileRequest) (*rumrpc.ISwapProfileResponse, error) {
-
+func (r *PieRum) UpdateServiceConfig(ctx context.Context, in *rumrpc.IConfigRequest) (*rumrpc.IConfigResponse, error) {
 	if in == nil {
 		return nil, fmt.Errorf("xrpc: req must not be nil")
 	}
 	ctx, cancel := r.cfg.callContext(ctx)
 	defer cancel()
 
-	resp, err := r.inner.SwapProfile(ctx, in)
+	resp, err := r.inner.UpdateServiceConfig(ctx, in)
 	if err != nil {
 		return nil, fmt.Errorf("xrpc: POST: %w", err)
 	}
 	return resp, nil
 }
-func (r *PieRum) DeactivateKit(ctx context.Context, in *rumrpc.IDeactivateKitRequest) (*rumrpc.IDeactivateKitResponse, error) {
-
+func (r *PieRum) UpdateDispatcherConfig(ctx context.Context, in *rumrpc.IConfigRequest) (*rumrpc.IConfigResponse, error) {
 	if in == nil {
 		return nil, fmt.Errorf("xrpc: req must not be nil")
 	}
 	ctx, cancel := r.cfg.callContext(ctx)
 	defer cancel()
 
-	resp, err := r.inner.DeactivateKit(ctx, in)
+	resp, err := r.inner.UpdateDispatcherConfig(ctx, in)
 	if err != nil {
 		return nil, fmt.Errorf("xrpc: POST: %w", err)
 	}
 	return resp, nil
 }
-func (r *PieRum) ActivateKit(ctx context.Context, in *rumrpc.IActivateKitRequest) (*rumrpc.IActivateKitResponse, error) {
-
+func (r *PieRum) UpdateEventConfig(ctx context.Context, in *rumrpc.IConfigRequest) (*rumrpc.IConfigResponse, error) {
 	if in == nil {
 		return nil, fmt.Errorf("xrpc: req must not be nil")
 	}
 	ctx, cancel := r.cfg.callContext(ctx)
 	defer cancel()
 
-	resp, err := r.inner.ActivateKit(ctx, in)
+	resp, err := r.inner.UpdateEventConfig(ctx, in)
 	if err != nil {
 		return nil, fmt.Errorf("xrpc: POST: %w", err)
 	}
 	return resp, nil
-}
-func (r *PieRum) SwapKit(ctx context.Context, in *rumrpc.ISwapKitRequest) (*rumrpc.ISwapKitResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.SwapKit(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) DeactivateService(ctx context.Context, in *rumrpc.IDeactivateServiceRequest) (*rumrpc.IDeactivateServiceResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.DeactivateService(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) ActivateService(ctx context.Context, in *rumrpc.IActivateServiceRequest) (*rumrpc.IActivateServiceResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.ActivateService(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) SwapService(ctx context.Context, in *rumrpc.ISwapServiceRequest) (*rumrpc.ISwapServiceResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.SwapService(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) DeactivateDispatcher(ctx context.Context, in *rumrpc.IDeactivateDispatcherRequest) (*rumrpc.IDeactivateDispatcherResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.DeactivateDispatcher(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-
-}
-func (r *PieRum) ActivateDispatcher(ctx context.Context, in *rumrpc.IActivateDispatcherRequest) (*rumrpc.IActivateDispatcherResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.ActivateDispatcher(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) SwapDispatcher(ctx context.Context, in *rumrpc.ISwapDispatcherRequest) (*rumrpc.ISwapDispatcherResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.SwapDispatcher(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) DeactivateEvent(ctx context.Context, in *rumrpc.IDeactivateEventRequest) (*rumrpc.IDeactivateEventResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.DeactivateEvent(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) ActivateEvent(ctx context.Context, in *rumrpc.IActivateEventRequest) (*rumrpc.IActivateEventResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.ActivateEvent(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-}
-func (r *PieRum) SwapEvent(ctx context.Context, in *rumrpc.ISwapEventRequest) (*rumrpc.ISwapEventResponse, error) {
-
-	if in == nil {
-		return nil, fmt.Errorf("xrpc: req must not be nil")
-	}
-	ctx, cancel := r.cfg.callContext(ctx)
-	defer cancel()
-
-	resp, err := r.inner.SwapEvent(ctx, in)
-	if err != nil {
-		return nil, fmt.Errorf("xrpc: POST: %w", err)
-	}
-	return resp, nil
-
 }

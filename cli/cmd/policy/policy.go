@@ -38,6 +38,7 @@ func NewPolicyPack() *InitPolicy {
 		&IOrganization{},
 	}
 }
+
 func UnPackInitPolicy(cmd *cobra.Command) (*InitPolicy, error) {
 	f, err := cmd.Flags().GetString(keys.Init_Flag)
 	if err != nil {

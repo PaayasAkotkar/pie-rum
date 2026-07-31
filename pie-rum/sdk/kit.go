@@ -1,6 +1,8 @@
 package pierum
 
-import rum "pie-rum-sdk/pie-rum/core"
+import (
+	rum "pie-rum-sdk/pie-rum/core"
+)
 
 type Kit[In, Out any] struct {
 	rank     int
@@ -27,6 +29,10 @@ func (k *Kit[In, Out]) ReplaceService(name string, service *Service[In, Out]) *K
 	k.core.ReplaceService(name, service.core)
 	return k
 }
+func (k *Kit[In, Out]) SetConfig(conf *rum.IConfig) {
+	k.core.SetConfig(conf)
+}
+
 func (k *Kit[In, Out]) SetService(name string, rank int, fn func(service *Service[In, Out])) *Kit[In, Out] {
 	engine := NewNode(k, func() *Service[In, Out] {
 		return NewService[In, Out](rank)

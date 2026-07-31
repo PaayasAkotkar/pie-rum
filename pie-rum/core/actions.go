@@ -4,6 +4,7 @@ const (
 	activateAction = "activate:"
 	deactiveAction = "deactive:"
 	swapAction     = "swap:"
+	configAction   = "config:"
 	depthOne       = "profile"
 	depthTwo       = "kit"
 	depthThree     = "service"

@@ -1,7 +1,9 @@
 package dog
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"pie-rum-sdk/common"
 	"runtime"
@@ -12,6 +14,48 @@ import (
 
 	"github.com/jaypipes/ghw"
 )
+
+// SystemMetrics tracks CPU, GPU, memory, and thermal metrics
+//type SystemMetrics struct {
+//	mu sync.RWMutex
+//
+//	// CPU metrics
+//	CPUName        string
+//	CPUUsage       float64 // Percentage 0-100
+//	CPUCores       int
+//	CPUTemp        float64 // Celsius
+//	GoroutineCount int
+//
+//	// Memory metrics
+//	MemoryUsage   uint64 // Bytes
+//	MemoryPercent float64
+//	AllocMB       float64
+//	TotalAllocMB  float64
+//	HeapAllocMB   float64
+//	HeapSysMB     float64
+//
+//	// GPU metrics
+//	GPUUsage       float64 // Percentage 0-100
+//	GPUMemoryUsage uint64  // Bytes
+//	GPUTemp        float64 // Celsius
+//	GPUName        string
+//
+//	// Thermal metrics
+//	CPUThrottled bool
+//	ThermalLevel string // "normal", "warning", "critical"
+//
+//	// Process metrics
+//	PID         int
+//	RID         int // Rank ID
+//	StartTime   time.Time
+//	UpTime      time.Duration
+//	ThreadCount int
+//
+//	// Sampling
+//	LastSample      time.Time
+//	SampleCount     atomic.Int64
+//	MaxMemorySeenMB float64
+//}
 
 // SystemMetrics tracks CPU, GPU, memory, and thermal metrics
 type SystemMetrics struct {
@@ -53,6 +97,120 @@ type SystemMetrics struct {
 	LastSample      time.Time
 	SampleCount     atomic.Int64
 	MaxMemorySeenMB float64
+}
+
+// systemMetricsShadow mirrors SystemMetrics with JSON-friendly types.
+type systemMetricsShadow struct {
+	CPUName        string  `json:"cpuName"`
+	CPUUsage       float64 `json:"cpuUsage"`
+	CPUCores       int     `json:"cpuCores"`
+	CPUTemp        float64 `json:"cpuTemp"`
+	GoroutineCount int     `json:"goroutineCount"`
+
+	MemoryUsage   uint64  `json:"memoryUsage"`
+	MemoryPercent float64 `json:"memoryPercent"`
+	AllocMB       float64 `json:"allocMB"`
+	TotalAllocMB  float64 `json:"totalAllocMB"`
+	HeapAllocMB   float64 `json:"heapAllocMB"`
+	HeapSysMB     float64 `json:"heapSysMB"`
+
+	GPUUsage       float64 `json:"gpuUsage"`
+	GPUMemoryUsage uint64  `json:"gpuMemoryUsage"`
+	GPUTemp        float64 `json:"gpuTemp"`
+	GPUName        string  `json:"gpuName"`
+
+	CPUThrottled bool   `json:"cpuThrottled"`
+	ThermalLevel string `json:"thermalLevel"`
+
+	PID         int           `json:"pid"`
+	RID         int           `json:"rid"`
+	StartTime   time.Time     `json:"startTime"`
+	UpTime      time.Duration `json:"upTimeNanos"` // see note below re: duration format
+	ThreadCount int           `json:"threadCount"`
+
+	LastSample      time.Time `json:"lastSample"`
+	SampleCount     int64     `json:"sampleCount"`
+	MaxMemorySeenMB float64   `json:"maxMemorySeenMB"`
+}
+
+func (s *SystemMetrics) shadow() *systemMetricsShadow {
+	return &systemMetricsShadow{
+		CPUName:        s.CPUName,
+		CPUUsage:       s.CPUUsage,
+		CPUCores:       s.CPUCores,
+		CPUTemp:        s.CPUTemp,
+		GoroutineCount: s.GoroutineCount,
+
+		MemoryUsage:   s.MemoryUsage,
+		MemoryPercent: s.MemoryPercent,
+		AllocMB:       s.AllocMB,
+		TotalAllocMB:  s.TotalAllocMB,
+		HeapAllocMB:   s.HeapAllocMB,
+		HeapSysMB:     s.HeapSysMB,
+
+		GPUUsage:       s.GPUUsage,
+		GPUMemoryUsage: s.GPUMemoryUsage,
+		GPUTemp:        s.GPUTemp,
+		GPUName:        s.GPUName,
+
+		CPUThrottled: s.CPUThrottled,
+		ThermalLevel: s.ThermalLevel,
+
+		PID:         s.PID,
+		RID:         s.RID,
+		StartTime:   s.StartTime,
+		UpTime:      s.UpTime,
+		ThreadCount: s.ThreadCount,
+
+		LastSample:      s.LastSample,
+		SampleCount:     s.SampleCount.Load(),
+		MaxMemorySeenMB: s.MaxMemorySeenMB,
+	}
+}
+
+func (s *SystemMetrics) JSON() []byte {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	shadow := systemMetricsShadow{
+		CPUName:        s.CPUName,
+		CPUUsage:       s.CPUUsage,
+		CPUCores:       s.CPUCores,
+		CPUTemp:        s.CPUTemp,
+		GoroutineCount: s.GoroutineCount,
+
+		MemoryUsage:   s.MemoryUsage,
+		MemoryPercent: s.MemoryPercent,
+		AllocMB:       s.AllocMB,
+		TotalAllocMB:  s.TotalAllocMB,
+		HeapAllocMB:   s.HeapAllocMB,
+		HeapSysMB:     s.HeapSysMB,
+
+		GPUUsage:       s.GPUUsage,
+		GPUMemoryUsage: s.GPUMemoryUsage,
+		GPUTemp:        s.GPUTemp,
+		GPUName:        s.GPUName,
+
+		CPUThrottled: s.CPUThrottled,
+		ThermalLevel: s.ThermalLevel,
+
+		PID:         s.PID,
+		RID:         s.RID,
+		StartTime:   s.StartTime,
+		UpTime:      s.UpTime,
+		ThreadCount: s.ThreadCount,
+
+		LastSample:      s.LastSample,
+		SampleCount:     s.SampleCount.Load(),
+		MaxMemorySeenMB: s.MaxMemorySeenMB,
+	}
+
+	p, err := json.Marshal(shadow)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return p
 }
 
 // NewSystemMetrics creates a new metrics tracker

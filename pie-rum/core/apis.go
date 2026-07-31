@@ -3,7 +3,9 @@ package pierum
 
 import (
 	"context"
+	"encoding/json"
 	"log"
+	webaddress "pie-rum-sdk/web-address"
 )
 
 // Paper — one-shot, closes after first value, never fetches again
@@ -41,10 +43,10 @@ func (r *PieRum[In, Out]) GoPoll(ctx context.Context, profile string, handler Ha
 // GoAuto — starts server fns + streams results to handler
 // will only monitor all the registered profiles
 func (r *PieRum[In, Out]) GoAuto(ctx context.Context, handler Handler, fns ...func()) {
-	out := make(chan *IResults, len(r.store.registry))
+	out := make(chan *IResults, len(r.Store.Registry))
 
 	// fan-in all registered profiles into one channel
-	for profile := range r.store.registry {
+	for profile := range r.Store.Registry {
 		profile := profile
 		go func() {
 			ch := r.Poll(profile)
@@ -120,14 +122,37 @@ func (r *PieRum[In, Out]) GoMonitor(ctx context.Context, handler Handler, fns ..
 					continue
 				}
 				log.Println("results: ", result.Resuts)
-				handler(result)
+
+				if r.Plugin.On {
+					b := webaddress.New(r.Plugin.Key)
+					log.Println("pshing to url : ", r.Plugin.Key)
+					m := IPluginPackage{
+						Result: result,
+						Org:    r.Plugin.Org,
+						Doc:    string(r.JSON()), // send it
+						//Metaboard: r.PackMetadata(), // on hold
+					}
+					b.Request().Add("solar-nova", "POST", m.Pack()).Go()
+					b.Request().GoMonitor(ctx, func(res *webaddress.Result) {
+						if res != nil && result.IsReady {
+							if err := res.Error; err != nil {
+								log.Println(err)
+							}
+							log.Println("resp from POST", string(res.Result))
+						}
+					})
+					handler(result)
+				} else {
+					handler(result)
+				}
+
 			case <-r.ctx.Done():
 				return
 			}
 		}
 	}()
 
-	for _, profile := range r.store.GetTags() {
+	for _, profile := range r.Store.GetTags() {
 		profile := profile
 		go func() {
 			for {
@@ -237,20 +262,75 @@ func (r *PieRum[In, Out]) GoErrorsKeyed(ctx context.Context, key string, handler
 	}()
 }
 func (r *PieRum[In, Out]) GetStore() *IStore[In, Out] {
-	return r.store
+	return r.Store
 }
 func (r *PieRum[In, Out]) GetProfiles() map[string]*IProfile[In, Out] {
-	return r.store.registry
+	return r.Store.Registry
 }
 func (r *PieRum[In, Out]) GetKits(profile string) map[string]*IKit[In, Out] {
-	return r.store.registry[profile].registry
+	return r.Store.Registry[profile].Registry
 }
 func (r *PieRum[In, Out]) GetServices(profile, kit string) map[string]*IService[In, Out] {
-	return r.store.registry[profile].registry[kit].registry
+	return r.Store.Registry[profile].Registry[kit].Registry
 }
 func (r *PieRum[In, Out]) GetDispatchers(profile, kit, service string) map[string]*IDispatcher[In, Out] {
-	return r.store.registry[profile].registry[kit].registry[service].registry
+	return r.Store.Registry[profile].Registry[kit].Registry[service].Registry
 }
 func (r *PieRum[In, Out]) GetEvents(profile, kit, service, dispatcher string) map[string]*IEvent[In, Out] {
-	return r.store.registry[profile].registry[kit].registry[service].registry[dispatcher].registry
+	return r.Store.Registry[profile].Registry[kit].Registry[service].Registry[dispatcher].Registry
+}
+
+func (r *PieRum[In, Out]) Shutdown() {
+	r.release <- true
+	go func() {
+		if r.DI != nil {
+			r.DI.Stop()
+		}
+		// Use Stop instead of GracefulStop for immediate shutdown on signal
+		r.gserver.Stop()
+	}()
+
+}
+
+func (r *PieRum[In, Out]) SetPlugin(p *IPlugin) {
+	r.Plugin = p
+}
+
+//
+//func (r *PieRum[In, Out]) PackMetadata() []IMetadataInfo {
+//	dat := make([]IMetadataInfo, 0)
+//	m := IMetadataBoard{
+//		Profile:    make([]*IMetadata, 0),
+//		Kit:        make([]*IMetadata, 0),
+//		Service:    make([]*IMetadata, 0),
+//		Dispatcher: make([]*IMetadata, 0),
+//		Events:     make([]*IMetadata, 0),
+//	}
+//	m.Profile = append(m.Profile, r.Store.GetProfilesMetadata())
+//
+//	for i, r1 := range r.GetProfiles() {
+//		m.Kit = append(m.Kit, r1.GetKitsMetadata())
+//		for _, r2 := range r1.GetKits() {
+//			m.Service = append(m.Service, r2.GetServicesMetadata())
+//			for _, r3 := range r2.GetServices() {
+//				m.Dispatcher = append(m.Service, r3.GetDispatchersMetadata())
+//				for _, r4 := range r3.GetDispatchers() {
+//					m.Events = append(m.Kit, r4.GetEventsMetadata())
+//				}
+//			}
+//		}
+//		dat = append(dat, IMetadataInfo{
+//			Profile:   i,
+//			MetaBoard: m,
+//		})
+//	}
+//	return dat
+//}
+
+func (p *IPluginPackage) Pack() []byte {
+	px, err := json.Marshal(p)
+	if err != nil {
+		return nil
+	}
+	return px
 }

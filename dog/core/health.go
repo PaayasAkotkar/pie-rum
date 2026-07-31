@@ -69,7 +69,7 @@ func (rd *Dog[T]) executeFunction(policyName string, fn Funcs[T]) {
 	var duration time.Duration
 	var output []byte
 
-	log.Printf("  ▶️  Executing function: %s (rank: %d)", fn.Name, fn.Rank)
+	log.Printf("▶️  Executing function: %s (rank: %d)", fn.Name, fn.Rank)
 
 	// Execute void function
 	if fn.Void != nil {

@@ -165,32 +165,155 @@ import (
 )
 
 // WatchdogReport is the final report for a policy execution
+//type WatchdogReport struct {
+//	mu                                                   sync.Mutex
+//	PolicyName                                           string
+//	StartTime, EndTime                                   time.Time
+//	ExecutionCount                                       atomic.Int64
+//	PassedCount                                          atomic.Int64
+//	ExceededCount                                        atomic.Int64
+//	isReady                                              bool
+//	TotalDuration, AvgDuration, MinDuration, MaxDuration time.Duration
+//	SuccessCount, FailureCount                           atomic.Int64
+//	SuccessRate                                          float64
+//	TimeLimit                                            time.Duration
+//	FailureReasons                                       []string
+//	LastError                                            error
+//	Status                                               string
+//	Output                                               []byte
+//	Metrics                                              *SystemMetrics
+//}
+
 type WatchdogReport struct {
-	mu                                                   sync.Mutex
-	PolicyName                                           string
-	StartTime, EndTime                                   time.Time
-	ExecutionCount                                       atomic.Int64
-	PassedCount                                          atomic.Int64
-	ExceededCount                                        atomic.Int64
-	isReady                                              bool
-	TotalDuration, AvgDuration, MinDuration, MaxDuration time.Duration
-	SuccessCount, FailureCount                           atomic.Int64
-	SuccessRate                                          float64
-	TimeLimit                                            time.Duration
-	FailureReasons                                       []string
-	LastError                                            error
-	Status                                               string
-	Output                                               []byte
-	Metrics                                              *SystemMetrics
+	mu sync.Mutex `json:"-"`
+
+	PolicyName string    `json:"policyName"`
+	StartTime  time.Time `json:"startTime"`
+	EndTime    time.Time `json:"endTime"`
+
+	ExecutionCount atomic.Int64 `json:"-"`
+	PassedCount    atomic.Int64 `json:"-"`
+	ExceededCount  atomic.Int64 `json:"-"`
+
+	isReady bool `json:"-"` // unexported — was never being serialized anyway
+
+	TotalDuration time.Duration `json:"totalDuration"`
+	AvgDuration   time.Duration `json:"avgDuration"`
+	MinDuration   time.Duration `json:"minDuration"`
+	MaxDuration   time.Duration `json:"maxDuration"`
+
+	SuccessCount atomic.Int64 `json:"-"`
+	FailureCount atomic.Int64 `json:"-"`
+
+	SuccessRate float64       `json:"successRate"`
+	TimeLimit   time.Duration `json:"timeLimit"`
+
+	FailureReasons []string `json:"failureReasons"`
+	LastError      error    `json:"-"`
+
+	Status  string         `json:"status"`
+	Output  []byte         `json:"output,omitempty"`
+	Metrics *SystemMetrics `json:"metrics,omitempty"`
 }
 
+// jsonShadow mirrors WatchdogReport but with plain, JSON-friendly types.
+// This is what actually gets marshaled.
+type jsonShadow struct {
+	PolicyName string    `json:"policyName"`
+	StartTime  time.Time `json:"startTime"`
+	EndTime    time.Time `json:"endTime"`
+
+	ExecutionCount int64 `json:"executionCount"`
+	PassedCount    int64 `json:"passedCount"`
+	ExceededCount  int64 `json:"exceededCount"`
+
+	IsReady bool `json:"isReady"`
+
+	TotalDuration string `json:"totalDuration"`
+	AvgDuration   string `json:"avgDuration"`
+	MinDuration   string `json:"minDuration"`
+	MaxDuration   string `json:"maxDuration"`
+
+	SuccessCount int64 `json:"successCount"`
+	FailureCount int64 `json:"failureCount"`
+
+	SuccessRate float64 `json:"successRate"`
+	TimeLimit   string  `json:"timeLimit"`
+
+	FailureReasons []string `json:"failureReasons"`
+	LastError      string   `json:"lastError,omitempty"`
+
+	Status  string               `json:"status"`
+	Output  []byte               `json:"output,omitempty"`
+	Metrics *systemMetricsShadow `json:"metrics,omitempty"`
+}
+
+// JSON implements json.Marshaler so atomic counters, the
+// unexported isReady flag, and LastError all serialize correctly.
 func (w *WatchdogReport) JSON() []byte {
-	p, err := json.Marshal(w)
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	var lastErr string
+	if w.LastError != nil {
+		lastErr = w.LastError.Error()
+	}
+
+	shadow := jsonShadow{
+		PolicyName: w.PolicyName,
+		StartTime:  w.StartTime,
+		EndTime:    w.EndTime,
+
+		ExecutionCount: w.ExecutionCount.Load(),
+		PassedCount:    w.PassedCount.Load(),
+		ExceededCount:  w.ExceededCount.Load(),
+
+		IsReady: w.isReady,
+
+		TotalDuration: w.TotalDuration.String(),
+		AvgDuration:   w.AvgDuration.String(),
+		MinDuration:   w.MinDuration.String(),
+		MaxDuration:   w.MaxDuration.String(),
+
+		SuccessCount: w.SuccessCount.Load(),
+		FailureCount: w.FailureCount.Load(),
+
+		SuccessRate: w.SuccessRate,
+		TimeLimit:   w.TimeLimit.String(),
+
+		FailureReasons: w.FailureReasons,
+		LastError:      lastErr,
+
+		Status:  w.Status,
+		Output:  w.Output,
+		Metrics: w.Metrics.shadow(),
+	}
+
+	p, err := json.Marshal(shadow)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return p
 }
+
+// JSON returns the report as a JSON byte slice, or nil on error.
+//func (w *WatchdogReport) JSON() []byte {
+//	p, err := json.Marshal(w)
+//	if err != nil {
+//		return nil
+//	}
+//	return p
+//}
+
+//
+//func (w *WatchdogReport) JSON() []byte {
+//	p, err := json.Marshal(w)
+//	if err != nil {
+//		return nil
+//	}
+//	return p
+//}
 
 // Report metadata methods
 

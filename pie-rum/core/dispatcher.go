@@ -5,34 +5,31 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"pie-rum-sdk/common"
 	rumdog "pie-rum-sdk/dog/core"
 	dog "pie-rum-sdk/dog/sdk"
 	"pie-rum-sdk/stack"
 	"slices"
 	"sync"
 	"time"
-
-	"github.com/avast/retry-go/v5"
 )
 
 // IDispatcher controls registered agent functions and their results
 type IDispatcher[in, out any] struct {
-	registry map[string]*IEvent[in, out]
-	events   stack.Stack[string]
-	Settings Settings
-	Rank     int64
-	Name     string
-	config   *IConfig
-	slate    *ISlate
-	stack    *stack.Stack[string]
+	Registry map[string]*IEvent[in, out] `json:"event"`
+	events   stack.Stack[string]         `json:"-"`
+	Settings Settings                    `json:"-"`
+	Rank     int64                       `json:"rank"`
+	Name     string                      `json:"name"`
+	Config   *IConfig                    `json:"config"`
+	//slate    *ISlate                     `json:"-"`
+	stack *stack.Stack[string] `json:"-"`
 	// mutable
 	// rinput     map[string]in
-	result     map[string]*IDispatchResult
-	metric     map[string]map[int]IAgentResp // name -> count -> resp
-	isComplete map[string]bool
+	result     map[string]*IDispatchResult   `json:"-"`
+	metric     map[string]map[int]IAgentResp `json:"-"` // name -> count -> resp
+	isComplete map[string]bool               `json:"-"`
 	// end
-	defaultEventKey string
+	defaultEventKey string `json:"-"`
 
 	wg sync.WaitGroup
 }
@@ -45,12 +42,12 @@ type IAgentResp struct {
 
 func NewDispatcher[in, out any](settings Settings) *IDispatcher[in, out] {
 	return &IDispatcher[in, out]{
-		registry: make(map[string]*IEvent[in, out]),
+		Registry: make(map[string]*IEvent[in, out]),
 		// rinput:     make(map[string]in),
-		stack:      stack.NewStack[string](),
-		Settings:   settings,
-		slate:      NewSlate(),
-		config:     defaultConfig(),
+		stack:    stack.NewStack[string](),
+		Settings: settings,
+		//slate:      NewSlate(),
+		Config:     defaultConfig(),
 		result:     make(map[string]*IDispatchResult),
 		isComplete: make(map[string]bool),
 		metric:     make(map[string]map[int]IAgentResp),
@@ -59,8 +56,8 @@ func NewDispatcher[in, out any](settings Settings) *IDispatcher[in, out] {
 
 func (r *IDispatcher[In, Out]) nextKey() string {
 	for _, ra := range r.stack.Max() {
-		if rx, ok := r.registry[ra]; ok {
-			if rx.config.getActivate() {
+		if rx, ok := r.Registry[ra]; ok {
+			if rx.Config.getActivate() {
 				return ra
 			}
 		}
@@ -91,16 +88,16 @@ func (d *IDispatcher[in, out]) GetRank() int64 {
 	return d.Rank
 }
 func (d *IDispatcher[in, out]) GetConfig() *IConfig {
-	return d.config
+	return d.Config
 }
 func (d *IDispatcher[in, out]) GetEvent(name string) *IEvent[in, out] {
-	return d.registry[name]
+	return d.Registry[name]
 }
 func (d *IDispatcher[In, Out]) GetEvents() []*IEvent[In, Out] {
 	keys := d.events.Range(d.events.Len())
 	out := make([]*IEvent[In, Out], 0, len(keys))
 	for _, key := range keys {
-		if svc, ok := d.registry[key]; ok {
+		if svc, ok := d.Registry[key]; ok {
 			out = append(out, svc)
 		}
 	}
@@ -116,26 +113,26 @@ func (d *IDispatcher[in, out]) GetLen() int {
 	return d.stack.Len()
 }
 
-func (k *IDispatcher[In, Out]) UpdateEventSlateChange(name string) {
-	k.slate.RecordChange(name)
-}
-func (k *IDispatcher[In, Out]) UpdateEventSlateUsage(name string) {
-	k.slate.RecordUsage(name)
-}
+//func (k *IDispatcher[In, Out]) UpdateEventSlateChange(name string) {
+//	k.slate.RecordChange(name)
+//}
+//func (k *IDispatcher[In, Out]) UpdateEventSlateUsage(name string) {
+//	k.slate.RecordUsage(name)
+//}
 
 func (d *IDispatcher[in, out]) PushEvent(event string, fn *IEvent[in, out]) {
-	if _, ok := d.registry[event]; !ok {
+	if _, ok := d.Registry[event]; !ok {
 		d.events.Push(event)
 	}
-	d.registry[event] = fn
+	d.Registry[event] = fn
 }
 func (d *IDispatcher[In, Out]) ReplaceEvent(name string, fn *IEvent[In, Out]) {
-	if _, ok := d.registry[name]; ok {
-		d.registry[name] = fn
+	if _, ok := d.Registry[name]; ok {
+		d.Registry[name] = fn
 	}
 }
 func (d *IDispatcher[in, out]) RemoveEvent(name string) {
-	delete(d.registry, name)
+	delete(d.Registry, name)
 	// delete(d.rinput, name)
 	delete(d.isComplete, name)
 	delete(d.metric, name)
@@ -143,26 +140,43 @@ func (d *IDispatcher[in, out]) RemoveEvent(name string) {
 	d.events.Erase(name)
 }
 func (d *IDispatcher[in, out]) SetEvents(events map[string]*IEvent[in, out]) {
-	d.registry = events
+	d.Registry = events
 	for v := range events {
-		if _, ok := d.registry[v]; !ok {
+		if _, ok := d.Registry[v]; !ok {
 			d.events.Push(v)
 		}
 	}
 }
 func (d *IDispatcher[in, out]) SetConfig(config *IConfig) {
-	d.config = config
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Panic recovered in IDispatcher.SetConfig: %v", r)
+		}
+	}()
+	d.Config = config
+
+}
+func (d *IDispatcher[in, out]) handleEventConfig(key string, config *IConfig) error {
+	if src, ok := d.Registry[key]; ok {
+		src.setConfig(config)
+		d.Registry[key] = src
+		if config.SwapOverview != nil && config.SwapOverview.HSwitch {
+			d.handleEventSwap(key, config.SwapOverview.Name)
+		}
+		return nil
+	}
+	return activationError(fmt.Sprintf("cannot find %s ", key))
 }
 
 // get funcs
 
 // func (d *IDispatcher[in, out]) GetRegistry() map[string]*IEvent[in, out] {
-// 	return d.registry
+// 	return d.Registry
 // }
 
 func (d *IDispatcher[in, out]) GetResults(name string) *IDispatchResult {
 	if _, ok := d.result[name]; !ok {
-		for n := range d.registry {
+		for n := range d.Registry {
 			log.Println("names: ", n)
 		}
 		log.Println("IDispatcher: not found name ", name)
@@ -192,7 +206,7 @@ func (d *IDispatcher[in, out]) metricCount(name string) int {
 func (d *IDispatcher[in, out]) normalCall(ctx context.Context, input in) {
 	log.Println("[normal call]")
 
-	for name, fn := range d.registry {
+	for name, fn := range d.Registry {
 
 		outp, err := fn.Fn(ctx, input)
 		if err != nil {
@@ -215,7 +229,7 @@ func (d *IDispatcher[in, out]) normalCall(ctx context.Context, input in) {
 		res.Output = m
 		res.IsReady = true
 		d.handleOutput(name, res)
-		d.UpdateEventSlateUsage(name)
+		//d.UpdateEventSlateUsage(name)
 		d.handleComplete(name, true)
 	}
 }
@@ -225,7 +239,7 @@ func (d *IDispatcher[in, out]) normalCall(ctx context.Context, input in) {
 func (d *IDispatcher[in, out]) metricCall(ctx context.Context, input in) map[string]error {
 	errs := make(map[string]error)
 
-	for name, fn := range d.registry { // rank-sorted, all events, never skipped
+	for name, fn := range d.Registry { // rank-sorted, all events, never skipped
 
 		cfg := fn.getConfig()
 		if cfg != nil {
@@ -241,7 +255,7 @@ func (d *IDispatcher[in, out]) metricCall(ctx context.Context, input in) map[str
 			}
 
 			if sw := cfg.GetSwapOverview(); sw != nil && sw.HSwitch && sw.Name != "" {
-				swFn, swOk := d.registry[sw.Name]
+				swFn, swOk := d.Registry[sw.Name]
 				if !swOk {
 					err := fmt.Errorf("swapped event %s (from %s) not found", sw.Name, name)
 					d.writeMetric(name, IAgentResp{Fail: &IMetricAgentFail{
@@ -268,13 +282,13 @@ func (d *IDispatcher[in, out]) metricCall(ctx context.Context, input in) map[str
 			}
 		}
 
-		max := 1
-		interval := time.Duration(0)
-		if policy := fn.Retry; policy != nil {
-			max = policy.Max + 1
-			interval = policy.Interval
-		}
-
+		//max := 1
+		//interval := time.Duration(0)
+		//		if policy := fn.Retry; policy != nil {
+		//			max = policy.Max + 1
+		//			interval = policy.Interval
+		//		}
+		//
 		t := d.Settings.Base
 		if t == 0 {
 			t = 10 * time.Second
@@ -298,48 +312,47 @@ func (d *IDispatcher[in, out]) metricCall(ctx context.Context, input in) map[str
 		p.AddFunc(rumdog.Funcs[out]{Name: capturedName, Fn: &a})
 
 		attempt := 0
-		ret := retry.New(retry.Attempts(uint(max)), retry.Delay(interval))
+		//ret := retry.New(retry.Attempts(uint(max)), retry.Delay(interval))
 
-		err := ret.Do(func() error {
-			attempt++
-			if ctx.Err() != nil {
-				return retry.Unrecoverable(ctx.Err())
-			}
+		//err := ret.Do(func() error {
+		attempt++
+		if ctx.Err() != nil {
+			log.Println(ctx.Err())
+			//return retry.Unrecoverable(ctx.Err())
+		}
 
-			cli := dog.NewClient[out](t)
-			defer cli.Close()
-			cli.DefinePolicy(capturedName, ts).AddFuncWithReturn(capturedName, a).Build()
+		cli := dog.NewClient[out](t)
+		defer cli.Close()
+		cli.DefinePolicy(capturedName, t).AddFuncWithReturn(capturedName, a).Build()
 
-			rep, err := cli.ExecuteAndReport(p.Name)
-			if err == nil {
-				inData, _ := json.Marshal(input)
-				d.writeMetric(capturedName, IAgentResp{
-					Succeed: &IMetricAgentSucceed{
-						TimeTaken:     rep.TotalDuration,
-						AgentReply:    string(rep.Output),
-						ClientRequest: string(inData),
-					},
-				})
-				r := NewDispatchResult()
-				r.IsReady = true
-				// r.Metric = NewProfileMetric()
-				r.DogReport = rep.JSON()
-				r.Output = rep.Output
-				r.Input, _ = json.Marshal(input)
-				d.handleOutput(capturedName, r)
-				d.handleComplete(capturedName, true)
-				d.UpdateEventSlateUsage(capturedName)
-				cli.Unregister(p.Name)
-				return nil
-			}
-
+		rep, err := cli.ExecuteAndReport(p.Name)
+		if err == nil {
+			inData, _ := json.Marshal(input)
+			d.writeMetric(capturedName, IAgentResp{
+				Succeed: &IMetricAgentSucceed{
+					TimeTaken:     rep.TotalDuration,
+					AgentReply:    string(rep.Output),
+					ClientRequest: string(inData),
+				},
+			})
+			r := NewDispatchResult()
+			r.IsReady = true
+			// r.Metric = NewProfileMetric()
+			r.DogReport = rep.JSON()
+			r.Output = rep.Output
+			r.Input, _ = json.Marshal(input)
+			d.handleOutput(capturedName, r)
+			d.handleComplete(capturedName, true)
+			//d.UpdateEventSlateUsage(capturedName)
 			cli.Unregister(p.Name)
-			d.writeMetric(capturedName, IAgentResp{Fail: &IMetricAgentFail{
-				Reason: fmt.Sprintf("attempt %d: %s", attempt, err.Error()),
-				At:     time.Now(),
-			}})
-			return err
-		})
+			continue
+		}
+
+		cli.Unregister(p.Name)
+		d.writeMetric(capturedName, IAgentResp{Fail: &IMetricAgentFail{
+			Reason: fmt.Sprintf("attempt %d: %s", attempt, err.Error()),
+			At:     time.Now(),
+		}})
 
 		if err != nil {
 			errs[capturedName] = err // collect, never break
@@ -364,21 +377,18 @@ func (d *IDispatcher[in, out]) handleComplete(name string, complete bool) {
 	d.isComplete[name] = complete
 }
 
-// config
-
+// Config
 func (d *IDispatcher[In, Out]) handleEventActivation(key string) error {
-	if fn, ok := d.registry[key]; ok {
-		fn.config.setActivate(true)
-		d.slate.RecordChange(key)
+	if fn, ok := d.Registry[key]; ok {
+		fn.Config.setActivate(true)
 		return nil
 	}
 	return activationError("")
 }
 
 func (d *IDispatcher[In, Out]) handleEventDeactivation(key string) error {
-	if fn, ok := d.registry[key]; ok {
-		fn.config.setActivate(false)
-		d.slate.RecordChange(key)
+	if fn, ok := d.Registry[key]; ok {
+		fn.Config.setActivate(false)
 		return nil
 	}
 	return fmt.Errorf("profile %v not found or inactive", key)
@@ -387,22 +397,23 @@ func (d *IDispatcher[In, Out]) handleEventDeactivation(key string) error {
 func (d *IDispatcher[In, Out]) SetRank(i int64) {
 	d.Rank = i
 }
+
 func (d *IDispatcher[In, Out]) handleEventSwap(key1, key2 string) error {
-	if err := swap(d.registry, d.registry, key1, key2); err != nil {
+	if err := swap(d.Registry, d.Registry, key1, key2); err != nil {
 		return err
 	}
-	d.slate.RecordChange(key1)
-	d.slate.RecordChange(key2)
+	//d.slate.RecordChange(key1)
+	//d.slate.RecordChange(key2)
 	return nil
 }
 
 func (d *IDispatcher[in, out]) IsEventActive(key string) bool {
-	return d.registry[key].config.getActivate()
+	return d.Registry[key].Config.getActivate()
 }
 
 func (d *IDispatcher[in, out]) IsEventSwap(key string) *IConfig {
-	if seq, ok := d.registry[key]; ok {
-		return seq.config
+	if seq, ok := d.Registry[key]; ok {
+		return seq.Config
 	}
 	return nil
 }
@@ -410,99 +421,99 @@ func (d *IDispatcher[in, out]) IsEventSwap(key string) *IConfig {
 // end
 
 // documentation
-
-func (m *IDispatcher[In, Out]) GetEventsMetadata() *IMetadata {
-	// update all the metadata
-	m.slate.metadata.Rebuild(buffers)
-
-	for n, r := range m.registry {
-		if r.config.getActivate() {
-			m.slate.metadata.AddActive(MetadataInfo{
-				Name:        n,
-				LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
-				UsageLen:    m.slate.usage[n],
-			})
-		} else {
-			m.slate.metadata.AddInActive(MetadataInfo{
-				Name:        n,
-				LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
-				UsageLen:    m.slate.usage[n],
-			})
-		}
-		if r.config.swapOverview.HSwitch {
-			m.slate.metadata.AddSwapped(MetadataInfo{
-				Name:        n,
-				LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
-				UsageLen:    m.slate.usage[n],
-			})
-		}
-		m.slate.metadata.AddRanking(MetadataRankingInfo{
-			Name:     n,
-			UsageLen: m.slate.usage[n],
-		})
-
-	}
-
-	slices.SortFunc(m.slate.metadata.Rankings, func(a, b MetadataRankingInfo) int {
-		if a.UsageLen == b.UsageLen {
-			return int(a.UsageLen - b.UsageLen)
-		}
-		return int(a.UsageLen - b.UsageLen)
-	})
-
-	for i := range m.slate.metadata.Rankings {
-		m.slate.metadata.Rankings[i].Rank = int64(i + 1)
-	}
-
-	m.slate.metadata.SaveLen()
-
-	return m.slate.metadata
-}
-func (m *IDispatcher[In, Out]) GetEventMetadata(name string) *IMetadata {
-	// update all the metadata
-	m.slate.metadata.Rebuild(buffers)
-	r := m.registry[name]
-	n := name
-
-	if r.config.getActivate() {
-		m.slate.metadata.AddActive(MetadataInfo{
-			Name:        n,
-			LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
-			UsageLen:    m.slate.usage[n],
-		})
-	} else {
-		m.slate.metadata.AddInActive(MetadataInfo{
-			Name:        n,
-			LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
-			UsageLen:    m.slate.usage[n],
-		})
-	}
-	if r.config.swapOverview.HSwitch {
-		m.slate.metadata.AddSwapped(MetadataInfo{
-			Name:        n,
-			LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
-			UsageLen:    m.slate.usage[n],
-		})
-	}
-	m.slate.metadata.AddRanking(MetadataRankingInfo{
-		Name:     n,
-		UsageLen: m.slate.usage[n],
-	})
-
-	slices.SortFunc(m.slate.metadata.Rankings, func(a, b MetadataRankingInfo) int {
-		if a.UsageLen == b.UsageLen {
-			return int(a.UsageLen - b.UsageLen)
-		}
-		return int(a.UsageLen - b.UsageLen)
-	})
-
-	for i := range m.slate.metadata.Rankings {
-		m.slate.metadata.Rankings[i].Rank = int64(i + 1)
-	}
-
-	m.slate.metadata.SaveLen()
-
-	return m.slate.metadata
-}
+//
+//func (m *IDispatcher[In, Out]) GetEventsMetadata() *IMetadata {
+//	// update all the metadata
+//	m.slate.metadata.Rebuild(buffers)
+//
+//	for n, r := range m.Registry {
+//		if r.Config.getActivate() {
+//			m.slate.metadata.AddActive(MetadataInfo{
+//				Name:        n,
+//				LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
+//				UsageLen:    m.slate.usage[n],
+//			})
+//		} else {
+//			m.slate.metadata.AddInActive(MetadataInfo{
+//				Name:        n,
+//				LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
+//				UsageLen:    m.slate.usage[n],
+//			})
+//		}
+//		if r.Config.SwapOverview.HSwitch {
+//			m.slate.metadata.AddSwapped(MetadataInfo{
+//				Name:        n,
+//				LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
+//				UsageLen:    m.slate.usage[n],
+//			})
+//		}
+//		m.slate.metadata.AddRanking(MetadataRankingInfo{
+//			Name:     n,
+//			UsageLen: m.slate.usage[n],
+//		})
+//
+//	}
+//
+//	slices.SortFunc(m.slate.metadata.Rankings, func(a, b MetadataRankingInfo) int {
+//		if a.UsageLen == b.UsageLen {
+//			return int(a.UsageLen - b.UsageLen)
+//		}
+//		return int(a.UsageLen - b.UsageLen)
+//	})
+//
+//	for i := range m.slate.metadata.Rankings {
+//		m.slate.metadata.Rankings[i].Rank = int64(i + 1)
+//	}
+//
+//	m.slate.metadata.SaveLen()
+//
+//	return m.slate.metadata
+//}
+//func (m *IDispatcher[In, Out]) GetEventMetadata(name string) *IMetadata {
+//	// update all the metadata
+//	m.slate.metadata.Rebuild(buffers)
+//	r := m.Registry[name]
+//	n := name
+//
+//	if r.Config.getActivate() {
+//		m.slate.metadata.AddActive(MetadataInfo{
+//			Name:        n,
+//			LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
+//			UsageLen:    m.slate.usage[n],
+//		})
+//	} else {
+//		m.slate.metadata.AddInActive(MetadataInfo{
+//			Name:        n,
+//			LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
+//			UsageLen:    m.slate.usage[n],
+//		})
+//	}
+//	if r.Config.SwapOverview.HSwitch {
+//		m.slate.metadata.AddSwapped(MetadataInfo{
+//			Name:        n,
+//			LastUpdated: common.FormatDateForClient(m.slate.lastUpdate[n]),
+//			UsageLen:    m.slate.usage[n],
+//		})
+//	}
+//	m.slate.metadata.AddRanking(MetadataRankingInfo{
+//		Name:     n,
+//		UsageLen: m.slate.usage[n],
+//	})
+//
+//	slices.SortFunc(m.slate.metadata.Rankings, func(a, b MetadataRankingInfo) int {
+//		if a.UsageLen == b.UsageLen {
+//			return int(a.UsageLen - b.UsageLen)
+//		}
+//		return int(a.UsageLen - b.UsageLen)
+//	})
+//
+//	for i := range m.slate.metadata.Rankings {
+//		m.slate.metadata.Rankings[i].Rank = int64(i + 1)
+//	}
+//
+//	m.slate.metadata.SaveLen()
+//
+//	return m.slate.metadata
+//}
 
 // end

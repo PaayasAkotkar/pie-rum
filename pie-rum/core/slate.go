@@ -9,38 +9,6 @@ import (
 	"time"
 )
 
-type ISlate struct {
-	usage      map[string]int64
-	lastUpdate map[string]time.Time // updated during toggle system
-	metadata   *IMetadata
-}
-
-func NewSlate() *ISlate {
-	return &ISlate{
-		metadata:   NewMetadata(buffers),
-		usage:      make(map[string]int64),
-		lastUpdate: make(map[string]time.Time),
-	}
-}
-
-// RecordChange updates the lastUpdate time for a given component
-func (s *ISlate) RecordChange(name string) {
-	s.lastUpdate[name] = time.Now()
-}
-
-// RecordUsage increments the usage count for a given component
-func (s *ISlate) RecordUsage(name string) {
-	s.usage[name]++
-}
-
-// type Slate[In any] struct {
-// 	Profile []ISequence[In]
-
-// 	DeActivate *bool
-// 	Activate   *bool
-// 	Remove     *bool
-// }
-
 //go:fix inline
 func boolPtr(t bool) *bool {
 	b := t

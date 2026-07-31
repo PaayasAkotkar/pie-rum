@@ -5,8 +5,8 @@ import (
 )
 
 type IConfig struct {
-	Activate     bool
-	swapOverview *ISwitch
+	Activate     bool     `json:"active"`
+	SwapOverview *ISwitch `json:"switch"`
 	mu           sync.Mutex
 }
 
@@ -14,7 +14,7 @@ type IConfig struct {
 func defaultConfig() *IConfig {
 	return &IConfig{
 		Activate: true,
-		swapOverview: &ISwitch{
+		SwapOverview: &ISwitch{
 			HSwitch: false,
 			Name:    "",
 		},
@@ -22,16 +22,16 @@ func defaultConfig() *IConfig {
 }
 
 type ISwitch struct {
-	Name    string // name that is switch with
-	HSwitch bool
+	Name    string `json:"switched_with"` // name that is switch with
+	HSwitch bool   `json:"is_switch"`     // has_switch
 }
 
 func (i *IConfig) setSwapOverview(info *ISwitch) {
-	i.swapOverview = info
+	i.SwapOverview = info
 }
 
 func (i *IConfig) GetSwapOverview() *ISwitch {
-	return i.swapOverview
+	return i.SwapOverview
 }
 
 func (i *IConfig) setActivate(status bool) {
@@ -57,5 +57,6 @@ type IConfigRequest struct {
 	Action                                   string // "activate", "deactivate", "swap"
 	Target                                   string // "profile", "kit", "service", "dispatcher", "event"
 	Profile, Kit, Service, Dispatcher, Event string
+	Config                                   *IConfig // set the config directly
 	Swap                                     string
 }

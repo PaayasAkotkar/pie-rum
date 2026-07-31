@@ -62,7 +62,7 @@ func (rd *Dog[T]) monitorPolicy(policyName string) {
 	}()
 	monitor := NewMonitorPolicy(rd.ctx)
 	rd.monitors[policyName] = monitor
-	if err := monitor.Monitor(policyName, func() { rd.tickSinglePolicy(policyName) }, rd.Settings.ShutdownTimeout); err != nil {
+	if err := monitor.Monitor(policyName, func() { rd.tickSinglePolicy(policyName) }, rd.Settings.TickInterval); err != nil {
 		delete(rd.monitors, policyName)
 		return
 	}

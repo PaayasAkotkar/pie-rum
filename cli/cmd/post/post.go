@@ -58,11 +58,12 @@ func YamlPostTest() *cobra.Command {
 			if err != nil {
 				panic("Server never came online")
 			}
+
 			b, err := json.Marshal(m.Input)
 			if err != nil {
 				panic(fmt.Sprintf("error in marshaling: %s", err))
-
 			}
+
 			post := rumrpc.IPost{
 				Profile: &rumrpc.ISequence{
 					Profile: m.Profile,
@@ -70,14 +71,11 @@ func YamlPostTest() *cobra.Command {
 				},
 				Push: true,
 			}
-
 			_, err = cli.POST(ctx, &rumrpc.IPostRequest{Post: []*rumrpc.IPost{&post}})
 			if err != nil {
 				panic(err)
 			}
-
 			log.Println("request sent successfully 🤩")
-
 		},
 	}
 }

@@ -271,222 +271,6 @@ func (x *IPackage) GetPackage() []byte {
 	return nil
 }
 
-type IConfig struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Profile       string                 `protobuf:"bytes,1,opt,name=profile,proto3" json:"profile,omitempty"`
-	Kit           string                 `protobuf:"bytes,2,opt,name=kit,proto3" json:"kit,omitempty"`
-	Service       string                 `protobuf:"bytes,3,opt,name=service,proto3" json:"service,omitempty"`
-	Dispatcher    string                 `protobuf:"bytes,4,opt,name=dispatcher,proto3" json:"dispatcher,omitempty"`
-	Event         string                 `protobuf:"bytes,5,opt,name=event,proto3" json:"event,omitempty"`
-	Swap          string                 `protobuf:"bytes,6,opt,name=swap,proto3" json:"swap,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IConfig) Reset() {
-	*x = IConfig{}
-	mi := &file_rum_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IConfig) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IConfig) ProtoMessage() {}
-
-func (x *IConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IConfig.ProtoReflect.Descriptor instead.
-func (*IConfig) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *IConfig) GetProfile() string {
-	if x != nil {
-		return x.Profile
-	}
-	return ""
-}
-
-func (x *IConfig) GetKit() string {
-	if x != nil {
-		return x.Kit
-	}
-	return ""
-}
-
-func (x *IConfig) GetService() string {
-	if x != nil {
-		return x.Service
-	}
-	return ""
-}
-
-func (x *IConfig) GetDispatcher() string {
-	if x != nil {
-		return x.Dispatcher
-	}
-	return ""
-}
-
-func (x *IConfig) GetEvent() string {
-	if x != nil {
-		return x.Event
-	}
-	return ""
-}
-
-func (x *IConfig) GetSwap() string {
-	if x != nil {
-		return x.Swap
-	}
-	return ""
-}
-
-type IDeactivate struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Config        []*IConfig             `protobuf:"bytes,1,rep,name=config,proto3" json:"config,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivate) Reset() {
-	*x = IDeactivate{}
-	mi := &file_rum_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivate) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivate) ProtoMessage() {}
-
-func (x *IDeactivate) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivate.ProtoReflect.Descriptor instead.
-func (*IDeactivate) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *IDeactivate) GetConfig() []*IConfig {
-	if x != nil {
-		return x.Config
-	}
-	return nil
-}
-
-type IActivate struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Config        []*IConfig             `protobuf:"bytes,1,rep,name=config,proto3" json:"config,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivate) Reset() {
-	*x = IActivate{}
-	mi := &file_rum_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivate) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivate) ProtoMessage() {}
-
-func (x *IActivate) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivate.ProtoReflect.Descriptor instead.
-func (*IActivate) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *IActivate) GetConfig() []*IConfig {
-	if x != nil {
-		return x.Config
-	}
-	return nil
-}
-
-type ISwap struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Config        []*IConfig             `protobuf:"bytes,1,rep,name=config,proto3" json:"config,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwap) Reset() {
-	*x = ISwap{}
-	mi := &file_rum_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwap) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwap) ProtoMessage() {}
-
-func (x *ISwap) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwap.ProtoReflect.Descriptor instead.
-func (*ISwap) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *ISwap) GetConfig() []*IConfig {
-	if x != nil {
-		return x.Config
-	}
-	return nil
-}
-
 type ISucceed struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Succeed       bool                   `protobuf:"varint,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
@@ -496,7 +280,7 @@ type ISucceed struct {
 
 func (x *ISucceed) Reset() {
 	*x = ISucceed{}
-	mi := &file_rum_proto_msgTypes[8]
+	mi := &file_rum_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -508,7 +292,7 @@ func (x *ISucceed) String() string {
 func (*ISucceed) ProtoMessage() {}
 
 func (x *ISucceed) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[8]
+	mi := &file_rum_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -521,7 +305,7 @@ func (x *ISucceed) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ISucceed.ProtoReflect.Descriptor instead.
 func (*ISucceed) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{8}
+	return file_rum_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ISucceed) GetSucceed() bool {
@@ -540,7 +324,7 @@ type IPostRequest struct {
 
 func (x *IPostRequest) Reset() {
 	*x = IPostRequest{}
-	mi := &file_rum_proto_msgTypes[9]
+	mi := &file_rum_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -552,7 +336,7 @@ func (x *IPostRequest) String() string {
 func (*IPostRequest) ProtoMessage() {}
 
 func (x *IPostRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[9]
+	mi := &file_rum_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -565,677 +349,12 @@ func (x *IPostRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IPostRequest.ProtoReflect.Descriptor instead.
 func (*IPostRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{9}
+	return file_rum_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *IPostRequest) GetPost() []*IPost {
 	if x != nil {
 		return x.Post
-	}
-	return nil
-}
-
-// profiles
-type IDeactivateProfileRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Deactivate    *IDeactivate           `protobuf:"bytes,1,opt,name=deactivate,proto3" json:"deactivate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateProfileRequest) Reset() {
-	*x = IDeactivateProfileRequest{}
-	mi := &file_rum_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateProfileRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateProfileRequest) ProtoMessage() {}
-
-func (x *IDeactivateProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateProfileRequest.ProtoReflect.Descriptor instead.
-func (*IDeactivateProfileRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *IDeactivateProfileRequest) GetDeactivate() *IDeactivate {
-	if x != nil {
-		return x.Deactivate
-	}
-	return nil
-}
-
-type IActivateProfileRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Activate      *IActivate             `protobuf:"bytes,1,opt,name=activate,proto3" json:"activate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateProfileRequest) Reset() {
-	*x = IActivateProfileRequest{}
-	mi := &file_rum_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateProfileRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateProfileRequest) ProtoMessage() {}
-
-func (x *IActivateProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateProfileRequest.ProtoReflect.Descriptor instead.
-func (*IActivateProfileRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *IActivateProfileRequest) GetActivate() *IActivate {
-	if x != nil {
-		return x.Activate
-	}
-	return nil
-}
-
-type ISwapProfileRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Swap          *ISwap                 `protobuf:"bytes,1,opt,name=swap,proto3" json:"swap,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapProfileRequest) Reset() {
-	*x = ISwapProfileRequest{}
-	mi := &file_rum_proto_msgTypes[12]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapProfileRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapProfileRequest) ProtoMessage() {}
-
-func (x *ISwapProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[12]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapProfileRequest.ProtoReflect.Descriptor instead.
-func (*ISwapProfileRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *ISwapProfileRequest) GetSwap() *ISwap {
-	if x != nil {
-		return x.Swap
-	}
-	return nil
-}
-
-// kit
-type IDeactivateKitRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Deactivate    *IDeactivate           `protobuf:"bytes,1,opt,name=deactivate,proto3" json:"deactivate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateKitRequest) Reset() {
-	*x = IDeactivateKitRequest{}
-	mi := &file_rum_proto_msgTypes[13]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateKitRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateKitRequest) ProtoMessage() {}
-
-func (x *IDeactivateKitRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[13]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateKitRequest.ProtoReflect.Descriptor instead.
-func (*IDeactivateKitRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{13}
-}
-
-func (x *IDeactivateKitRequest) GetDeactivate() *IDeactivate {
-	if x != nil {
-		return x.Deactivate
-	}
-	return nil
-}
-
-type IActivateKitRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Activate      *IActivate             `protobuf:"bytes,1,opt,name=activate,proto3" json:"activate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateKitRequest) Reset() {
-	*x = IActivateKitRequest{}
-	mi := &file_rum_proto_msgTypes[14]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateKitRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateKitRequest) ProtoMessage() {}
-
-func (x *IActivateKitRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[14]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateKitRequest.ProtoReflect.Descriptor instead.
-func (*IActivateKitRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{14}
-}
-
-func (x *IActivateKitRequest) GetActivate() *IActivate {
-	if x != nil {
-		return x.Activate
-	}
-	return nil
-}
-
-type ISwapKitRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Swap          *ISwap                 `protobuf:"bytes,1,opt,name=swap,proto3" json:"swap,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapKitRequest) Reset() {
-	*x = ISwapKitRequest{}
-	mi := &file_rum_proto_msgTypes[15]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapKitRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapKitRequest) ProtoMessage() {}
-
-func (x *ISwapKitRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[15]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapKitRequest.ProtoReflect.Descriptor instead.
-func (*ISwapKitRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{15}
-}
-
-func (x *ISwapKitRequest) GetSwap() *ISwap {
-	if x != nil {
-		return x.Swap
-	}
-	return nil
-}
-
-// services
-type IDeactivateServiceRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Deactivate    *IDeactivate           `protobuf:"bytes,1,opt,name=deactivate,proto3" json:"deactivate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateServiceRequest) Reset() {
-	*x = IDeactivateServiceRequest{}
-	mi := &file_rum_proto_msgTypes[16]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateServiceRequest) ProtoMessage() {}
-
-func (x *IDeactivateServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[16]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateServiceRequest.ProtoReflect.Descriptor instead.
-func (*IDeactivateServiceRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{16}
-}
-
-func (x *IDeactivateServiceRequest) GetDeactivate() *IDeactivate {
-	if x != nil {
-		return x.Deactivate
-	}
-	return nil
-}
-
-type IActivateServiceRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Activate      *IActivate             `protobuf:"bytes,1,opt,name=activate,proto3" json:"activate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateServiceRequest) Reset() {
-	*x = IActivateServiceRequest{}
-	mi := &file_rum_proto_msgTypes[17]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateServiceRequest) ProtoMessage() {}
-
-func (x *IActivateServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[17]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateServiceRequest.ProtoReflect.Descriptor instead.
-func (*IActivateServiceRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{17}
-}
-
-func (x *IActivateServiceRequest) GetActivate() *IActivate {
-	if x != nil {
-		return x.Activate
-	}
-	return nil
-}
-
-type ISwapServiceRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Swap          *ISwap                 `protobuf:"bytes,1,opt,name=swap,proto3" json:"swap,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapServiceRequest) Reset() {
-	*x = ISwapServiceRequest{}
-	mi := &file_rum_proto_msgTypes[18]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapServiceRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapServiceRequest) ProtoMessage() {}
-
-func (x *ISwapServiceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[18]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapServiceRequest.ProtoReflect.Descriptor instead.
-func (*ISwapServiceRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{18}
-}
-
-func (x *ISwapServiceRequest) GetSwap() *ISwap {
-	if x != nil {
-		return x.Swap
-	}
-	return nil
-}
-
-// dispatcher
-type IDeactivateDispatcherRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Deactivate    *IDeactivate           `protobuf:"bytes,1,opt,name=deactivate,proto3" json:"deactivate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateDispatcherRequest) Reset() {
-	*x = IDeactivateDispatcherRequest{}
-	mi := &file_rum_proto_msgTypes[19]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateDispatcherRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateDispatcherRequest) ProtoMessage() {}
-
-func (x *IDeactivateDispatcherRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[19]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateDispatcherRequest.ProtoReflect.Descriptor instead.
-func (*IDeactivateDispatcherRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{19}
-}
-
-func (x *IDeactivateDispatcherRequest) GetDeactivate() *IDeactivate {
-	if x != nil {
-		return x.Deactivate
-	}
-	return nil
-}
-
-type IActivateDispatcherRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Activate      *IActivate             `protobuf:"bytes,1,opt,name=activate,proto3" json:"activate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateDispatcherRequest) Reset() {
-	*x = IActivateDispatcherRequest{}
-	mi := &file_rum_proto_msgTypes[20]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateDispatcherRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateDispatcherRequest) ProtoMessage() {}
-
-func (x *IActivateDispatcherRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[20]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateDispatcherRequest.ProtoReflect.Descriptor instead.
-func (*IActivateDispatcherRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{20}
-}
-
-func (x *IActivateDispatcherRequest) GetActivate() *IActivate {
-	if x != nil {
-		return x.Activate
-	}
-	return nil
-}
-
-type ISwapDispatcherRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Swap          *ISwap                 `protobuf:"bytes,1,opt,name=swap,proto3" json:"swap,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapDispatcherRequest) Reset() {
-	*x = ISwapDispatcherRequest{}
-	mi := &file_rum_proto_msgTypes[21]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapDispatcherRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapDispatcherRequest) ProtoMessage() {}
-
-func (x *ISwapDispatcherRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[21]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapDispatcherRequest.ProtoReflect.Descriptor instead.
-func (*ISwapDispatcherRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{21}
-}
-
-func (x *ISwapDispatcherRequest) GetSwap() *ISwap {
-	if x != nil {
-		return x.Swap
-	}
-	return nil
-}
-
-// events
-type IDeactivateEventRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Deactivate    *IDeactivate           `protobuf:"bytes,1,opt,name=deactivate,proto3" json:"deactivate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateEventRequest) Reset() {
-	*x = IDeactivateEventRequest{}
-	mi := &file_rum_proto_msgTypes[22]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateEventRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateEventRequest) ProtoMessage() {}
-
-func (x *IDeactivateEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[22]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateEventRequest.ProtoReflect.Descriptor instead.
-func (*IDeactivateEventRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{22}
-}
-
-func (x *IDeactivateEventRequest) GetDeactivate() *IDeactivate {
-	if x != nil {
-		return x.Deactivate
-	}
-	return nil
-}
-
-type IActivateEventRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Activate      *IActivate             `protobuf:"bytes,1,opt,name=activate,proto3" json:"activate,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateEventRequest) Reset() {
-	*x = IActivateEventRequest{}
-	mi := &file_rum_proto_msgTypes[23]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateEventRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateEventRequest) ProtoMessage() {}
-
-func (x *IActivateEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[23]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateEventRequest.ProtoReflect.Descriptor instead.
-func (*IActivateEventRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{23}
-}
-
-func (x *IActivateEventRequest) GetActivate() *IActivate {
-	if x != nil {
-		return x.Activate
-	}
-	return nil
-}
-
-type ISwapEventRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Swap          *ISwap                 `protobuf:"bytes,1,opt,name=swap,proto3" json:"swap,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapEventRequest) Reset() {
-	*x = ISwapEventRequest{}
-	mi := &file_rum_proto_msgTypes[24]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapEventRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapEventRequest) ProtoMessage() {}
-
-func (x *ISwapEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[24]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapEventRequest.ProtoReflect.Descriptor instead.
-func (*ISwapEventRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{24}
-}
-
-func (x *ISwapEventRequest) GetSwap() *ISwap {
-	if x != nil {
-		return x.Swap
 	}
 	return nil
 }
@@ -1249,7 +368,7 @@ type IPostResponse struct {
 
 func (x *IPostResponse) Reset() {
 	*x = IPostResponse{}
-	mi := &file_rum_proto_msgTypes[25]
+	mi := &file_rum_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1261,7 +380,7 @@ func (x *IPostResponse) String() string {
 func (*IPostResponse) ProtoMessage() {}
 
 func (x *IPostResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[25]
+	mi := &file_rum_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1274,675 +393,10 @@ func (x *IPostResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IPostResponse.ProtoReflect.Descriptor instead.
 func (*IPostResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{25}
+	return file_rum_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *IPostResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-// profiles
-type IDeactivateProfileResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateProfileResponse) Reset() {
-	*x = IDeactivateProfileResponse{}
-	mi := &file_rum_proto_msgTypes[26]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateProfileResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateProfileResponse) ProtoMessage() {}
-
-func (x *IDeactivateProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[26]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateProfileResponse.ProtoReflect.Descriptor instead.
-func (*IDeactivateProfileResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{26}
-}
-
-func (x *IDeactivateProfileResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type IActivateProfileResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateProfileResponse) Reset() {
-	*x = IActivateProfileResponse{}
-	mi := &file_rum_proto_msgTypes[27]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateProfileResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateProfileResponse) ProtoMessage() {}
-
-func (x *IActivateProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[27]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateProfileResponse.ProtoReflect.Descriptor instead.
-func (*IActivateProfileResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{27}
-}
-
-func (x *IActivateProfileResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type ISwapProfileResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapProfileResponse) Reset() {
-	*x = ISwapProfileResponse{}
-	mi := &file_rum_proto_msgTypes[28]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapProfileResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapProfileResponse) ProtoMessage() {}
-
-func (x *ISwapProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[28]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapProfileResponse.ProtoReflect.Descriptor instead.
-func (*ISwapProfileResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{28}
-}
-
-func (x *ISwapProfileResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-// kit
-type IDeactivateKitResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateKitResponse) Reset() {
-	*x = IDeactivateKitResponse{}
-	mi := &file_rum_proto_msgTypes[29]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateKitResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateKitResponse) ProtoMessage() {}
-
-func (x *IDeactivateKitResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[29]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateKitResponse.ProtoReflect.Descriptor instead.
-func (*IDeactivateKitResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{29}
-}
-
-func (x *IDeactivateKitResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type IActivateKitResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateKitResponse) Reset() {
-	*x = IActivateKitResponse{}
-	mi := &file_rum_proto_msgTypes[30]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateKitResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateKitResponse) ProtoMessage() {}
-
-func (x *IActivateKitResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[30]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateKitResponse.ProtoReflect.Descriptor instead.
-func (*IActivateKitResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{30}
-}
-
-func (x *IActivateKitResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type ISwapKitResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapKitResponse) Reset() {
-	*x = ISwapKitResponse{}
-	mi := &file_rum_proto_msgTypes[31]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapKitResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapKitResponse) ProtoMessage() {}
-
-func (x *ISwapKitResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[31]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapKitResponse.ProtoReflect.Descriptor instead.
-func (*ISwapKitResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{31}
-}
-
-func (x *ISwapKitResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-// service
-type ISwapServiceResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapServiceResponse) Reset() {
-	*x = ISwapServiceResponse{}
-	mi := &file_rum_proto_msgTypes[32]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapServiceResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapServiceResponse) ProtoMessage() {}
-
-func (x *ISwapServiceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[32]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapServiceResponse.ProtoReflect.Descriptor instead.
-func (*ISwapServiceResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{32}
-}
-
-func (x *ISwapServiceResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type IDeactivateServiceResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateServiceResponse) Reset() {
-	*x = IDeactivateServiceResponse{}
-	mi := &file_rum_proto_msgTypes[33]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateServiceResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateServiceResponse) ProtoMessage() {}
-
-func (x *IDeactivateServiceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[33]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateServiceResponse.ProtoReflect.Descriptor instead.
-func (*IDeactivateServiceResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{33}
-}
-
-func (x *IDeactivateServiceResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type IActivateServiceResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateServiceResponse) Reset() {
-	*x = IActivateServiceResponse{}
-	mi := &file_rum_proto_msgTypes[34]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateServiceResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateServiceResponse) ProtoMessage() {}
-
-func (x *IActivateServiceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[34]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateServiceResponse.ProtoReflect.Descriptor instead.
-func (*IActivateServiceResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{34}
-}
-
-func (x *IActivateServiceResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-// dispatcher
-type IDeactivateDispatcherResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateDispatcherResponse) Reset() {
-	*x = IDeactivateDispatcherResponse{}
-	mi := &file_rum_proto_msgTypes[35]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateDispatcherResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateDispatcherResponse) ProtoMessage() {}
-
-func (x *IDeactivateDispatcherResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[35]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateDispatcherResponse.ProtoReflect.Descriptor instead.
-func (*IDeactivateDispatcherResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{35}
-}
-
-func (x *IDeactivateDispatcherResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type IActivateDispatcherResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateDispatcherResponse) Reset() {
-	*x = IActivateDispatcherResponse{}
-	mi := &file_rum_proto_msgTypes[36]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateDispatcherResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateDispatcherResponse) ProtoMessage() {}
-
-func (x *IActivateDispatcherResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[36]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateDispatcherResponse.ProtoReflect.Descriptor instead.
-func (*IActivateDispatcherResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{36}
-}
-
-func (x *IActivateDispatcherResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type ISwapDispatcherResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapDispatcherResponse) Reset() {
-	*x = ISwapDispatcherResponse{}
-	mi := &file_rum_proto_msgTypes[37]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapDispatcherResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapDispatcherResponse) ProtoMessage() {}
-
-func (x *ISwapDispatcherResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[37]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapDispatcherResponse.ProtoReflect.Descriptor instead.
-func (*ISwapDispatcherResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{37}
-}
-
-func (x *ISwapDispatcherResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-// events
-type IDeactivateEventResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDeactivateEventResponse) Reset() {
-	*x = IDeactivateEventResponse{}
-	mi := &file_rum_proto_msgTypes[38]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDeactivateEventResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDeactivateEventResponse) ProtoMessage() {}
-
-func (x *IDeactivateEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[38]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDeactivateEventResponse.ProtoReflect.Descriptor instead.
-func (*IDeactivateEventResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{38}
-}
-
-func (x *IDeactivateEventResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type IActivateEventResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IActivateEventResponse) Reset() {
-	*x = IActivateEventResponse{}
-	mi := &file_rum_proto_msgTypes[39]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IActivateEventResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IActivateEventResponse) ProtoMessage() {}
-
-func (x *IActivateEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[39]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IActivateEventResponse.ProtoReflect.Descriptor instead.
-func (*IActivateEventResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{39}
-}
-
-func (x *IActivateEventResponse) GetSucceed() *ISucceed {
-	if x != nil {
-		return x.Succeed
-	}
-	return nil
-}
-
-type ISwapEventResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Succeed       *ISucceed              `protobuf:"bytes,1,opt,name=succeed,proto3" json:"succeed,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ISwapEventResponse) Reset() {
-	*x = ISwapEventResponse{}
-	mi := &file_rum_proto_msgTypes[40]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ISwapEventResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ISwapEventResponse) ProtoMessage() {}
-
-func (x *ISwapEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[40]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ISwapEventResponse.ProtoReflect.Descriptor instead.
-func (*ISwapEventResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{40}
-}
-
-func (x *ISwapEventResponse) GetSucceed() *ISucceed {
 	if x != nil {
 		return x.Succeed
 	}
@@ -1958,7 +412,7 @@ type IMonitorTagRequest struct {
 
 func (x *IMonitorTagRequest) Reset() {
 	*x = IMonitorTagRequest{}
-	mi := &file_rum_proto_msgTypes[41]
+	mi := &file_rum_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1970,7 +424,7 @@ func (x *IMonitorTagRequest) String() string {
 func (*IMonitorTagRequest) ProtoMessage() {}
 
 func (x *IMonitorTagRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[41]
+	mi := &file_rum_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1983,7 +437,7 @@ func (x *IMonitorTagRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IMonitorTagRequest.ProtoReflect.Descriptor instead.
 func (*IMonitorTagRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{41}
+	return file_rum_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *IMonitorTagRequest) GetTag() []string {
@@ -2002,7 +456,7 @@ type IMonitorTagResponse struct {
 
 func (x *IMonitorTagResponse) Reset() {
 	*x = IMonitorTagResponse{}
-	mi := &file_rum_proto_msgTypes[42]
+	mi := &file_rum_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2014,7 +468,7 @@ func (x *IMonitorTagResponse) String() string {
 func (*IMonitorTagResponse) ProtoMessage() {}
 
 func (x *IMonitorTagResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[42]
+	mi := &file_rum_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2027,7 +481,7 @@ func (x *IMonitorTagResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IMonitorTagResponse.ProtoReflect.Descriptor instead.
 func (*IMonitorTagResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{42}
+	return file_rum_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *IMonitorTagResponse) GetSucceed() *ISucceed {
@@ -2046,7 +500,7 @@ type ReleaseRequest struct {
 
 func (x *ReleaseRequest) Reset() {
 	*x = ReleaseRequest{}
-	mi := &file_rum_proto_msgTypes[43]
+	mi := &file_rum_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2058,7 +512,7 @@ func (x *ReleaseRequest) String() string {
 func (*ReleaseRequest) ProtoMessage() {}
 
 func (x *ReleaseRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[43]
+	mi := &file_rum_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2071,7 +525,7 @@ func (x *ReleaseRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReleaseRequest.ProtoReflect.Descriptor instead.
 func (*ReleaseRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{43}
+	return file_rum_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ReleaseRequest) GetRelease() bool {
@@ -2090,7 +544,7 @@ type ReleaseResponse struct {
 
 func (x *ReleaseResponse) Reset() {
 	*x = ReleaseResponse{}
-	mi := &file_rum_proto_msgTypes[44]
+	mi := &file_rum_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2102,7 +556,7 @@ func (x *ReleaseResponse) String() string {
 func (*ReleaseResponse) ProtoMessage() {}
 
 func (x *ReleaseResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[44]
+	mi := &file_rum_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2115,7 +569,7 @@ func (x *ReleaseResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReleaseResponse.ProtoReflect.Descriptor instead.
 func (*ReleaseResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{44}
+	return file_rum_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ReleaseResponse) GetSucceed() *ISucceed {
@@ -2125,29 +579,29 @@ func (x *ReleaseResponse) GetSucceed() *ISucceed {
 	return nil
 }
 
-// metadatas
-type IProfileMetadataRequest struct {
+type IConfig struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          []*IPackageRequest     `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
+	Activate      bool                   `protobuf:"varint,1,opt,name=activate,proto3" json:"activate,omitempty"`
+	Swap          *ISwap                 `protobuf:"bytes,2,opt,name=swap,proto3" json:"swap,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *IProfileMetadataRequest) Reset() {
-	*x = IProfileMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[45]
+func (x *IConfig) Reset() {
+	*x = IConfig{}
+	mi := &file_rum_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *IProfileMetadataRequest) String() string {
+func (x *IConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*IProfileMetadataRequest) ProtoMessage() {}
+func (*IConfig) ProtoMessage() {}
 
-func (x *IProfileMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[45]
+func (x *IConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_rum_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2158,40 +612,49 @@ func (x *IProfileMetadataRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use IProfileMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IProfileMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{45}
+// Deprecated: Use IConfig.ProtoReflect.Descriptor instead.
+func (*IConfig) Descriptor() ([]byte, []int) {
+	return file_rum_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *IProfileMetadataRequest) GetName() []*IPackageRequest {
+func (x *IConfig) GetActivate() bool {
 	if x != nil {
-		return x.Name
+		return x.Activate
+	}
+	return false
+}
+
+func (x *IConfig) GetSwap() *ISwap {
+	if x != nil {
+		return x.Swap
 	}
 	return nil
 }
 
-type IKitMetadataRequest struct {
+type ISwap struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          []*IPackageRequest     `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
+	With          string                 `protobuf:"bytes,1,opt,name=with,proto3" json:"with,omitempty"`
+	Current       string                 `protobuf:"bytes,2,opt,name=current,proto3" json:"current,omitempty"`
+	Swap          bool                   `protobuf:"varint,3,opt,name=swap,proto3" json:"swap,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *IKitMetadataRequest) Reset() {
-	*x = IKitMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[46]
+func (x *ISwap) Reset() {
+	*x = ISwap{}
+	mi := &file_rum_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *IKitMetadataRequest) String() string {
+func (x *ISwap) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*IKitMetadataRequest) ProtoMessage() {}
+func (*ISwap) ProtoMessage() {}
 
-func (x *IKitMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[46]
+func (x *ISwap) ProtoReflect() protoreflect.Message {
+	mi := &file_rum_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2202,800 +665,262 @@ func (x *IKitMetadataRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use IKitMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IKitMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{46}
+// Deprecated: Use ISwap.ProtoReflect.Descriptor instead.
+func (*ISwap) Descriptor() ([]byte, []int) {
+	return file_rum_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *IKitMetadataRequest) GetName() []*IPackageRequest {
+func (x *ISwap) GetWith() string {
 	if x != nil {
-		return x.Name
+		return x.With
+	}
+	return ""
+}
+
+func (x *ISwap) GetCurrent() string {
+	if x != nil {
+		return x.Current
+	}
+	return ""
+}
+
+func (x *ISwap) GetSwap() bool {
+	if x != nil {
+		return x.Swap
+	}
+	return false
+}
+
+type IConfigResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Error         string                 `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	Succeed       bool                   `protobuf:"varint,2,opt,name=succeed,proto3" json:"succeed,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IConfigResponse) Reset() {
+	*x = IConfigResponse{}
+	mi := &file_rum_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IConfigResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IConfigResponse) ProtoMessage() {}
+
+func (x *IConfigResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rum_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IConfigResponse.ProtoReflect.Descriptor instead.
+func (*IConfigResponse) Descriptor() ([]byte, []int) {
+	return file_rum_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *IConfigResponse) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+func (x *IConfigResponse) GetSucceed() bool {
+	if x != nil {
+		return x.Succeed
+	}
+	return false
+}
+
+type IDocRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IDocRequest) Reset() {
+	*x = IDocRequest{}
+	mi := &file_rum_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IDocRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IDocRequest) ProtoMessage() {}
+
+func (x *IDocRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rum_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IDocRequest.ProtoReflect.Descriptor instead.
+func (*IDocRequest) Descriptor() ([]byte, []int) {
+	return file_rum_proto_rawDescGZIP(), []int{14}
+}
+
+type IDocResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Doc           string                 `protobuf:"bytes,1,opt,name=doc,proto3" json:"doc,omitempty"`
+	Succeed       bool                   `protobuf:"varint,2,opt,name=succeed,proto3" json:"succeed,omitempty"`
+	Error         string                 `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IDocResponse) Reset() {
+	*x = IDocResponse{}
+	mi := &file_rum_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IDocResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IDocResponse) ProtoMessage() {}
+
+func (x *IDocResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rum_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IDocResponse.ProtoReflect.Descriptor instead.
+func (*IDocResponse) Descriptor() ([]byte, []int) {
+	return file_rum_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *IDocResponse) GetDoc() string {
+	if x != nil {
+		return x.Doc
+	}
+	return ""
+}
+
+func (x *IDocResponse) GetSucceed() bool {
+	if x != nil {
+		return x.Succeed
+	}
+	return false
+}
+
+func (x *IDocResponse) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+type IConfigRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Config         *IConfig               `protobuf:"bytes,1,opt,name=config,proto3" json:"config,omitempty"`
+	ProfileName    string                 `protobuf:"bytes,2,opt,name=profileName,proto3" json:"profileName,omitempty"`
+	KitName        string                 `protobuf:"bytes,3,opt,name=kitName,proto3" json:"kitName,omitempty"`
+	ServiceName    string                 `protobuf:"bytes,4,opt,name=serviceName,proto3" json:"serviceName,omitempty"`
+	DispatcherName string                 `protobuf:"bytes,5,opt,name=dispatcherName,proto3" json:"dispatcherName,omitempty"`
+	EventName      string                 `protobuf:"bytes,6,opt,name=eventName,proto3" json:"eventName,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *IConfigRequest) Reset() {
+	*x = IConfigRequest{}
+	mi := &file_rum_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IConfigRequest) ProtoMessage() {}
+
+func (x *IConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rum_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IConfigRequest.ProtoReflect.Descriptor instead.
+func (*IConfigRequest) Descriptor() ([]byte, []int) {
+	return file_rum_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *IConfigRequest) GetConfig() *IConfig {
+	if x != nil {
+		return x.Config
 	}
 	return nil
 }
 
-type IServiceMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          []*IPackageRequest     `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IServiceMetadataRequest) Reset() {
-	*x = IServiceMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[47]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IServiceMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IServiceMetadataRequest) ProtoMessage() {}
-
-func (x *IServiceMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[47]
+func (x *IConfigRequest) GetProfileName() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.ProfileName
 	}
-	return mi.MessageOf(x)
+	return ""
 }
 
-// Deprecated: Use IServiceMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IServiceMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{47}
-}
-
-func (x *IServiceMetadataRequest) GetName() []*IPackageRequest {
+func (x *IConfigRequest) GetKitName() string {
 	if x != nil {
-		return x.Name
+		return x.KitName
 	}
-	return nil
+	return ""
 }
 
-type IDispatcherMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          []*IPackageRequest     `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDispatcherMetadataRequest) Reset() {
-	*x = IDispatcherMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[48]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDispatcherMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDispatcherMetadataRequest) ProtoMessage() {}
-
-func (x *IDispatcherMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[48]
+func (x *IConfigRequest) GetServiceName() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.ServiceName
 	}
-	return mi.MessageOf(x)
+	return ""
 }
 
-// Deprecated: Use IDispatcherMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IDispatcherMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{48}
-}
-
-func (x *IDispatcherMetadataRequest) GetName() []*IPackageRequest {
+func (x *IConfigRequest) GetDispatcherName() string {
 	if x != nil {
-		return x.Name
+		return x.DispatcherName
 	}
-	return nil
+	return ""
 }
 
-type IEventMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          []*IPackageRequest     `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IEventMetadataRequest) Reset() {
-	*x = IEventMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[49]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IEventMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IEventMetadataRequest) ProtoMessage() {}
-
-func (x *IEventMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[49]
+func (x *IConfigRequest) GetEventName() string {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+		return x.EventName
 	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IEventMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IEventMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{49}
-}
-
-func (x *IEventMetadataRequest) GetName() []*IPackageRequest {
-	if x != nil {
-		return x.Name
-	}
-	return nil
-}
-
-type IProfileMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        []*IPackage            `protobuf:"bytes,1,rep,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IProfileMetadataResponse) Reset() {
-	*x = IProfileMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[50]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IProfileMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IProfileMetadataResponse) ProtoMessage() {}
-
-func (x *IProfileMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[50]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IProfileMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IProfileMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{50}
-}
-
-func (x *IProfileMetadataResponse) GetPacket() []*IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IKitMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        []*IPackage            `protobuf:"bytes,1,rep,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IKitMetadataResponse) Reset() {
-	*x = IKitMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[51]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IKitMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IKitMetadataResponse) ProtoMessage() {}
-
-func (x *IKitMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[51]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IKitMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IKitMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{51}
-}
-
-func (x *IKitMetadataResponse) GetPacket() []*IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IServiceMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        []*IPackage            `protobuf:"bytes,1,rep,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IServiceMetadataResponse) Reset() {
-	*x = IServiceMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[52]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IServiceMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IServiceMetadataResponse) ProtoMessage() {}
-
-func (x *IServiceMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[52]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IServiceMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IServiceMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{52}
-}
-
-func (x *IServiceMetadataResponse) GetPacket() []*IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IDispatcherMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        []*IPackage            `protobuf:"bytes,1,rep,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IDispatcherMetadataResponse) Reset() {
-	*x = IDispatcherMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[53]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IDispatcherMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IDispatcherMetadataResponse) ProtoMessage() {}
-
-func (x *IDispatcherMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[53]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IDispatcherMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IDispatcherMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{53}
-}
-
-func (x *IDispatcherMetadataResponse) GetPacket() []*IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IEventMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        []*IPackage            `protobuf:"bytes,1,rep,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IEventMetadataResponse) Reset() {
-	*x = IEventMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[54]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IEventMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IEventMetadataResponse) ProtoMessage() {}
-
-func (x *IEventMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[54]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IEventMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IEventMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{54}
-}
-
-func (x *IEventMetadataResponse) GetPacket() []*IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IPullProfileMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullProfileMetadataRequest) Reset() {
-	*x = IPullProfileMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[55]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullProfileMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullProfileMetadataRequest) ProtoMessage() {}
-
-func (x *IPullProfileMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[55]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullProfileMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IPullProfileMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{55}
-}
-
-type IPullKitMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          *IPackageRequest       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullKitMetadataRequest) Reset() {
-	*x = IPullKitMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[56]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullKitMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullKitMetadataRequest) ProtoMessage() {}
-
-func (x *IPullKitMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[56]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullKitMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IPullKitMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{56}
-}
-
-func (x *IPullKitMetadataRequest) GetName() *IPackageRequest {
-	if x != nil {
-		return x.Name
-	}
-	return nil
-}
-
-type IPullServiceMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          *IPackageRequest       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullServiceMetadataRequest) Reset() {
-	*x = IPullServiceMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[57]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullServiceMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullServiceMetadataRequest) ProtoMessage() {}
-
-func (x *IPullServiceMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[57]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullServiceMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IPullServiceMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{57}
-}
-
-func (x *IPullServiceMetadataRequest) GetName() *IPackageRequest {
-	if x != nil {
-		return x.Name
-	}
-	return nil
-}
-
-type IPullDispatcherMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          *IPackageRequest       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullDispatcherMetadataRequest) Reset() {
-	*x = IPullDispatcherMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[58]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullDispatcherMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullDispatcherMetadataRequest) ProtoMessage() {}
-
-func (x *IPullDispatcherMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[58]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullDispatcherMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IPullDispatcherMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{58}
-}
-
-func (x *IPullDispatcherMetadataRequest) GetName() *IPackageRequest {
-	if x != nil {
-		return x.Name
-	}
-	return nil
-}
-
-type IPullEventMetadataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          *IPackageRequest       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullEventMetadataRequest) Reset() {
-	*x = IPullEventMetadataRequest{}
-	mi := &file_rum_proto_msgTypes[59]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullEventMetadataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullEventMetadataRequest) ProtoMessage() {}
-
-func (x *IPullEventMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[59]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullEventMetadataRequest.ProtoReflect.Descriptor instead.
-func (*IPullEventMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{59}
-}
-
-func (x *IPullEventMetadataRequest) GetName() *IPackageRequest {
-	if x != nil {
-		return x.Name
-	}
-	return nil
-}
-
-type IPullProfileMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        *IPackage              `protobuf:"bytes,1,opt,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullProfileMetadataResponse) Reset() {
-	*x = IPullProfileMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[60]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullProfileMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullProfileMetadataResponse) ProtoMessage() {}
-
-func (x *IPullProfileMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[60]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullProfileMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IPullProfileMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{60}
-}
-
-func (x *IPullProfileMetadataResponse) GetPacket() *IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IPullKitMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        *IPackage              `protobuf:"bytes,1,opt,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullKitMetadataResponse) Reset() {
-	*x = IPullKitMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[61]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullKitMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullKitMetadataResponse) ProtoMessage() {}
-
-func (x *IPullKitMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[61]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullKitMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IPullKitMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{61}
-}
-
-func (x *IPullKitMetadataResponse) GetPacket() *IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IPullServiceMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        *IPackage              `protobuf:"bytes,1,opt,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullServiceMetadataResponse) Reset() {
-	*x = IPullServiceMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[62]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullServiceMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullServiceMetadataResponse) ProtoMessage() {}
-
-func (x *IPullServiceMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[62]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullServiceMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IPullServiceMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{62}
-}
-
-func (x *IPullServiceMetadataResponse) GetPacket() *IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IPullDispatcherMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        *IPackage              `protobuf:"bytes,1,opt,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullDispatcherMetadataResponse) Reset() {
-	*x = IPullDispatcherMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[63]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullDispatcherMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullDispatcherMetadataResponse) ProtoMessage() {}
-
-func (x *IPullDispatcherMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[63]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullDispatcherMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IPullDispatcherMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{63}
-}
-
-func (x *IPullDispatcherMetadataResponse) GetPacket() *IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
-}
-
-type IPullEventMetadataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Packet        *IPackage              `protobuf:"bytes,1,opt,name=packet,proto3" json:"packet,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IPullEventMetadataResponse) Reset() {
-	*x = IPullEventMetadataResponse{}
-	mi := &file_rum_proto_msgTypes[64]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IPullEventMetadataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IPullEventMetadataResponse) ProtoMessage() {}
-
-func (x *IPullEventMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_rum_proto_msgTypes[64]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IPullEventMetadataResponse.ProtoReflect.Descriptor instead.
-func (*IPullEventMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_rum_proto_rawDescGZIP(), []int{64}
-}
-
-func (x *IPullEventMetadataResponse) GetPacket() *IPackage {
-	if x != nil {
-		return x.Packet
-	}
-	return nil
+	return ""
 }
 
 var File_rum_proto protoreflect.FileDescriptor
@@ -3021,97 +946,12 @@ const file_rum_proto_rawDesc = "" +
 	"\x05error\x18\x01 \x01(\tR\x05error\x12+\n" +
 	"\x04name\x18\x02 \x01(\v2\x17.rumrpc.IPackageRequestR\x04name\x12*\n" +
 	"\asucceed\x18\x03 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\x12\x18\n" +
-	"\apackage\x18\x04 \x01(\fR\apackage\"\x99\x01\n" +
-	"\aIConfig\x12\x18\n" +
-	"\aprofile\x18\x01 \x01(\tR\aprofile\x12\x10\n" +
-	"\x03kit\x18\x02 \x01(\tR\x03kit\x12\x18\n" +
-	"\aservice\x18\x03 \x01(\tR\aservice\x12\x1e\n" +
-	"\n" +
-	"dispatcher\x18\x04 \x01(\tR\n" +
-	"dispatcher\x12\x14\n" +
-	"\x05event\x18\x05 \x01(\tR\x05event\x12\x12\n" +
-	"\x04swap\x18\x06 \x01(\tR\x04swap\"6\n" +
-	"\vIDeactivate\x12'\n" +
-	"\x06config\x18\x01 \x03(\v2\x0f.rumrpc.IConfigR\x06config\"4\n" +
-	"\tIActivate\x12'\n" +
-	"\x06config\x18\x01 \x03(\v2\x0f.rumrpc.IConfigR\x06config\"0\n" +
-	"\x05ISwap\x12'\n" +
-	"\x06config\x18\x01 \x03(\v2\x0f.rumrpc.IConfigR\x06config\"$\n" +
+	"\apackage\x18\x04 \x01(\fR\apackage\"$\n" +
 	"\bISucceed\x12\x18\n" +
 	"\asucceed\x18\x01 \x01(\bR\asucceed\"1\n" +
 	"\fIPostRequest\x12!\n" +
-	"\x04post\x18\x01 \x03(\v2\r.rumrpc.IPostR\x04post\"P\n" +
-	"\x19IDeactivateProfileRequest\x123\n" +
-	"\n" +
-	"deactivate\x18\x01 \x01(\v2\x13.rumrpc.IDeactivateR\n" +
-	"deactivate\"H\n" +
-	"\x17IActivateProfileRequest\x12-\n" +
-	"\bactivate\x18\x01 \x01(\v2\x11.rumrpc.IActivateR\bactivate\"8\n" +
-	"\x13ISwapProfileRequest\x12!\n" +
-	"\x04swap\x18\x01 \x01(\v2\r.rumrpc.ISwapR\x04swap\"L\n" +
-	"\x15IDeactivateKitRequest\x123\n" +
-	"\n" +
-	"deactivate\x18\x01 \x01(\v2\x13.rumrpc.IDeactivateR\n" +
-	"deactivate\"D\n" +
-	"\x13IActivateKitRequest\x12-\n" +
-	"\bactivate\x18\x01 \x01(\v2\x11.rumrpc.IActivateR\bactivate\"4\n" +
-	"\x0fISwapKitRequest\x12!\n" +
-	"\x04swap\x18\x01 \x01(\v2\r.rumrpc.ISwapR\x04swap\"P\n" +
-	"\x19IDeactivateServiceRequest\x123\n" +
-	"\n" +
-	"deactivate\x18\x01 \x01(\v2\x13.rumrpc.IDeactivateR\n" +
-	"deactivate\"H\n" +
-	"\x17IActivateServiceRequest\x12-\n" +
-	"\bactivate\x18\x01 \x01(\v2\x11.rumrpc.IActivateR\bactivate\"8\n" +
-	"\x13ISwapServiceRequest\x12!\n" +
-	"\x04swap\x18\x01 \x01(\v2\r.rumrpc.ISwapR\x04swap\"S\n" +
-	"\x1cIDeactivateDispatcherRequest\x123\n" +
-	"\n" +
-	"deactivate\x18\x01 \x01(\v2\x13.rumrpc.IDeactivateR\n" +
-	"deactivate\"K\n" +
-	"\x1aIActivateDispatcherRequest\x12-\n" +
-	"\bactivate\x18\x01 \x01(\v2\x11.rumrpc.IActivateR\bactivate\";\n" +
-	"\x16ISwapDispatcherRequest\x12!\n" +
-	"\x04swap\x18\x01 \x01(\v2\r.rumrpc.ISwapR\x04swap\"N\n" +
-	"\x17IDeactivateEventRequest\x123\n" +
-	"\n" +
-	"deactivate\x18\x01 \x01(\v2\x13.rumrpc.IDeactivateR\n" +
-	"deactivate\"F\n" +
-	"\x15IActivateEventRequest\x12-\n" +
-	"\bactivate\x18\x01 \x01(\v2\x11.rumrpc.IActivateR\bactivate\"6\n" +
-	"\x11ISwapEventRequest\x12!\n" +
-	"\x04swap\x18\x01 \x01(\v2\r.rumrpc.ISwapR\x04swap\";\n" +
+	"\x04post\x18\x01 \x03(\v2\r.rumrpc.IPostR\x04post\";\n" +
 	"\rIPostResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"H\n" +
-	"\x1aIDeactivateProfileResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"F\n" +
-	"\x18IActivateProfileResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"B\n" +
-	"\x14ISwapProfileResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"D\n" +
-	"\x16IDeactivateKitResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"B\n" +
-	"\x14IActivateKitResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\">\n" +
-	"\x10ISwapKitResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"B\n" +
-	"\x14ISwapServiceResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"H\n" +
-	"\x1aIDeactivateServiceResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"F\n" +
-	"\x18IActivateServiceResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"K\n" +
-	"\x1dIDeactivateDispatcherResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"I\n" +
-	"\x1bIActivateDispatcherResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"E\n" +
-	"\x17ISwapDispatcherResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"F\n" +
-	"\x18IDeactivateEventResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"D\n" +
-	"\x16IActivateEventResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"@\n" +
-	"\x12ISwapEventResponse\x12*\n" +
 	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"&\n" +
 	"\x12IMonitorTagRequest\x12\x10\n" +
 	"\x03tag\x18\x01 \x03(\tR\x03tag\"A\n" +
@@ -3120,76 +960,40 @@ const file_rum_proto_rawDesc = "" +
 	"\x0eReleaseRequest\x12\x18\n" +
 	"\arelease\x18\x01 \x01(\bR\arelease\"=\n" +
 	"\x0fReleaseResponse\x12*\n" +
-	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"F\n" +
-	"\x17IProfileMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x03(\v2\x17.rumrpc.IPackageRequestR\x04name\"B\n" +
-	"\x13IKitMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x03(\v2\x17.rumrpc.IPackageRequestR\x04name\"F\n" +
-	"\x17IServiceMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x03(\v2\x17.rumrpc.IPackageRequestR\x04name\"I\n" +
-	"\x1aIDispatcherMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x03(\v2\x17.rumrpc.IPackageRequestR\x04name\"D\n" +
-	"\x15IEventMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x03(\v2\x17.rumrpc.IPackageRequestR\x04name\"D\n" +
-	"\x18IProfileMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x03(\v2\x10.rumrpc.IPackageR\x06packet\"@\n" +
-	"\x14IKitMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x03(\v2\x10.rumrpc.IPackageR\x06packet\"D\n" +
-	"\x18IServiceMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x03(\v2\x10.rumrpc.IPackageR\x06packet\"G\n" +
-	"\x1bIDispatcherMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x03(\v2\x10.rumrpc.IPackageR\x06packet\"B\n" +
-	"\x16IEventMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x03(\v2\x10.rumrpc.IPackageR\x06packet\"\x1d\n" +
-	"\x1bIPullProfileMetadataRequest\"F\n" +
-	"\x17IPullKitMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x01(\v2\x17.rumrpc.IPackageRequestR\x04name\"J\n" +
-	"\x1bIPullServiceMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x01(\v2\x17.rumrpc.IPackageRequestR\x04name\"M\n" +
-	"\x1eIPullDispatcherMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x01(\v2\x17.rumrpc.IPackageRequestR\x04name\"H\n" +
-	"\x19IPullEventMetadataRequest\x12+\n" +
-	"\x04name\x18\x01 \x01(\v2\x17.rumrpc.IPackageRequestR\x04name\"H\n" +
-	"\x1cIPullProfileMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x01(\v2\x10.rumrpc.IPackageR\x06packet\"D\n" +
-	"\x18IPullKitMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x01(\v2\x10.rumrpc.IPackageR\x06packet\"H\n" +
-	"\x1cIPullServiceMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x01(\v2\x10.rumrpc.IPackageR\x06packet\"K\n" +
-	"\x1fIPullDispatcherMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x01(\v2\x10.rumrpc.IPackageR\x06packet\"F\n" +
-	"\x1aIPullEventMetadataResponse\x12(\n" +
-	"\x06packet\x18\x01 \x01(\v2\x10.rumrpc.IPackageR\x06packet2\xac\x12\n" +
+	"\asucceed\x18\x01 \x01(\v2\x10.rumrpc.ISucceedR\asucceed\"H\n" +
+	"\aIConfig\x12\x1a\n" +
+	"\bactivate\x18\x01 \x01(\bR\bactivate\x12!\n" +
+	"\x04swap\x18\x02 \x01(\v2\r.rumrpc.ISwapR\x04swap\"I\n" +
+	"\x05ISwap\x12\x12\n" +
+	"\x04with\x18\x01 \x01(\tR\x04with\x12\x18\n" +
+	"\acurrent\x18\x02 \x01(\tR\acurrent\x12\x12\n" +
+	"\x04swap\x18\x03 \x01(\bR\x04swap\"A\n" +
+	"\x0fIConfigResponse\x12\x14\n" +
+	"\x05error\x18\x01 \x01(\tR\x05error\x12\x18\n" +
+	"\asucceed\x18\x02 \x01(\bR\asucceed\"\r\n" +
+	"\vIDocRequest\"P\n" +
+	"\fIDocResponse\x12\x10\n" +
+	"\x03doc\x18\x01 \x01(\tR\x03doc\x12\x18\n" +
+	"\asucceed\x18\x02 \x01(\bR\asucceed\x12\x14\n" +
+	"\x05error\x18\x03 \x01(\tR\x05error\"\xdd\x01\n" +
+	"\x0eIConfigRequest\x12'\n" +
+	"\x06config\x18\x01 \x01(\v2\x0f.rumrpc.IConfigR\x06config\x12 \n" +
+	"\vprofileName\x18\x02 \x01(\tR\vprofileName\x12\x18\n" +
+	"\akitName\x18\x03 \x01(\tR\akitName\x12 \n" +
+	"\vserviceName\x18\x04 \x01(\tR\vserviceName\x12&\n" +
+	"\x0edispatcherName\x18\x05 \x01(\tR\x0edispatcherName\x12\x1c\n" +
+	"\teventName\x18\x06 \x01(\tR\teventName2\xe0\x04\n" +
 	"\fOnRumService\x123\n" +
 	"\x04POST\x12\x14.rumrpc.IPostRequest\x1a\x15.rumrpc.IPostResponse\x12E\n" +
 	"\n" +
 	"MonitorTag\x12\x1a.rumrpc.IMonitorTagRequest\x1a\x1b.rumrpc.IMonitorTagResponse\x12:\n" +
-	"\aRelease\x12\x16.rumrpc.ReleaseRequest\x1a\x17.rumrpc.ReleaseResponse\x12Z\n" +
-	"\x11DeactivateProfile\x12!.rumrpc.IDeactivateProfileRequest\x1a\".rumrpc.IDeactivateProfileResponse\x12T\n" +
-	"\x0fActivateProfile\x12\x1f.rumrpc.IActivateProfileRequest\x1a .rumrpc.IActivateProfileResponse\x12H\n" +
-	"\vSwapProfile\x12\x1b.rumrpc.ISwapProfileRequest\x1a\x1c.rumrpc.ISwapProfileResponse\x12N\n" +
-	"\rDeactivateKit\x12\x1d.rumrpc.IDeactivateKitRequest\x1a\x1e.rumrpc.IDeactivateKitResponse\x12H\n" +
-	"\vActivateKit\x12\x1b.rumrpc.IActivateKitRequest\x1a\x1c.rumrpc.IActivateKitResponse\x12<\n" +
-	"\aSwapKit\x12\x17.rumrpc.ISwapKitRequest\x1a\x18.rumrpc.ISwapKitResponse\x12Z\n" +
-	"\x11DeactivateService\x12!.rumrpc.IDeactivateServiceRequest\x1a\".rumrpc.IDeactivateServiceResponse\x12T\n" +
-	"\x0fActivateService\x12\x1f.rumrpc.IActivateServiceRequest\x1a .rumrpc.IActivateServiceResponse\x12H\n" +
-	"\vSwapService\x12\x1b.rumrpc.ISwapServiceRequest\x1a\x1c.rumrpc.ISwapServiceResponse\x12c\n" +
-	"\x14DeactivateDispatcher\x12$.rumrpc.IDeactivateDispatcherRequest\x1a%.rumrpc.IDeactivateDispatcherResponse\x12]\n" +
-	"\x12ActivateDispatcher\x12\".rumrpc.IActivateDispatcherRequest\x1a#.rumrpc.IActivateDispatcherResponse\x12Q\n" +
-	"\x0eSwapDispatcher\x12\x1e.rumrpc.ISwapDispatcherRequest\x1a\x1f.rumrpc.ISwapDispatcherResponse\x12T\n" +
-	"\x0fDeactivateEvent\x12\x1f.rumrpc.IDeactivateEventRequest\x1a .rumrpc.IDeactivateEventResponse\x12N\n" +
-	"\rActivateEvent\x12\x1d.rumrpc.IActivateEventRequest\x1a\x1e.rumrpc.IActivateEventResponse\x12B\n" +
-	"\tSwapEvent\x12\x19.rumrpc.ISwapEventRequest\x1a\x1a.rumrpc.ISwapEventResponse\x12W\n" +
-	"\x12GetProfileMetadata\x12\x1f.rumrpc.IProfileMetadataRequest\x1a .rumrpc.IProfileMetadataResponse\x12K\n" +
-	"\x0eGetKitMetadata\x12\x1b.rumrpc.IKitMetadataRequest\x1a\x1c.rumrpc.IKitMetadataResponse\x12W\n" +
-	"\x12GetServiceMetadata\x12\x1f.rumrpc.IServiceMetadataRequest\x1a .rumrpc.IServiceMetadataResponse\x12`\n" +
-	"\x15GetDispatcherMetadata\x12\".rumrpc.IDispatcherMetadataRequest\x1a#.rumrpc.IDispatcherMetadataResponse\x12Q\n" +
-	"\x10GetEventMetadata\x12\x1d.rumrpc.IEventMetadataRequest\x1a\x1e.rumrpc.IEventMetadataResponse\x12`\n" +
-	"\x13PullProfileMetadata\x12#.rumrpc.IPullProfileMetadataRequest\x1a$.rumrpc.IPullProfileMetadataResponse\x12T\n" +
-	"\x0fPullKitMetadata\x12\x1f.rumrpc.IPullKitMetadataRequest\x1a .rumrpc.IPullKitMetadataResponse\x12`\n" +
-	"\x13PullServiceMetadata\x12#.rumrpc.IPullServiceMetadataRequest\x1a$.rumrpc.IPullServiceMetadataResponse\x12i\n" +
-	"\x16PullDispatcherMetadata\x12&.rumrpc.IPullDispatcherMetadataRequest\x1a'.rumrpc.IPullDispatcherMetadataResponse\x12Z\n" +
-	"\x11PullEventMetadata\x12!.rumrpc.IPullEventMetadataRequest\x1a\".rumrpc.IPullEventMetadataResponseB\x11Z\x0fapp/main/rumrpcb\x06proto3"
+	"\aRelease\x12\x16.rumrpc.ReleaseRequest\x1a\x17.rumrpc.ReleaseResponse\x12F\n" +
+	"\x13UpdateProfileConfig\x12\x16.rumrpc.IConfigRequest\x1a\x17.rumrpc.IConfigResponse\x12B\n" +
+	"\x0fUpdateKitConfig\x12\x16.rumrpc.IConfigRequest\x1a\x17.rumrpc.IConfigResponse\x12F\n" +
+	"\x13UpdateServiceConfig\x12\x16.rumrpc.IConfigRequest\x1a\x17.rumrpc.IConfigResponse\x12I\n" +
+	"\x16UpdateDispatcherConfig\x12\x16.rumrpc.IConfigRequest\x1a\x17.rumrpc.IConfigResponse\x12D\n" +
+	"\x11UpdateEventConfig\x12\x16.rumrpc.IConfigRequest\x1a\x17.rumrpc.IConfigResponse\x123\n" +
+	"\x06GetDoc\x12\x13.rumrpc.IDocRequest\x1a\x14.rumrpc.IDocResponseB\x11Z\x0fapp/main/rumrpcb\x06proto3"
 
 var (
 	file_rum_proto_rawDescOnce sync.Once
@@ -3203,195 +1007,59 @@ func file_rum_proto_rawDescGZIP() []byte {
 	return file_rum_proto_rawDescData
 }
 
-var file_rum_proto_msgTypes = make([]protoimpl.MessageInfo, 65)
+var file_rum_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_rum_proto_goTypes = []any{
-	(*ISequence)(nil),                       // 0: rumrpc.ISequence
-	(*IPost)(nil),                           // 1: rumrpc.IPost
-	(*IPackageRequest)(nil),                 // 2: rumrpc.IPackageRequest
-	(*IPackage)(nil),                        // 3: rumrpc.IPackage
-	(*IConfig)(nil),                         // 4: rumrpc.IConfig
-	(*IDeactivate)(nil),                     // 5: rumrpc.IDeactivate
-	(*IActivate)(nil),                       // 6: rumrpc.IActivate
-	(*ISwap)(nil),                           // 7: rumrpc.ISwap
-	(*ISucceed)(nil),                        // 8: rumrpc.ISucceed
-	(*IPostRequest)(nil),                    // 9: rumrpc.IPostRequest
-	(*IDeactivateProfileRequest)(nil),       // 10: rumrpc.IDeactivateProfileRequest
-	(*IActivateProfileRequest)(nil),         // 11: rumrpc.IActivateProfileRequest
-	(*ISwapProfileRequest)(nil),             // 12: rumrpc.ISwapProfileRequest
-	(*IDeactivateKitRequest)(nil),           // 13: rumrpc.IDeactivateKitRequest
-	(*IActivateKitRequest)(nil),             // 14: rumrpc.IActivateKitRequest
-	(*ISwapKitRequest)(nil),                 // 15: rumrpc.ISwapKitRequest
-	(*IDeactivateServiceRequest)(nil),       // 16: rumrpc.IDeactivateServiceRequest
-	(*IActivateServiceRequest)(nil),         // 17: rumrpc.IActivateServiceRequest
-	(*ISwapServiceRequest)(nil),             // 18: rumrpc.ISwapServiceRequest
-	(*IDeactivateDispatcherRequest)(nil),    // 19: rumrpc.IDeactivateDispatcherRequest
-	(*IActivateDispatcherRequest)(nil),      // 20: rumrpc.IActivateDispatcherRequest
-	(*ISwapDispatcherRequest)(nil),          // 21: rumrpc.ISwapDispatcherRequest
-	(*IDeactivateEventRequest)(nil),         // 22: rumrpc.IDeactivateEventRequest
-	(*IActivateEventRequest)(nil),           // 23: rumrpc.IActivateEventRequest
-	(*ISwapEventRequest)(nil),               // 24: rumrpc.ISwapEventRequest
-	(*IPostResponse)(nil),                   // 25: rumrpc.IPostResponse
-	(*IDeactivateProfileResponse)(nil),      // 26: rumrpc.IDeactivateProfileResponse
-	(*IActivateProfileResponse)(nil),        // 27: rumrpc.IActivateProfileResponse
-	(*ISwapProfileResponse)(nil),            // 28: rumrpc.ISwapProfileResponse
-	(*IDeactivateKitResponse)(nil),          // 29: rumrpc.IDeactivateKitResponse
-	(*IActivateKitResponse)(nil),            // 30: rumrpc.IActivateKitResponse
-	(*ISwapKitResponse)(nil),                // 31: rumrpc.ISwapKitResponse
-	(*ISwapServiceResponse)(nil),            // 32: rumrpc.ISwapServiceResponse
-	(*IDeactivateServiceResponse)(nil),      // 33: rumrpc.IDeactivateServiceResponse
-	(*IActivateServiceResponse)(nil),        // 34: rumrpc.IActivateServiceResponse
-	(*IDeactivateDispatcherResponse)(nil),   // 35: rumrpc.IDeactivateDispatcherResponse
-	(*IActivateDispatcherResponse)(nil),     // 36: rumrpc.IActivateDispatcherResponse
-	(*ISwapDispatcherResponse)(nil),         // 37: rumrpc.ISwapDispatcherResponse
-	(*IDeactivateEventResponse)(nil),        // 38: rumrpc.IDeactivateEventResponse
-	(*IActivateEventResponse)(nil),          // 39: rumrpc.IActivateEventResponse
-	(*ISwapEventResponse)(nil),              // 40: rumrpc.ISwapEventResponse
-	(*IMonitorTagRequest)(nil),              // 41: rumrpc.IMonitorTagRequest
-	(*IMonitorTagResponse)(nil),             // 42: rumrpc.IMonitorTagResponse
-	(*ReleaseRequest)(nil),                  // 43: rumrpc.ReleaseRequest
-	(*ReleaseResponse)(nil),                 // 44: rumrpc.ReleaseResponse
-	(*IProfileMetadataRequest)(nil),         // 45: rumrpc.IProfileMetadataRequest
-	(*IKitMetadataRequest)(nil),             // 46: rumrpc.IKitMetadataRequest
-	(*IServiceMetadataRequest)(nil),         // 47: rumrpc.IServiceMetadataRequest
-	(*IDispatcherMetadataRequest)(nil),      // 48: rumrpc.IDispatcherMetadataRequest
-	(*IEventMetadataRequest)(nil),           // 49: rumrpc.IEventMetadataRequest
-	(*IProfileMetadataResponse)(nil),        // 50: rumrpc.IProfileMetadataResponse
-	(*IKitMetadataResponse)(nil),            // 51: rumrpc.IKitMetadataResponse
-	(*IServiceMetadataResponse)(nil),        // 52: rumrpc.IServiceMetadataResponse
-	(*IDispatcherMetadataResponse)(nil),     // 53: rumrpc.IDispatcherMetadataResponse
-	(*IEventMetadataResponse)(nil),          // 54: rumrpc.IEventMetadataResponse
-	(*IPullProfileMetadataRequest)(nil),     // 55: rumrpc.IPullProfileMetadataRequest
-	(*IPullKitMetadataRequest)(nil),         // 56: rumrpc.IPullKitMetadataRequest
-	(*IPullServiceMetadataRequest)(nil),     // 57: rumrpc.IPullServiceMetadataRequest
-	(*IPullDispatcherMetadataRequest)(nil),  // 58: rumrpc.IPullDispatcherMetadataRequest
-	(*IPullEventMetadataRequest)(nil),       // 59: rumrpc.IPullEventMetadataRequest
-	(*IPullProfileMetadataResponse)(nil),    // 60: rumrpc.IPullProfileMetadataResponse
-	(*IPullKitMetadataResponse)(nil),        // 61: rumrpc.IPullKitMetadataResponse
-	(*IPullServiceMetadataResponse)(nil),    // 62: rumrpc.IPullServiceMetadataResponse
-	(*IPullDispatcherMetadataResponse)(nil), // 63: rumrpc.IPullDispatcherMetadataResponse
-	(*IPullEventMetadataResponse)(nil),      // 64: rumrpc.IPullEventMetadataResponse
+	(*ISequence)(nil),           // 0: rumrpc.ISequence
+	(*IPost)(nil),               // 1: rumrpc.IPost
+	(*IPackageRequest)(nil),     // 2: rumrpc.IPackageRequest
+	(*IPackage)(nil),            // 3: rumrpc.IPackage
+	(*ISucceed)(nil),            // 4: rumrpc.ISucceed
+	(*IPostRequest)(nil),        // 5: rumrpc.IPostRequest
+	(*IPostResponse)(nil),       // 6: rumrpc.IPostResponse
+	(*IMonitorTagRequest)(nil),  // 7: rumrpc.IMonitorTagRequest
+	(*IMonitorTagResponse)(nil), // 8: rumrpc.IMonitorTagResponse
+	(*ReleaseRequest)(nil),      // 9: rumrpc.ReleaseRequest
+	(*ReleaseResponse)(nil),     // 10: rumrpc.ReleaseResponse
+	(*IConfig)(nil),             // 11: rumrpc.IConfig
+	(*ISwap)(nil),               // 12: rumrpc.ISwap
+	(*IConfigResponse)(nil),     // 13: rumrpc.IConfigResponse
+	(*IDocRequest)(nil),         // 14: rumrpc.IDocRequest
+	(*IDocResponse)(nil),        // 15: rumrpc.IDocResponse
+	(*IConfigRequest)(nil),      // 16: rumrpc.IConfigRequest
 }
 var file_rum_proto_depIdxs = []int32{
 	0,  // 0: rumrpc.IPost.profile:type_name -> rumrpc.ISequence
 	2,  // 1: rumrpc.IPackage.name:type_name -> rumrpc.IPackageRequest
-	8,  // 2: rumrpc.IPackage.succeed:type_name -> rumrpc.ISucceed
-	4,  // 3: rumrpc.IDeactivate.config:type_name -> rumrpc.IConfig
-	4,  // 4: rumrpc.IActivate.config:type_name -> rumrpc.IConfig
-	4,  // 5: rumrpc.ISwap.config:type_name -> rumrpc.IConfig
-	1,  // 6: rumrpc.IPostRequest.post:type_name -> rumrpc.IPost
-	5,  // 7: rumrpc.IDeactivateProfileRequest.deactivate:type_name -> rumrpc.IDeactivate
-	6,  // 8: rumrpc.IActivateProfileRequest.activate:type_name -> rumrpc.IActivate
-	7,  // 9: rumrpc.ISwapProfileRequest.swap:type_name -> rumrpc.ISwap
-	5,  // 10: rumrpc.IDeactivateKitRequest.deactivate:type_name -> rumrpc.IDeactivate
-	6,  // 11: rumrpc.IActivateKitRequest.activate:type_name -> rumrpc.IActivate
-	7,  // 12: rumrpc.ISwapKitRequest.swap:type_name -> rumrpc.ISwap
-	5,  // 13: rumrpc.IDeactivateServiceRequest.deactivate:type_name -> rumrpc.IDeactivate
-	6,  // 14: rumrpc.IActivateServiceRequest.activate:type_name -> rumrpc.IActivate
-	7,  // 15: rumrpc.ISwapServiceRequest.swap:type_name -> rumrpc.ISwap
-	5,  // 16: rumrpc.IDeactivateDispatcherRequest.deactivate:type_name -> rumrpc.IDeactivate
-	6,  // 17: rumrpc.IActivateDispatcherRequest.activate:type_name -> rumrpc.IActivate
-	7,  // 18: rumrpc.ISwapDispatcherRequest.swap:type_name -> rumrpc.ISwap
-	5,  // 19: rumrpc.IDeactivateEventRequest.deactivate:type_name -> rumrpc.IDeactivate
-	6,  // 20: rumrpc.IActivateEventRequest.activate:type_name -> rumrpc.IActivate
-	7,  // 21: rumrpc.ISwapEventRequest.swap:type_name -> rumrpc.ISwap
-	8,  // 22: rumrpc.IPostResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 23: rumrpc.IDeactivateProfileResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 24: rumrpc.IActivateProfileResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 25: rumrpc.ISwapProfileResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 26: rumrpc.IDeactivateKitResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 27: rumrpc.IActivateKitResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 28: rumrpc.ISwapKitResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 29: rumrpc.ISwapServiceResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 30: rumrpc.IDeactivateServiceResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 31: rumrpc.IActivateServiceResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 32: rumrpc.IDeactivateDispatcherResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 33: rumrpc.IActivateDispatcherResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 34: rumrpc.ISwapDispatcherResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 35: rumrpc.IDeactivateEventResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 36: rumrpc.IActivateEventResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 37: rumrpc.ISwapEventResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 38: rumrpc.IMonitorTagResponse.succeed:type_name -> rumrpc.ISucceed
-	8,  // 39: rumrpc.ReleaseResponse.succeed:type_name -> rumrpc.ISucceed
-	2,  // 40: rumrpc.IProfileMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 41: rumrpc.IKitMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 42: rumrpc.IServiceMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 43: rumrpc.IDispatcherMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 44: rumrpc.IEventMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	3,  // 45: rumrpc.IProfileMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 46: rumrpc.IKitMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 47: rumrpc.IServiceMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 48: rumrpc.IDispatcherMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 49: rumrpc.IEventMetadataResponse.packet:type_name -> rumrpc.IPackage
-	2,  // 50: rumrpc.IPullKitMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 51: rumrpc.IPullServiceMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 52: rumrpc.IPullDispatcherMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	2,  // 53: rumrpc.IPullEventMetadataRequest.name:type_name -> rumrpc.IPackageRequest
-	3,  // 54: rumrpc.IPullProfileMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 55: rumrpc.IPullKitMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 56: rumrpc.IPullServiceMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 57: rumrpc.IPullDispatcherMetadataResponse.packet:type_name -> rumrpc.IPackage
-	3,  // 58: rumrpc.IPullEventMetadataResponse.packet:type_name -> rumrpc.IPackage
-	9,  // 59: rumrpc.OnRumService.POST:input_type -> rumrpc.IPostRequest
-	41, // 60: rumrpc.OnRumService.MonitorTag:input_type -> rumrpc.IMonitorTagRequest
-	43, // 61: rumrpc.OnRumService.Release:input_type -> rumrpc.ReleaseRequest
-	10, // 62: rumrpc.OnRumService.DeactivateProfile:input_type -> rumrpc.IDeactivateProfileRequest
-	11, // 63: rumrpc.OnRumService.ActivateProfile:input_type -> rumrpc.IActivateProfileRequest
-	12, // 64: rumrpc.OnRumService.SwapProfile:input_type -> rumrpc.ISwapProfileRequest
-	13, // 65: rumrpc.OnRumService.DeactivateKit:input_type -> rumrpc.IDeactivateKitRequest
-	14, // 66: rumrpc.OnRumService.ActivateKit:input_type -> rumrpc.IActivateKitRequest
-	15, // 67: rumrpc.OnRumService.SwapKit:input_type -> rumrpc.ISwapKitRequest
-	16, // 68: rumrpc.OnRumService.DeactivateService:input_type -> rumrpc.IDeactivateServiceRequest
-	17, // 69: rumrpc.OnRumService.ActivateService:input_type -> rumrpc.IActivateServiceRequest
-	18, // 70: rumrpc.OnRumService.SwapService:input_type -> rumrpc.ISwapServiceRequest
-	19, // 71: rumrpc.OnRumService.DeactivateDispatcher:input_type -> rumrpc.IDeactivateDispatcherRequest
-	20, // 72: rumrpc.OnRumService.ActivateDispatcher:input_type -> rumrpc.IActivateDispatcherRequest
-	21, // 73: rumrpc.OnRumService.SwapDispatcher:input_type -> rumrpc.ISwapDispatcherRequest
-	22, // 74: rumrpc.OnRumService.DeactivateEvent:input_type -> rumrpc.IDeactivateEventRequest
-	23, // 75: rumrpc.OnRumService.ActivateEvent:input_type -> rumrpc.IActivateEventRequest
-	24, // 76: rumrpc.OnRumService.SwapEvent:input_type -> rumrpc.ISwapEventRequest
-	45, // 77: rumrpc.OnRumService.GetProfileMetadata:input_type -> rumrpc.IProfileMetadataRequest
-	46, // 78: rumrpc.OnRumService.GetKitMetadata:input_type -> rumrpc.IKitMetadataRequest
-	47, // 79: rumrpc.OnRumService.GetServiceMetadata:input_type -> rumrpc.IServiceMetadataRequest
-	48, // 80: rumrpc.OnRumService.GetDispatcherMetadata:input_type -> rumrpc.IDispatcherMetadataRequest
-	49, // 81: rumrpc.OnRumService.GetEventMetadata:input_type -> rumrpc.IEventMetadataRequest
-	55, // 82: rumrpc.OnRumService.PullProfileMetadata:input_type -> rumrpc.IPullProfileMetadataRequest
-	56, // 83: rumrpc.OnRumService.PullKitMetadata:input_type -> rumrpc.IPullKitMetadataRequest
-	57, // 84: rumrpc.OnRumService.PullServiceMetadata:input_type -> rumrpc.IPullServiceMetadataRequest
-	58, // 85: rumrpc.OnRumService.PullDispatcherMetadata:input_type -> rumrpc.IPullDispatcherMetadataRequest
-	59, // 86: rumrpc.OnRumService.PullEventMetadata:input_type -> rumrpc.IPullEventMetadataRequest
-	25, // 87: rumrpc.OnRumService.POST:output_type -> rumrpc.IPostResponse
-	42, // 88: rumrpc.OnRumService.MonitorTag:output_type -> rumrpc.IMonitorTagResponse
-	44, // 89: rumrpc.OnRumService.Release:output_type -> rumrpc.ReleaseResponse
-	26, // 90: rumrpc.OnRumService.DeactivateProfile:output_type -> rumrpc.IDeactivateProfileResponse
-	27, // 91: rumrpc.OnRumService.ActivateProfile:output_type -> rumrpc.IActivateProfileResponse
-	28, // 92: rumrpc.OnRumService.SwapProfile:output_type -> rumrpc.ISwapProfileResponse
-	29, // 93: rumrpc.OnRumService.DeactivateKit:output_type -> rumrpc.IDeactivateKitResponse
-	30, // 94: rumrpc.OnRumService.ActivateKit:output_type -> rumrpc.IActivateKitResponse
-	31, // 95: rumrpc.OnRumService.SwapKit:output_type -> rumrpc.ISwapKitResponse
-	33, // 96: rumrpc.OnRumService.DeactivateService:output_type -> rumrpc.IDeactivateServiceResponse
-	34, // 97: rumrpc.OnRumService.ActivateService:output_type -> rumrpc.IActivateServiceResponse
-	32, // 98: rumrpc.OnRumService.SwapService:output_type -> rumrpc.ISwapServiceResponse
-	35, // 99: rumrpc.OnRumService.DeactivateDispatcher:output_type -> rumrpc.IDeactivateDispatcherResponse
-	36, // 100: rumrpc.OnRumService.ActivateDispatcher:output_type -> rumrpc.IActivateDispatcherResponse
-	37, // 101: rumrpc.OnRumService.SwapDispatcher:output_type -> rumrpc.ISwapDispatcherResponse
-	38, // 102: rumrpc.OnRumService.DeactivateEvent:output_type -> rumrpc.IDeactivateEventResponse
-	39, // 103: rumrpc.OnRumService.ActivateEvent:output_type -> rumrpc.IActivateEventResponse
-	40, // 104: rumrpc.OnRumService.SwapEvent:output_type -> rumrpc.ISwapEventResponse
-	50, // 105: rumrpc.OnRumService.GetProfileMetadata:output_type -> rumrpc.IProfileMetadataResponse
-	51, // 106: rumrpc.OnRumService.GetKitMetadata:output_type -> rumrpc.IKitMetadataResponse
-	52, // 107: rumrpc.OnRumService.GetServiceMetadata:output_type -> rumrpc.IServiceMetadataResponse
-	53, // 108: rumrpc.OnRumService.GetDispatcherMetadata:output_type -> rumrpc.IDispatcherMetadataResponse
-	54, // 109: rumrpc.OnRumService.GetEventMetadata:output_type -> rumrpc.IEventMetadataResponse
-	60, // 110: rumrpc.OnRumService.PullProfileMetadata:output_type -> rumrpc.IPullProfileMetadataResponse
-	61, // 111: rumrpc.OnRumService.PullKitMetadata:output_type -> rumrpc.IPullKitMetadataResponse
-	62, // 112: rumrpc.OnRumService.PullServiceMetadata:output_type -> rumrpc.IPullServiceMetadataResponse
-	63, // 113: rumrpc.OnRumService.PullDispatcherMetadata:output_type -> rumrpc.IPullDispatcherMetadataResponse
-	64, // 114: rumrpc.OnRumService.PullEventMetadata:output_type -> rumrpc.IPullEventMetadataResponse
-	87, // [87:115] is the sub-list for method output_type
-	59, // [59:87] is the sub-list for method input_type
-	59, // [59:59] is the sub-list for extension type_name
-	59, // [59:59] is the sub-list for extension extendee
-	0,  // [0:59] is the sub-list for field type_name
+	4,  // 2: rumrpc.IPackage.succeed:type_name -> rumrpc.ISucceed
+	1,  // 3: rumrpc.IPostRequest.post:type_name -> rumrpc.IPost
+	4,  // 4: rumrpc.IPostResponse.succeed:type_name -> rumrpc.ISucceed
+	4,  // 5: rumrpc.IMonitorTagResponse.succeed:type_name -> rumrpc.ISucceed
+	4,  // 6: rumrpc.ReleaseResponse.succeed:type_name -> rumrpc.ISucceed
+	12, // 7: rumrpc.IConfig.swap:type_name -> rumrpc.ISwap
+	11, // 8: rumrpc.IConfigRequest.config:type_name -> rumrpc.IConfig
+	5,  // 9: rumrpc.OnRumService.POST:input_type -> rumrpc.IPostRequest
+	7,  // 10: rumrpc.OnRumService.MonitorTag:input_type -> rumrpc.IMonitorTagRequest
+	9,  // 11: rumrpc.OnRumService.Release:input_type -> rumrpc.ReleaseRequest
+	16, // 12: rumrpc.OnRumService.UpdateProfileConfig:input_type -> rumrpc.IConfigRequest
+	16, // 13: rumrpc.OnRumService.UpdateKitConfig:input_type -> rumrpc.IConfigRequest
+	16, // 14: rumrpc.OnRumService.UpdateServiceConfig:input_type -> rumrpc.IConfigRequest
+	16, // 15: rumrpc.OnRumService.UpdateDispatcherConfig:input_type -> rumrpc.IConfigRequest
+	16, // 16: rumrpc.OnRumService.UpdateEventConfig:input_type -> rumrpc.IConfigRequest
+	14, // 17: rumrpc.OnRumService.GetDoc:input_type -> rumrpc.IDocRequest
+	6,  // 18: rumrpc.OnRumService.POST:output_type -> rumrpc.IPostResponse
+	8,  // 19: rumrpc.OnRumService.MonitorTag:output_type -> rumrpc.IMonitorTagResponse
+	10, // 20: rumrpc.OnRumService.Release:output_type -> rumrpc.ReleaseResponse
+	13, // 21: rumrpc.OnRumService.UpdateProfileConfig:output_type -> rumrpc.IConfigResponse
+	13, // 22: rumrpc.OnRumService.UpdateKitConfig:output_type -> rumrpc.IConfigResponse
+	13, // 23: rumrpc.OnRumService.UpdateServiceConfig:output_type -> rumrpc.IConfigResponse
+	13, // 24: rumrpc.OnRumService.UpdateDispatcherConfig:output_type -> rumrpc.IConfigResponse
+	13, // 25: rumrpc.OnRumService.UpdateEventConfig:output_type -> rumrpc.IConfigResponse
+	15, // 26: rumrpc.OnRumService.GetDoc:output_type -> rumrpc.IDocResponse
+	18, // [18:27] is the sub-list for method output_type
+	9,  // [9:18] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_rum_proto_init() }
@@ -3405,7 +1073,7 @@ func file_rum_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rum_proto_rawDesc), len(file_rum_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   65,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

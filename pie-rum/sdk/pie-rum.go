@@ -1,6 +1,7 @@
 package pierum
 
 import (
+	pierum "pie-rum-sdk/pie-rum/core"
 	rum "pie-rum-sdk/pie-rum/core"
 
 	"context"
@@ -15,7 +16,9 @@ type ServerConfig struct {
 	Network       string
 	Address       string
 	ServerOptions []grpc.ServerOption
+	Plugin        pierum.IPlugin
 }
+
 type ISearch struct {
 	profile, kit, service, dispatcher, event bool
 }
@@ -24,6 +27,10 @@ func New[In, Out any](ctx context.Context, store *Store[In, Out]) *PieRum[In, Ou
 	return &PieRum[In, Out]{
 		core: rum.New(ctx, store.core),
 	}
+}
+
+func (r *PieRum[In, Out]) SetPlugin(p *pierum.IPlugin) {
+	r.core.SetPlugin(p)
 }
 
 // Serve starts the rum server
@@ -59,6 +66,10 @@ func (r *PieRum[In, Out]) GET(profile string, handler func(<-chan *rum.IResults)
 
 func (r *PieRum[In, Out]) MonitorError(ctx context.Context, handler func(e error), fns ...func()) {
 	r.core.GoErrors(ctx, handler, fns...)
+}
+
+func (r *PieRum[In, Out]) Close() {
+	r.core.Shutdown()
 }
 
 // func (r*PieRum[In, Out]) Serve(ctx context.Context, cnf rum.RumServer) {

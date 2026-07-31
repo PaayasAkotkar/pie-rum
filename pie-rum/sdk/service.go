@@ -1,7 +1,7 @@
 package pierum
 
 import (
-	 rum "pie-rum-sdk/pie-rum/core"
+	rum "pie-rum-sdk/pie-rum/core"
 
 	"context"
 )
@@ -33,10 +33,12 @@ func (s *Service[In, Out]) SetDispatcher(name string, rank int, fn func(event *D
 	})
 	return engine.Nest(name, s.dispatchers, fn)
 }
-
+func (s *Service[In, Out]) SetConfig(conf *rum.IConfig) {
+	s.core.SetConfig(conf)
+}
 func (s *Service[In, Out]) Build() *Service[In, Out] {
 	for n, r := range s.dispatchers {
-		r.Build() 
+		r.Build()
 		r.core.Name = n
 		r.core.Rank = int64(r.rank)
 		s.core.PushDispatcher(n, r.core)

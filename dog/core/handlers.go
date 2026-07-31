@@ -128,7 +128,7 @@ func (rd *Dog[T]) handleParkDog(policyName string) {
 
 	if err := monitor.Monitor(policyName,
 		func() { rd.tickSinglePolicy(policyName) },
-		rd.Settings.ShutdownTimeout); err != nil {
+		rd.Settings.TickInterval); err != nil {
 		log.Printf("❌ Monitor error for %s: %v", policyName, err)
 		rd.mu.Lock()
 		delete(rd.monitors, policyName)
@@ -143,7 +143,7 @@ func (rd *Dog[T]) handleDone(done IDone) {
 
 	policy, exists := rd.policy[done.PolicyName]
 	if !exists {
-		log.Printf("❌ Done: policy %s not found", done.PolicyName)
+		// Policy may have been unregistered already, ignore silently
 		return
 	}
 
@@ -229,8 +229,17 @@ func (rd *Dog[T]) handleBark(bark IBark) {
 
 	policy, exists := rd.policy[bark.Policy]
 	if !exists {
-		log.Printf("❌ Bark: policy %s not found", bark.Policy)
+		// Policy may have been unregistered already, ignore silently
 		return
+	}
+
+	// Check if policy is still running - if not, it may have completed successfully
+	// after the timeout check but before this bark was processed
+	if progress, ok := rd.progress[bark.Policy]; ok {
+		if !progress.IsRunning {
+			// Policy already completed, ignore this bark
+			return
+		}
 	}
 
 	lifecycle, lExists := rd.lifecycle[bark.Policy]

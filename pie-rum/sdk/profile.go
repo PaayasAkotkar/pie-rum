@@ -29,6 +29,10 @@ func (p *Profile[In, Out]) ReplaceKit(name string, kit *Kit[In, Out]) *Profile[I
 	return p
 }
 
+func (p *Profile[In, Out]) SetConfig(conf *rum.IConfig) {
+	p.core.SetConfig(conf)
+}
+
 func (p *Profile[In, Out]) SetKit(name string, rank int, fn func(kit *Kit[In, Out])) *Profile[In, Out] {
 	engine := NewNode(p, func() *Kit[In, Out] {
 		return NewKit[In, Out](rank)
