@@ -29,6 +29,66 @@ Supports all the fields in the list of computing or programming.
 
 ---
 
+## Glimpse
+
+```golang
+store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
+		p.SetConfig(&pierum.IConfig{
+			Activate: true,
+		})
+		p.AddKit("nvidea-kit", func(kit *rumsdk.Kit[Req, Res]) {
+			kit.SetConfig(&pierum.IConfig{
+				Activate: true,
+			})
+			kit.AddService("nvidea-service", func(service *rumsdk.Service[Req, Res]) {
+				service.AddDispatcher("nvidea-dispatcher", func(d *rumsdk.Dispatcher[Req, Res]) {
+					d.SetSettings(dispatcherSettings)
+					d.AddEvent("nvidea-event", func(event *rumsdk.Event[Req, Res]) {
+						event.RegisterFunc(func(ctx context.Context, in Req) (Res, error) {
+							c, err := flow.Flow(ctx, nvideamodel.GK(ctx), in.Student)
+							var jsonErr *JSONError
+							if err != nil {
+								log.Println(err)
+								jsonErr = &JSONError{Msg: err.Error()}
+							}
+							return Res{
+								Coach: c,
+								Err:   jsonErr,
+							}, nil
+						})
+					})
+				})
+			}).SetConfig(&pierum.IConfig{
+				Activate: false,
+			})
+		}).AddKit("nvidea-omni", func(kit *rumsdk.Kit[Req, Res]) {
+			kit.AddService("nvidea-omni-service", func(service *rumsdk.Service[Req, Res]) {
+				service.AddDispatcher("nvidea-omni-dispatcher", func(d *rumsdk.Dispatcher[Req, Res]) {
+					d.SetSettings(dispatcherSettings)
+					d.AddEvent("nvidea-omni-event", func(event *rumsdk.Event[Req, Res]) {
+						event.RegisterFunc(func(ctx context.Context, in Req) (Res, error) {
+							c, err := flow.Flow(ctx, nvideamodel.GKOmni(ctx), in.Student)
+							var jsonErr *JSONError
+							if err != nil {
+								log.Println(err)
+								jsonErr = &JSONError{Msg: err.Error()}
+							}
+							return Res{
+								Coach: c,
+								Err:   jsonErr,
+							}, nil
+						})
+					})
+				})
+			})
+			kit.SetConfig(&pierum.IConfig{
+				Activate: true,
+			}) // keep it disable
+		})
+	}).
+		Build()
+```
+
 > [!NOTE]
 > 
 > 1) **Testing for the meta-leaderboard is left** > Do test it and report how you guys liked it what more is needed
