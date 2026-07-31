@@ -32,6 +32,7 @@ Supports all the fields in the list of computing or programming.
 ## Glimpse
 
 ```golang
+// filling the pie-rum store
 store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 		p.SetConfig(&pierum.IConfig{
 			Activate: true,
@@ -87,6 +88,53 @@ store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 		})
 	}).
 		Build()
+
+      // fetching the results
+      pie.GoMonitor(ctx, func(result *pierum.IResults) {
+			if result.IsReady {
+				log.Println("res: ", result.Resuts)
+				for _, r := range result.Resuts {
+					var rs structure.Res
+					var in structure.Req
+					log.Println("input: ", string(r.Input))
+					log.Println("output: ", string(r.Output))
+					log.Println("dog-report", string(r.DogReport))
+					log.Println("meta-report", r.MetaInfo)
+
+					if err := json.Unmarshal(r.Input, &in); err != nil {
+						log.Println("Error unmarshaling input:", err)
+						continue
+					}
+					if err := json.Unmarshal(r.Output, &rs); err != nil {
+						log.Println("Error unmarshaling output:", err)
+						continue
+					}
+
+					if in.Student.ID == nil {
+						log.Println("Student ID is nil")
+						continue
+					}
+
+					if rs.Err != nil {
+						log.Println("Error from AI model:", rs.Err)
+						x := rs.Err.Error()
+						errorReply := &model.OnChessCoachReply{
+							Information: &model.ChessCoachReply{
+								Desc: &x,
+							},
+						}
+						app.cheetah.Publish(*in.Student.ID, errorReply)
+						continue
+					}
+
+					if rs.Coach != nil {
+						app.cheetah.Publish(*in.Student.ID, rs.Coach)
+					} else {
+						log.Println("Coach result is nil")
+					}
+				}
+			}
+		})
 ```
 
 > [!NOTE]
