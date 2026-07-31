@@ -158,8 +158,13 @@ store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 ## New 🔥 🌟
 1. playground: you can now use the chat-app to work around frontend and backend
 2. plugin: allows you to get the reports in your own [finally 🤗] 🔥
+3. refresh: keeps at least one field in the [m:n] config active
+4. only supports direct config part
+
+## Changes 🍾
+1. removed the meta-data stuffs
+2. removed the grpc active|deative|inactive|swap services
 
 ## Upcoming 🔥 🚋
-1. Algorithm to keep at least one field in the [m:n] mapping
-2. promethus addition
-3. uber-fx
+1. promethus addition
+2. uber-fx

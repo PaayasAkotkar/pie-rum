@@ -52,3 +52,43 @@ func rpcToPIERUM(c *rumrpc.IConfig) *IConfig {
 		SwapOverview: swapOverview,
 	}
 }
+
+type IRefresh interface {
+	GetName() string
+	GetRank() int64
+	GetConfig() *IConfig
+}
+
+// refresh make's sure one of the profile is kept active
+// it activates the next rank profile if all the profiles are deactivated
+func refresh[T IRefresh](key string, s map[string]T) string {
+
+	if (len(s)) == 1 {
+		return key // return that key back casue we cant deactivate
+	}
+
+	for _, r := range s {
+		if r.GetConfig().Activate {
+			return ""
+		}
+	}
+
+	cur := s[key]
+
+	max := 0
+
+	for _, r := range s {
+		if int64(r.GetRank()) > int64(max) {
+			max = int(r.GetRank())
+		}
+	}
+
+	nextRank := min(cur.GetRank()+1, int64(max))
+
+	for k, r := range s {
+		if r.GetRank() == nextRank {
+			return k
+		}
+	}
+	return ""
+}

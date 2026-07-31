@@ -105,36 +105,76 @@ func New[In, Out any](ctx context.Context, Store *IStore[In, Out]) *PieRum[In, O
 	r.actions = map[string]ActionEntry[In, Out]{
 		// config
 		configAction + depthOne: {1, func(res *Resolved[In, Out], token IConfigRequest) error {
-			return r.Store.SetConfig(token.Profile, token.Config)
+			err := r.Store.SetConfig(token.Profile, token.Config)
+			if err == nil {
+				key := refresh(token.Profile, r.Store.Registry)
+				if len(key) != 0 {
+					return r.Store.handleProfileActivation(key)
+				}
+				return nil
+			}
+			return err
 		}},
 		configAction + depthTwo: {2, func(res *Resolved[In, Out], token IConfigRequest) error {
+
 			if res.prf == nil {
 				log.Println("ERROR: res.prf is nil in handleKitConfig action")
 				return activationError("profile is nil")
 			}
-			res.prf.handleKitConfig(token.Kit, token.Config)
-			return nil
+			err := res.prf.handleKitConfig(token.Kit, token.Config)
+			if err == nil {
+				key := refresh(token.Kit, res.prf.Registry)
+				if len(key) != 0 {
+					return res.prf.handleKitActivation(key)
+				}
+				return nil
+			}
+			return err
 		}},
 		configAction + depthThree: {3, func(res *Resolved[In, Out], token IConfigRequest) error {
 			if res.kit == nil {
 				log.Println("ERROR: res.kit is nil in handleServiceConfig action")
 				return activationError("kit is nil")
 			}
-			return res.kit.handleServiceConfig(token.Profile, token.Config)
+			err := res.kit.handleServiceConfig(token.Service, token.Config)
+			if err == nil {
+				key := refresh(token.Service, res.prf.Registry)
+				if len(key) != 0 {
+					return res.kit.handleServiceActivation(key)
+				}
+				return nil
+			}
+			return err
 		}},
 		configAction + depthFour: {4, func(res *Resolved[In, Out], token IConfigRequest) error {
 			if res.svc == nil {
 				log.Println("ERROR: res.svc is nil in handleDispatcherConfig action")
 				return activationError("service is nil")
 			}
-			return res.svc.handleDispatcherConfig(token.Dispatcher, token.Config)
+			err := res.svc.handleDispatcherConfig(token.Dispatcher, token.Config)
+			if err == nil {
+				key := refresh(token.Dispatcher, res.prf.Registry)
+				if len(key) != 0 {
+					return res.svc.handleDispatcherActivation(key)
+				}
+				return nil
+			}
+			return err
 		}},
 		configAction + depthFive: {5, func(res *Resolved[In, Out], token IConfigRequest) error {
 			if res.dt == nil {
 				log.Println("ERROR: res.dt is nil in handleEventConfig action")
 				return activationError("dispatcher is nil")
 			}
-			return res.dt.handleEventConfig(token.Event, token.Config)
+			err := res.dt.handleEventConfig(token.Event, token.Config)
+			if err == nil {
+				key := refresh(token.Event, res.prf.Registry)
+				if len(key) != 0 {
+					return res.dt.handleEventActivation(key)
+				}
+				return nil
+			}
+			return err
 		}},
 		// end
 

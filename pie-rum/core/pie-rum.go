@@ -18,7 +18,7 @@ const (
 )
 
 type IPlugin struct {
-	On  bool   // if the plugin is true it auto sends the meta-info of the app directly to the app
+	On  bool   // if the plugin is true it auto sends the meta-info of the app directly to the solar-nova
 	Key string // for testing we'll work on the localhost address later make it secure and safe
 	Org string // imp: else it wont work
 }
@@ -99,42 +99,65 @@ func New[In, Out any](ctx context.Context, Store *IStore[In, Out]) *PieRum[In, O
 		actions:              make(map[string]ActionEntry[In, Out], buffers),
 
 		ctx: ctx,
-		DI:  injection.NewClient(ctx, "rum-server"),
+		DI:  injection.NewClient(ctx, "pie-rum-server"),
 	}
 
 	r.actions = map[string]ActionEntry[In, Out]{
 		// config
 		configAction + depthOne: {1, func(res *Resolved[In, Out], token IConfigRequest) error {
-			return r.Store.SetConfig(token.Profile, token.Config)
-		}},
-		configAction + depthTwo: {2, func(res *Resolved[In, Out], token IConfigRequest) error {
-			if res.prf == nil {
-				log.Println("ERROR: res.prf is nil in handleKitConfig action")
-				return activationError("profile is nil")
+			err := r.Store.SetConfig(token.Profile, token.Config)
+			if err == nil {
+				key := refresh(token.Profile, r.Store.Registry)
+				if len(key) != 0 {
+					return r.Store.handleProfileActivation(key)
+				}
+				return nil
 			}
-			res.prf.handleKitConfig(token.Kit, token.Config)
-			return nil
+			return err
 		}},
-		configAction + depthThree: {3, func(res *Resolved[In, Out], token IConfigRequest) error {
-			if res.kit == nil {
-				log.Println("ERROR: res.kit is nil in handleServiceConfig action")
-				return activationError("kit is nil")
+		configAction + depthTwo: {1, func(res *Resolved[In, Out], token IConfigRequest) error {
+			err := res.prf.handleKitConfig(token.Kit, token.Config)
+			if err == nil {
+				key := refresh(token.Kit, res.prf.Registry)
+				if len(key) != 0 {
+					return res.prf.handleKitActivation(key)
+				}
+				return nil
 			}
-			return res.kit.handleServiceConfig(token.Profile, token.Config)
+			return err
 		}},
-		configAction + depthFour: {4, func(res *Resolved[In, Out], token IConfigRequest) error {
-			if res.svc == nil {
-				log.Println("ERROR: res.svc is nil in handleDispatcherConfig action")
-				return activationError("service is nil")
+		configAction + depthThree: {1, func(res *Resolved[In, Out], token IConfigRequest) error {
+			err := res.kit.handleServiceConfig(token.Service, token.Config)
+			if err == nil {
+				key := refresh(token.Service, res.prf.Registry)
+				if len(key) != 0 {
+					return res.kit.handleServiceActivation(key)
+				}
+				return nil
 			}
-			return res.svc.handleDispatcherConfig(token.Dispatcher, token.Config)
+			return err
 		}},
-		configAction + depthFive: {5, func(res *Resolved[In, Out], token IConfigRequest) error {
-			if res.dt == nil {
-				log.Println("ERROR: res.dt is nil in handleEventConfig action")
-				return activationError("dispatcher is nil")
+		configAction + depthFour: {1, func(res *Resolved[In, Out], token IConfigRequest) error {
+			err := res.svc.handleDispatcherConfig(token.Dispatcher, token.Config)
+			if err == nil {
+				key := refresh(token.Dispatcher, res.prf.Registry)
+				if len(key) != 0 {
+					return res.svc.handleDispatcherActivation(key)
+				}
+				return nil
 			}
-			return res.dt.handleEventConfig(token.Event, token.Config)
+			return err
+		}},
+		configAction + depthFive: {1, func(res *Resolved[In, Out], token IConfigRequest) error {
+			err := res.dt.handleEventConfig(token.Event, token.Config)
+			if err == nil {
+				key := refresh(token.Event, res.prf.Registry)
+				if len(key) != 0 {
+					return res.dt.handleEventActivation(key)
+				}
+				return nil
+			}
+			return err
 		}},
 		// end
 

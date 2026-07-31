@@ -114,11 +114,8 @@ rpc UpdateServiceConfig(IConfigRequest) returns (IConfigResponse);
 rpc UpdateDispatcherConfig(IConfigRequest) returns (IConfigResponse);
 rpc UpdateEventConfig(IConfigRequest) returns (IConfigResponse);
 
-rpc GetDoc(IDocRequest) returns (IDocResponse);
-
- 
+rpc GetDoc(IDocRequest) returns (IDocResponse); 
 }
-
 
 
 //////////////------------Removed-codes
