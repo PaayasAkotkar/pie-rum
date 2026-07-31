@@ -166,7 +166,7 @@ store.AddProfile("nvidea", func(p *rumsdk.Profile[Req, Res]) {
 3. refresh: keeps at least one field in the [m:n] config active
 4. only supports direct config part
 
-## Changes 🍾
+## Changes 🪛
 1. removed the meta-data stuffs
 2. removed the grpc active|deative|inactive|swap services
 
