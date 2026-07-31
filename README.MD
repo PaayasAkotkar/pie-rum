@@ -52,6 +52,6 @@ Supports all the fields in the list of computing or programming.
 2. plugin: allows you to get the reports in your own [finally 🤗] 🔥
 
 ## Upcoming 🔥 🚋
-1. Algorithm to keep at one field in the [m:n] mapping
+1. Algorithm to keep at least one field in the [m:n] mapping
 2. promethus addition
 3. uber-fx
