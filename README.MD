@@ -3,7 +3,6 @@
 <img src="/assets/logo/logo.png" alt="pie-rum-logo"/>
 
 ### Polyglot Integrated Environment: Run Your Models
-[![project PIE RUM](https://img.shields.io/badge/project-PIERUM-brightgreen)](https://github.com/PaayasAkotkar/pie-rum) [![Go Version](https://img.shields.io/badge/go-1.26.2-blue)](https://golang.org) [![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow)](https://github.com/yourusername/your-repo)
 
 A developer-centric framework AI orchestration, and work engine. It bridges the gap between the implemented system layers and developer’s communication. Reducing the complexity of tools or communication apps and providing one complete codex for the organization.
 Supports all the fields in the list of computing or programming.
