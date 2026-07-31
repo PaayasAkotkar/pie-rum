@@ -1,0 +1,96 @@
+# type Message {
+#   id: ID
+#   text: String
+# }
+
+# input ClientRequestInput {
+#   id: ID
+#   text: String
+# }
+
+# type AIReply {
+#   text: String
+# }
+
+# type AIRequestPayload {
+#   status: Int
+#   message: String
+# }
+input ChessStudentRequest {
+  id: ID
+  name: String
+  query: String
+}
+
+type ChessCoachMiscEntry {
+  key: String
+  value: ChessCoachMiscItem
+}
+
+type ChessCoachMiscItem {
+  title: String
+  desc:String
+  canCopy: Boolean 
+  isLink: Boolean
+  link:String
+  copy:String
+}
+
+type ChessCoachReply {
+  year: String
+  title: String
+  desc: String
+  outro: String
+  link: [ChessCoachMiscEntry]
+  copyItems: [ChessCoachMiscEntry]
+  miscItems: [ChessCoachMiscEntry]
+}
+
+type OnChessCoachReply {
+  information: ChessCoachReply
+  suggestion: ChessCoachReply
+  bestPractice: ChessCoachReply
+  miscItems: [ChessCoachMiscEntry]
+}
+
+input IConfigRequest{
+config:IConfig
+depth:Int!   # 1 : prof, 2 : kit, 3 : service, 4 : disp, 5 : even
+   profileName:String!
+   kitName:String!
+   serviceName:String!
+   dispatcherName:String!
+  eventName:String!
+}
+type IConfigResp{
+  succeed:Boolean!
+  error:String!
+}
+input IConfig{
+   activate:Boolean!
+  swap:ISwap
+}
+
+input ISwap{
+  with:String!
+   current:String!
+   swap:Boolean!
+}
+
+type ChessCoachPayload {
+  status: Int
+  message: String
+}
+
+type Query {
+  initCoachSuggestions(input:ChessStudentRequest):[OnChessCoachReply]
+}
+
+type Mutation {
+  askChessCoach(input: ChessStudentRequest): ChessCoachPayload
+config(input:IConfigRequest):IConfigResp
+}
+
+type Subscription {
+  chessCoachReply(input: ChessStudentRequest): OnChessCoachReply
+}

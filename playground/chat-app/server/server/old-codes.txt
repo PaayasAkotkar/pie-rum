@@ -1,0 +1,190 @@
+package server
+
+//
+//import (
+//	"app/server/admin"
+//	structure "app/server/admin"
+//	rcrypt "app/server/crypt"
+//	"app/server/server/graph"
+//	"app/server/server/graph/model"
+//	"context"
+//	"encoding/json"
+//	"log"
+//	"net/http"
+//	"os"
+//	"os/signal"
+//	"pie-rum-sdk/cheetah"
+//	pierum "pie-rum-sdk/pie-rum/core"
+//	rumsdk "pie-rum-sdk/pie-rum/sdk"
+//	"sync"
+//	"time"
+//
+//	"github.com/99designs/gqlgen/graphql/handler"
+//	"github.com/99designs/gqlgen/graphql/handler/extension"
+//	"github.com/99designs/gqlgen/graphql/handler/lru"
+//	"github.com/99designs/gqlgen/graphql/handler/transport"
+//	"github.com/99designs/gqlgen/graphql/playground"
+//	coderws "github.com/coder/websocket"
+//	"github.com/go-chi/cors"
+//	"github.com/vektah/gqlparser/v2/ast"
+//)
+//
+//func strPtr(s string) *string {
+//	return &s
+//}
+//
+//func Server() {
+//	const defaultPort = "8080"
+//
+//	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+//	defer stop()
+//
+//	//store := store.New(ctx)
+//	resolver := &RagResolver{
+//		cheetah: cheetah.New[string, model.OnChessCoachReply](100),
+//	}
+//
+//	srv := handler.New(graph.NewExecutableSchema(graph.Config{
+//		Resolvers: resolver,
+//	}))
+//
+//	srv.AddTransport(transport.Options{})
+//	srv.AddTransport(transport.GET{})
+//	srv.AddTransport(transport.POST{})
+//	srv.AddTransport(transport.GRAPHQL{})
+//	srv.AddTransport(transport.Websocket{
+//		Implementation: transport.CoderWebsocketImplementation{
+//			AcceptOptions: coderws.AcceptOptions{
+//				OriginPatterns: []string{"http://localhost:3000"},
+//			},
+//		},
+//
+//		KeepAlivePingInterval: 10 * time.Second,
+//	})
+//	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
+//
+//	srv.Use(extension.Introspection{})
+//	srv.Use(extension.AutomaticPersistedQuery{
+//		Cache: lru.New[string](100),
+//	})
+//
+//	c := cors.New(cors.Options{
+//		AllowedOrigins:   []string{"http://localhost:3000"},
+//		AllowCredentials: true,
+//		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+//		AllowedHeaders:   []string{"*"},
+//	})
+//
+//	http.Handle("/", playground.Handler("GraphQL playground", "/ask-coach"))
+//
+//	http.Handle("/ask-chess-coach", c.Handler(srv))
+//
+//	log.Printf("connect to http://localhost:%s/ for GraphQL playground", defaultPort)
+//
+//	server := &http.Server{
+//		Addr: ":" + defaultPort,
+//	}
+//
+//	cnf := rumsdk.ServerConfig{
+//		Network: rcrypt.PIERUMNETWORK,
+//		Address: rcrypt.PIERUMADRESS,
+//	}
+//
+//	pie := structure.Init(ctx)
+//
+//	var wg sync.WaitGroup
+//
+//	wg.Add(4)
+//
+//	go func() {
+//		defer wg.Done()
+//		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+//			log.Fatalf("listen: %s\n", err)
+//		}
+//	}()
+//
+//	go func() {
+//		defer wg.Done()
+//		pie.GoMonitor(ctx, func(result *pierum.IResults) {
+//			if result.IsReady {
+//				log.Println("res: ", result.Resuts)
+//				for _, r := range result.Resuts {
+//					var rs admin.Res
+//					var in admin.Req
+//					log.Println("input: ", string(r.Input))
+//					log.Println("output: ", string(r.Output))
+//					log.Println("dog-report", string(r.DogReport))
+//					log.Println("meta-report", r.MetaInfo)
+//
+//					if err := json.Unmarshal(r.Input, &in); err != nil {
+//						log.Println("Error unmarshaling input:", err)
+//						continue
+//					}
+//					if err := json.Unmarshal(r.Output, &rs); err != nil {
+//						log.Println("Error unmarshaling output:", err)
+//						continue
+//					}
+//
+//					if in.Student.ID == nil {
+//						log.Println("Student ID is nil")
+//						continue
+//					}
+//
+//					if rs.Err != nil {
+//						log.Println("Error from AI model:", rs.Err)
+//						// Publish error to frontend
+//						errorReply := &model.OnChessCoachReply{
+//							Information: &model.ChessCoachReply{
+//								Desc: strPtr(rs.Err.Error()),
+//							},
+//						}
+//						resolver.cheetah.Publish(*in.Student.ID, errorReply)
+//						continue
+//					}
+//
+//					if rs.Coach != nil {
+//						resolver.cheetah.Publish(*in.Student.ID, rs.Coach)
+//					} else {
+//						log.Println("Coach result is nil")
+//					}
+//				}
+//			}
+//		})
+//	}()
+//
+//	go func() {
+//		defer wg.Done()
+//		pie.Serve(ctx, cnf)
+//	}()
+//
+//	go func() {
+//		defer wg.Done()
+//		<-ctx.Done()
+//		log.Println("🛑 Initiating graceful shutdown...")
+//
+//		// Stage 1: Stop accepting new requests
+//		log.Println("⏹️  Stopping HTTP server...")
+//		shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+//		defer cancel()
+//
+//		// Shutdown HTTP server first to stop accepting new connections
+//		if err := server.Shutdown(shutdownCtx); err != nil {
+//			log.Printf("⚠️  HTTP server shutdown error: %v\n", err)
+//		} else {
+//			log.Println("✅ HTTP server stopped gracefully")
+//		}
+//
+//		// Stage 2: Close pie-rum connections
+//		log.Println("⏹️  Closing pie-rum connections...")
+//		pie.Close()
+//		log.Println("✅ Pie-rum connections closed")
+//
+//		log.Println("✅ Graceful shutdown complete")
+//	}()
+//
+//	wg.Wait()
+//
+//	<-ctx.Done()
+//
+//	log.Println("Server exited cleanly")
+//}

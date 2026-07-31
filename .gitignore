@@ -14,3 +14,7 @@ test.bat
 benchmark.bat
 compose.yml
 old
+/playground/chat-app/server/vault
+!/playground/chat-app/server/compose.yml
+/playground/chat-app/server/go.work.sum
+

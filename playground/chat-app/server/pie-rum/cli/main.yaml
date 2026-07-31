@@ -1,0 +1,8 @@
+input:
+  id: "123"
+  name: "name"
+  query: "query"
+  profile: "profile"
+
+profile: "sdk_test_profile"
+

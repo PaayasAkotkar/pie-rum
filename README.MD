@@ -1,4 +1,7 @@
 # PIE-RUM
+
+<img src="/assets/logo/logo.png" alt="pie-rum-logo"/>
+
 ### Polyglot Integrated Environment: Run Your Models
 
 A developer-centric framework AI orchestration, and work engine. It bridges the gap between the implemented system layers and developer’s communication. Reducing the complexity of tools or communication apps and providing one complete codex for the organization.
@@ -37,8 +40,18 @@ Supports all the fields in the list of computing or programming.
 > Please do test the thing and do comment down so that i can know whats missing
 > More work is still coming by my side regarding monitoring funcs to work more roboustly than using the wait-group stuffs
 > 4) most exampels are written by AI do make sure to report if you find bugs
+> 5) Most of the things are kinda imroved by calude so yeah shotout to claude
 ---
 
 ## Quick-Start
 1. Pick any example from using the example package and run it to understand how things working
 2. simply run the complie.bat for windows & compile.sh for linux & mac
+
+## New 🔥 🌟
+1. playground: you can now use the chat-app to work around frontend and backend
+2. plugin: allows you to get the reports in your own [finally 🤗] 🔥
+
+## Upcoming 🔥 🚋
+1. Algorithm to keep at one field in the [m:n] mapping
+2. promethus addition
+3. uber-fx
